@@ -1,5 +1,5 @@
-#Music Library
-##Intro
+# Music Library
+## Intro
 Music Library is ment to integrate external music libraries (spotify,soundcloud,local mp3s...) with a central database.
 This way you will have all your music in one central place. It will also have functionality you do not always have on the external clients.
 For example filtering on genre/category. Or in the case of spotify, to use playlists as a category and have an oversight of all categories per song and be able to easily add a categery (as playlist) to a spotify song.
@@ -27,6 +27,6 @@ The back-end exists of 7 parts.
 *GlobalExceptionHandler
 *Swagger
 *SQLServer
-###Front-End
+### Front-End
 Currently a placeholder and a place to get authorization access with spotify.
 
