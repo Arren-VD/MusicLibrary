@@ -1,0 +1,2 @@
+<button  (click)="login()">Login</button>
+<button *ngIf="this.spotAuth.loggedIn$ | async" (click)="import()">Import Music From Spotify</button>
