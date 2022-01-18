@@ -6,8 +6,8 @@ For example filtering on genre/category. Or in the case of spotify, to use playl
 ## Project status
 Currently the focus is on the back-end. There is a small front-end portion to be able to get an authorization token that is used by the back-end.
 
-##Technical
-###Back-End
+## Technical
+### Back-End
 #### Summary
 The back-end exists of 7 parts. 
 * DataAccess to access local Database, 
