@@ -18,15 +18,15 @@ The back-end exists of 7 parts.
 * API, access point for the application
 * UnitTesting, contains the unit tests for this app.
 #### Used Technologies
-*FluentValidations
-*FluentAssertions
-*Automapper
-*xUnit
-*EF
-*LINQ
-*GlobalExceptionHandler
-*Swagger
-*SQLServer
+* FluentValidations
+* FluentAssertions
+* Automapper
+* xUnit
+* EF
+* LINQ
+* GlobalExceptionHandler
+* Swagger
+* SQLServer
 ### Front-End
 Currently a placeholder and a place to get authorization access with spotify.
 
