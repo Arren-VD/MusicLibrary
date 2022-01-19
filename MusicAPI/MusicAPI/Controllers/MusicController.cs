@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Music.Domain.Contracts.Services;
+using Music.Spotify.Views;
+using Music.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +15,17 @@ namespace MusicAPI.Controllers
     [ApiController]
     public class MusicController : ControllerBase
     {
-        [HttpGet]
-        [Route("test")]
-        public ActionResult<string> Test()
+        IUserService _userService;
+        public MusicController(IUserService userService)
         {
-            return Ok("Working!");
+            _userService = userService;
+        }
+
+        [HttpPost]
+        [Route("user/{userId}/link")]
+        public ActionResult<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<TokenDTO> spotifyTokens)
+        {
+            return Ok(_userService.LinkUserToExternalAPIs(userId,spotifyTokens));
         }
     }
 }

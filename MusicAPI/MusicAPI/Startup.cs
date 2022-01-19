@@ -14,13 +14,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
-using Music.ExternalAPI;
 using MusicAPI.Configuration.Helpers;
 using Music.DataAccess;
 using Music.Domain;
 using AutoMapper;
 using Music.Domain.MappingProfiles;
 using FluentValidation.AspNetCore;
+using Music.Spotify;
 
 namespace MusicAPI
 {
@@ -35,9 +35,7 @@ namespace MusicAPI
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddHttpClient<SpotifyClient>(c => c.BaseAddress = new System.Uri("https://api.spotify.com/v1"));
-
+        {          
             services.AddDbContext<MusicContext>(
             options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MusicAPI")));
 
@@ -45,7 +43,9 @@ namespace MusicAPI
             services.AddAutoMapper(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
             services.AddFluentValidation();
 
-            services.RegisterClients().RegisterDataAccess().RegisterServices().RegisterValidators();
+            services.SpotifyConfiguration();
+
+            services.RegisterDataAccess().RegisterServices().RegisterValidators();
 
             services.AddControllers();
         }

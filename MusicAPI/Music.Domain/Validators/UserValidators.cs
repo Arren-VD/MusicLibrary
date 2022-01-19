@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Music.Models.Local;
+using Music.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

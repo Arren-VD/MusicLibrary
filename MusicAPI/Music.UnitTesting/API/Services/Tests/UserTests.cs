@@ -1,10 +1,8 @@
 using AutoMapper;
 using Moq;
-using Music.Domain.Contracts.Clients;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Services;
-using Music.Models.Local;
-using Music.Models.SpotifyModels;
+using Music.Models;
 using Music.UnitTesting.Moq.Clients;
 using Music.UnitTesting.Moq.Repositories;
 using Music.UnitTesting.TestData.Models;

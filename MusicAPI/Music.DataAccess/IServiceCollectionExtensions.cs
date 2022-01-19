@@ -13,6 +13,7 @@ namespace Music.DataAccess
         public static IServiceCollection RegisterDataAccess(this IServiceCollection services)
         {
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserTokensRepository, UserTokensRepository>();
             return services;
         }
     }

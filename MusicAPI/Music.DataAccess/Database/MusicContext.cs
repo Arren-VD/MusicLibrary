@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Music.Models;
-using Music.Models.Local;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,6 +13,7 @@ namespace Music.DataAccess.Database
         {
 
         }
+        public DbSet<UserClient> UserClients { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Artist> Artist { get; set; }
         public DbSet<Genre> Genre { get; set; }

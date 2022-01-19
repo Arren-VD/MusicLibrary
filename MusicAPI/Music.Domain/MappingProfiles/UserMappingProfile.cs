@@ -1,7 +1,6 @@
-﻿using Music.Views.SpotifyDTOs;
-using AutoMapper;
-using Music.Models.Local;
-using Music.Views.LocalDTOs;
+﻿using AutoMapper;
+using Music.Models;
+using Music.Views;
 
 namespace Music.Domain.MappingProfiles
 {
@@ -14,6 +13,7 @@ namespace Music.Domain.MappingProfiles
 
             CreateMap<UserCreationDTO, User>();
             CreateMap<User, UserCreationDTO>();
+
         }
     }
 }

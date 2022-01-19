@@ -1,7 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Music.Domain.Contracts.Clients;
 using Music.ExternalAPI;
-using Music.Models.SpotifyModels;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -14,7 +13,6 @@ namespace Music.ExternalAPI
         public static IServiceCollection RegisterClients(this IServiceCollection services)
         {
             services.AddTransient<ISpotifyClient, SpotifyClient>();
-
             return services;
         }
     }

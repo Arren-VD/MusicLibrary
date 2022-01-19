@@ -18,7 +18,7 @@ namespace MusicAPI.Migrations
                 .HasAnnotation("ProductVersion", "5.0.13")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Music.Models.Local.Artist", b =>
+            modelBuilder.Entity("Music.Models.Artist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,7 +33,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("Artist");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.Genre", b =>
+            modelBuilder.Entity("Music.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,7 +48,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("Genre");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.Playlist", b =>
+            modelBuilder.Entity("Music.Models.Playlist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,7 +63,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("Playlist");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.PlaylistSong", b =>
+            modelBuilder.Entity("Music.Models.PlaylistSong", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,7 +81,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("PlaylistSong");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.Song", b =>
+            modelBuilder.Entity("Music.Models.Song", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -96,7 +96,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("Song");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.SongArtist", b =>
+            modelBuilder.Entity("Music.Models.SongArtist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,7 +114,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("SongArtist");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.SongGenre", b =>
+            modelBuilder.Entity("Music.Models.SongGenre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -132,7 +132,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("SongGenre");
                 });
 
-            modelBuilder.Entity("Music.Models.Local.User", b =>
+            modelBuilder.Entity("Music.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,12 +142,30 @@ namespace MusicAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SpotifyId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Music.Models.UserClient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserClients");
                 });
 #pragma warning restore 612, 618
         }

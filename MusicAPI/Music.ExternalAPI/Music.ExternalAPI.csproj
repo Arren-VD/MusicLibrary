@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -12,6 +12,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Music.Domain\Music.Domain.csproj" />
     <ProjectReference Include="..\Music.Models\Music.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Clients\" />
   </ItemGroup>
 
 </Project>

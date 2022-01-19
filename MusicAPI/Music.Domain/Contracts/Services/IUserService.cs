@@ -1,6 +1,5 @@
-﻿using Music.Models.Local;
-using Music.Views.LocalDTOs;
-using Music.Views.SpotifyDTOs;
+﻿using Music.Models;
+using Music.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +10,15 @@ namespace Music.Domain.Contracts.Services
 {
     public interface IUserService
     {
-        UserDTO LinkUserToSpotify(string spotifyToken, int userid);
+        //UserDTO LinkUserToSpotify(string spotifyToken, int userid);
 
-        SpotifyUserDTO GetSpotifyUser(string spotifyToken);
+        //SpotifyUserDTO GetSpotifyUser(string spotifyToken);
 
         UserDTO CreateUser(UserCreationDTO user);
 
         UserDTO Login(LoginDTO user);
+
+        List<UserClientDTO> LinkUserToExternalAPIs(int userId, List<TokenDTO> spotifyTokens);
 
     }
 }

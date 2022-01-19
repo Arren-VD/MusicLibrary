@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Music.Domain.Contracts.Services;
-using Music.Views.LocalDTOs;
-using Music.Views.SpotifyDTOs;
+using Music.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,22 +14,10 @@ namespace MusicAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        IUserService _userService;
+        private readonly IUserService _userService;
         public UserController(IUserService userService)
         {
             _userService = userService;
-        }
-        [HttpGet]
-        [Route("{userid}/spotify/link/")]
-        public ActionResult<string> LinkToSpotifyAPI(string spotifyToken, int userid)
-        {
-            return Ok(_userService.LinkUserToSpotify(spotifyToken, userid));
-        }
-        [HttpGet]
-        [Route("spotify/me")]
-        public ActionResult<string> GetSpotifyUserInfo(string spotifyToken)
-        {
-            return Ok(_userService.GetSpotifyUser(spotifyToken));
         }
         [HttpPost]
         [Route("create")]

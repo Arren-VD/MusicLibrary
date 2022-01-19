@@ -14,15 +14,14 @@ namespace Music.Domain
     {
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
+            services.AddTransient<IMusicService, MusicService>();
             services.AddTransient<IUserService, UserService>();
 
             return services;
         }
         public static IServiceCollection RegisterValidators(this IServiceCollection services)
         {
-            //services.AddTransient<SpotifyValidators>();
-            //services.AddTransient<UserValidators>();
-            services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<SpotifyValidators>());
+            services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UserValidators>());
 
             return services;
         }

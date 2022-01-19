@@ -1,7 +1,7 @@
 ﻿using Music.DataAccess.Database;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Exceptions;
-using Music.Models.Local;
+using Music.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +40,7 @@ namespace Music.DataAccess.Repositories
             return userToUpdate;
 
         }
+
         public void SaveChanges()
         {
             _context.SaveChanges();

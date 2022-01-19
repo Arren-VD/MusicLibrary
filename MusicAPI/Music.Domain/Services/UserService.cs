@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using Music.Domain.Contracts.Clients;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
 using Music.Domain.Exceptions;
 using Music.Domain.Validators;
-using Music.Models.Local;
-using Music.Models.SpotifyModels;
+using Music.Models;
 using Music.Views;
-using Music.Views.LocalDTOs;
-using Music.Views.SpotifyDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,51 +15,39 @@ namespace Music.Domain.Services
 {
     public class UserService : IUserService
     {
-        ISpotifyClient _spotifyClient;
-        IMapper _mapper;
-        IUserRepository _userRepository;
-        public UserService(ISpotifyClient spotifyClient, IMapper mapper, IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IEnumerable<IMusicService> _musicServices;
+        public UserService(IMapper mapper, IUserRepository userRepository, IEnumerable<IMusicService> musicServices)
         {
-            _spotifyClient = spotifyClient;
             _mapper = mapper;
             _userRepository = userRepository;
-        }
-        public UserDTO LinkUserToSpotify(string spotifyToken, int userid)
-        {
-            var spotifyUser = _mapper.Map<SpotifyUser>(_spotifyClient.GetCurrentSpotifyUser(spotifyToken).Result);
-            var user = _mapper.Map<User>(_userRepository.GetUserById(userid));
-
-            user.SpotifyId = spotifyUser.Id;
-
-            var updatedUser = _mapper.Map<UserDTO>(_userRepository.UpdateUser(user));
-
-            _userRepository.SaveChanges();
-            return updatedUser;
-        }
-        public SpotifyUserDTO GetSpotifyUser(string spotifyToken)
-        {
-            SpotifyUser spotifyUser = _spotifyClient.GetCurrentSpotifyUser(spotifyToken).Result;
-
-            SpotifyUserDTO spotifyUserDTO = _mapper.Map<SpotifyUserDTO>(spotifyUser);
-
-            return spotifyUserDTO;
+            _musicServices = musicServices;
         }
         public UserDTO CreateUser(UserCreationDTO user)
         {
             if (_userRepository.GetUserByName(user.Name) != null)
-                 throw new EntityAlreadyExistsException(nameof(user), typeof(User), user.Name);
+                throw new EntityAlreadyExistsException(nameof(user), typeof(User), user.Name);
 
-             var userToAdd = _mapper.Map<User>(user);
-             var addedUser = _userRepository.AddUser(userToAdd);
+            var userToAdd = _mapper.Map<User>(user);
+            var addedUser = _userRepository.AddUser(userToAdd);
 
-             _userRepository.SaveChanges();
+            _userRepository.SaveChanges();
 
-             return _mapper.Map<UserDTO>(_userRepository.GetUser(addedUser));
-            return _mapper.Map<UserDTO>(_userRepository.GetUser(_mapper.Map<User>(user))); 
+            return _mapper.Map<UserDTO>(_userRepository.GetUser(_mapper.Map<User>(user)));
         }
         public UserDTO Login(LoginDTO user)
         {
             return _mapper.Map<UserDTO>(_userRepository.GetUserByName(user.Name));
+        }
+
+        public List<UserClientDTO> LinkUserToExternalAPIs(int userId,List<TokenDTO> spotifyTokens)
+        {
+            //validate if user doesnt have requested link
+            List<UserClientDTO> userClientDTOs = new List<UserClientDTO>();
+            spotifyTokens.ForEach(st => userClientDTOs.Add(_musicServices.FirstOrDefault(ms => ms.GetName() == st.Name).LinkUsers(st, userId)));
+
+            return userClientDTOs;
         }
     }
 }

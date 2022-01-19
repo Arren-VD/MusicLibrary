@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <TargetFramework>netcoreapp6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -30,7 +30,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Music.DataAccess\Music.DataAccess.csproj" />
     <ProjectReference Include="..\Music.Domain\Music.Domain.csproj" />
-    <ProjectReference Include="..\Music.ExternalAPI\Music.ExternalAPI.csproj" />
     <ProjectReference Include="..\Music.Models\Music.Models.csproj" />
     <ProjectReference Include="..\Music.Views\Music.Views.csproj" />
     <ProjectReference Include="..\MusicAPI\MusicAPI.csproj" />
