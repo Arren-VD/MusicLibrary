@@ -21,6 +21,8 @@ using AutoMapper;
 using Music.Domain.MappingProfiles;
 using FluentValidation.AspNetCore;
 using Music.Spotify;
+using FluentValidation;
+using Music.Domain.Validators;
 
 namespace MusicAPI
 {
@@ -42,6 +44,7 @@ namespace MusicAPI
             services.ConfigureSwagger();
             services.AddAutoMapper(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
             services.AddFluentValidation();
+            services.AddValidatorsFromAssemblyContaining<UserValidators>();
 
             services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
             services.RegisterDataAccess().RegisterServices().RegisterValidators();

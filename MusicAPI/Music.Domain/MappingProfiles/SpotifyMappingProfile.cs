@@ -13,14 +13,7 @@ namespace Music.Domain.MappingProfiles
     {
         public SpotifyMappingProfile()
         {
-            /*CreateMap<SpotifyUser, SpotifyUserDTO>();
-            CreateMap<SpotifyUserDTO, SpotifyUser>();
 
-            CreateMap<SpotifyUser, User>()
-                  .ForMember(u => u.SpotifyId, act => act.MapFrom(src => src.Id));
-            CreateMap<User, SpotifyUser>()
-                 .ForMember(u => u.Id, act => act.MapFrom(src => src.SpotifyId));
-            ;*/
         }
     }
 }

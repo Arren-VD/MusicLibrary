@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Music.Views
 {
-    public class TokenDTO
+    public class UserTokenDTO
     {
         public string Name { get; set; }
         public string Value { get; set; }

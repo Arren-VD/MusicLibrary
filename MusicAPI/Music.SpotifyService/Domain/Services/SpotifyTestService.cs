@@ -21,7 +21,7 @@ namespace Music.Spotify.Domain.Services
         }
         public ExternalUserDTO ReturnClientUser(string spotifyToken)
         {
-            return _mapper.Map<ClientUser>(_client.GetCurrentSpotifyUser(spotifyToken).Result);
+            return _mapper.Map<ExternalUserDTO>(_client.GetCurrentSpotifyUser(spotifyToken).Result);
         }
         public string GetName()
         {

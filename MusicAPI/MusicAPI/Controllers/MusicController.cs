@@ -23,7 +23,7 @@ namespace MusicAPI.Controllers
 
         [HttpPost]
         [Route("user/{userId}/link")]
-        public ActionResult<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<TokenDTO> spotifyTokens)
+        public ActionResult<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> spotifyTokens)
         {
             return Ok(_userService.LinkUserToExternalAPIs(userId,spotifyTokens));
         }

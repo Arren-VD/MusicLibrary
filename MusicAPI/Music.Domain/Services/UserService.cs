@@ -21,11 +21,12 @@ namespace Music.Domain.Services
         private readonly IUserRepository _userRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
         private readonly IUserTokensRepository _userTokensRepository;
+        private readonly UserValidators _userValidator;
 
-        public UserService(IMapper mapper, IUserRepository userRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository)
+        public UserService(IMapper mapper, IUserRepository userRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, UserValidators userValidator)
         {
-           
 
+            _userValidator = userValidator;
             _mapper = mapper;
             _userRepository = userRepository;
             _externalServices = externalServices;
@@ -35,9 +36,10 @@ namespace Music.Domain.Services
         {
             if (_userRepository.GetUserByName(user.Name) != null)
                 throw new EntityAlreadyExistsException(nameof(user), typeof(User), user.Name);
-
             var userToAdd = _mapper.Map<User>(user);
-            var addedUser = _userRepository.AddUser(userToAdd);
+
+            _userRepository.AddUser(userToAdd);
+
 
             _userRepository.SaveChanges();
 
@@ -48,25 +50,19 @@ namespace Music.Domain.Services
             return _mapper.Map<UserDTO>(_userRepository.GetUserByName(user.Name));
         }
 
-        public List<UserClientDTO> LinkUserToExternalAPIs(int userId,List<TokenDTO> spotifyTokens)
+        public List<UserClientDTO> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> userTokens)
         {
-            foreach (var item in spotifyTokens)
+            List<UserClientDTO> userclients = new List<UserClientDTO>();
+            foreach (var userToken in userTokens)
             {
-                var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == item.Name);
-                var clientId = svc.ReturnClientUser(item.Value).Id;
-                var userClient = _mapper.Map<UserClientDTO>(_userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId)));
+                var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
+                var clientId = svc.ReturnClientUser(userToken.Value).Id;
+                userclients.Add(_mapper.Map<UserClientDTO>(_userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
+
+                _userTokensRepository.SaveChanges();
             }
 
-
-            var userClient = _mapper.Map<UserClientDTO>(_tokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId)));
-
-            _tokensRepository.SaveChanges();
-            return userClient;
-            //validate if user doesnt have requested link
-            List<UserClientDTO> userClientDTOs = new List<UserClientDTO>();
-            spotifyTokens.ForEach(st => userClientDTOs.Add(_externalServices.FirstOrDefault(ms => ms.GetName() == st.Name).LinkUsers(st, userId)));
-
-            return userClientDTOs;
+            return userclients;
         }
     }
 }

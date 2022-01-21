@@ -18,7 +18,7 @@ namespace Music.Domain.Contracts.Services
 
         UserDTO Login(LoginDTO user);
 
-        List<UserClientDTO> LinkUserToExternalAPIs(int userId, List<TokenDTO> spotifyTokens);
+        List<UserClientDTO> LinkUserToExternalAPIs(int userId, List<UserTokenDTO> spotifyTokens);
 
     }
 }

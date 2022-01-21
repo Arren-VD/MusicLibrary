@@ -21,7 +21,7 @@ namespace Music.Domain.Exceptions
 
         private static string GetErrorMessage(string parameter,Type entityType, object entityValue)
         {
-            var conditionalIdStatement = entityValue is null || (int)entityValue == 0 ? $"{entityType.Name} entity is missing a valid {parameter} " : $"{entityType.Name} with {parameter} {entityValue} could not be found.";
+            var conditionalIdStatement = entityValue is null || entityValue.ToString() == "0" ? $"{entityType.Name} entity is missing a valid {parameter} " : $"{entityType.Name} with {parameter} {entityValue} could not be found.";
 
             return conditionalIdStatement;
         }

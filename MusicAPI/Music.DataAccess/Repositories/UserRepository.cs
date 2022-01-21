@@ -23,19 +23,19 @@ namespace Music.DataAccess.Repositories
         }
         public User GetUserByName(string name)
         {
-            return _context.Users.FirstOrDefault(x => x.Name == name) ?? throw new EntityNotFoundException(nameof(name), typeof(User),name);
+            return _context.Users.FirstOrDefault(x => x.Name == name);
         }
         public User GetUser(User user)
         {
-            return _context.Users.FirstOrDefault(x => x == user) ?? throw new EntityNotFoundException(nameof(user.Id), typeof(User),user.Id);
+            return _context.Users.FirstOrDefault(x => x == user);
         }
         public User GetUserById(int id)
         {
-            return _context.Users.FirstOrDefault(x => x.Id == id) ?? throw new EntityNotFoundException(nameof(id), typeof(User),id);
+            return _context.Users.FirstOrDefault(x => x.Id == id);
         }
         public User UpdateUser(User user)
-        {   
-            var userToUpdate = _context.Users.FirstOrDefault(x => x == user) ?? throw new EntityNotFoundException(nameof(user.Id), typeof(User), user.Id);
+        {
+            var userToUpdate = _context.Users.FirstOrDefault(x => x == user);
             userToUpdate = user;
             return userToUpdate;
 

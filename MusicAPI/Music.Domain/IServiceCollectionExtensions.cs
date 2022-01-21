@@ -21,9 +21,7 @@ namespace Music.Domain
 
    
             services.AddTransient<IExternalService,SpotifyTestService>();
-            services.AddTransient<IMusicService, MusicService>();
             services.AddTransient<IExternalService, SpotifyService>();
-            services.AddTransient<IMusicService,MusicService>();
             services.AddTransient<IUserService, UserService>();
 
             return services;

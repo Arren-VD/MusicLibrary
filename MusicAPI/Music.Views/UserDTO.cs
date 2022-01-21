@@ -9,7 +9,6 @@ namespace Music.Views
     public class UserDTO
     {
         public int Id { get; set; }
-        public string SpotifyId { get; set; }
         public string Name { get; set; }
     }
 }
