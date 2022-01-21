@@ -14,15 +14,17 @@ namespace Music.Spotify
 {
     public static class SpotifyStartupConfiguration
     {
-        public static IServiceCollection SpotifyConfiguration(this IServiceCollection services)
+        public static IServiceCollection AddSpotify(this IServiceCollection services, Action<SpotifyOptions> options)
         {
+            var o = new SpotifyOptions();
+            options(o);
             ConfigureServices(services);
             Configure(services);
             return services;
         }
         private static IServiceCollection ConfigureServices (this IServiceCollection services)
         {
-            services.RegisterServices().RegisterClients();
+            services.RegisterClients();
             return services;
         }
         private static void Configure(this IServiceCollection services)

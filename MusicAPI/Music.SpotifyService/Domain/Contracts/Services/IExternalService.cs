@@ -1,16 +1,15 @@
-﻿using Music.Spotify.Domain.Services;
-using Music.Spotify.Models;
+﻿using Music.Spotify.Models;
+using Music.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Music.Spotify.Domain.Contracts.Services;
-
 namespace Music.Spotify.Domain.Contracts.Services
 {
-    public interface ISpotifyService : IExternalService
+    public  interface IExternalService
     {
-        
+        string GetName();
+        ExternalUserDTO ReturnClientUser(string spotifyToken);
     }
 }

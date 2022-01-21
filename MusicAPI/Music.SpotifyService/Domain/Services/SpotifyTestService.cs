@@ -10,22 +10,22 @@ using System.Text;
 
 namespace Music.Spotify.Domain.Services
 {
-    public class SpotifyService : IExternalService
+    public class SpotifyTestService : IExternalService
     {
         private readonly IMapper _mapper;
         private readonly IClient _client;
-        public SpotifyService(IMapper mapper, IClient client)
+        public SpotifyTestService(IMapper mapper, IClient client)
         {
             _mapper = mapper;
             _client = client;
         }
         public ExternalUserDTO ReturnClientUser(string spotifyToken)
         {
-            return _mapper.Map<ExternalUserDTO>(_client.GetCurrentSpotifyUser(spotifyToken).Result);
+            return _mapper.Map<ClientUser>(_client.GetCurrentSpotifyUser(spotifyToken).Result);
         }
         public string GetName()
         {
-            return "Spotify";
+            return "SpotifyTest";
         }
     }
 }

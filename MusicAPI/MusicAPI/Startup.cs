@@ -43,9 +43,18 @@ namespace MusicAPI
             services.AddAutoMapper(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
             services.AddFluentValidation();
 
-            services.SpotifyConfiguration();
-
+            services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
             services.RegisterDataAccess().RegisterServices().RegisterValidators();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200",
+                                            "http://localhost:5000");
+                    });
+            });
 
             services.AddControllers();
         }
@@ -67,6 +76,8 @@ namespace MusicAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

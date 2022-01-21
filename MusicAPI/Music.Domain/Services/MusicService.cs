@@ -5,7 +5,6 @@ using Music.Domain.Exceptions;
 using Music.Domain.Validators;
 using Music.Models;
 using Music.Spotify.Domain.Contracts.Services;
-using Music.Spotify.Domain.Services;
 using Music.Views;
 using System;
 using System.Collections.Generic;
@@ -18,13 +17,11 @@ namespace Music.Domain.Services
     public class MusicService : IMusicService
     {
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
-        private readonly IService _service;
+        private readonly IExternalService _service;
         private readonly IUserTokensRepository _tokensRepository;
-        public MusicService(IMapper mapper, IUserRepository userRepository, IService service,IUserTokensRepository tokensRepository)
+        public MusicService(IMapper mapper, IExternalService service, IUserTokensRepository tokensRepository)
         {
             _mapper = mapper;
-            _userRepository = userRepository;
             _service = service;
             _tokensRepository = tokensRepository;
         }
@@ -36,19 +33,20 @@ namespace Music.Domain.Services
         {
             var clientId = _service.ReturnClientUser(userToken.Value).Id;
 
-            var userClient = _mapper.Map<UserClientDTO>(_tokensRepository.AddTokenById(new UserClient(clientId, userToken.Name,userId)));
+            var userClient = _mapper.Map<UserClientDTO>(_tokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId)));
 
             _tokensRepository.SaveChanges();
             return userClient;
         }
-        /*
-        public SpotifyUserDTO GetSpotifyUser(string spotifyToken)
+        
+        public ExternalUserDTO GetUser(string token)
         {
-            SpotifyUser spotifyUser = _spotifyClient.GetCurrentSpotifyUser(spotifyToken).Result;
+
+            ExternalUserDTO user = _service.ReturnClientUser(token);
 
             SpotifyUserDTO spotifyUserDTO = _mapper.Map<SpotifyUserDTO>(spotifyUser);
 
             return spotifyUserDTO;
-        }*/
+        }
     }
 }

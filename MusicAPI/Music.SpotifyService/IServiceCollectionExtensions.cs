@@ -6,6 +6,7 @@ using Music.Spotify.Domain.Contracts.Services;
 using Music.Spotify.Domain.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -21,7 +22,8 @@ namespace Music.Spotify
         }
         internal static IServiceCollection RegisterServices(this IServiceCollection services)
         {
-            services.AddTransient<IService, SpotifyService>();
+   
+
             return services;
         }
     }
