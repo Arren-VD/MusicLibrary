@@ -9,7 +9,11 @@ namespace Music.Spotify.Domain.Contracts
 {
     public interface IClient
     {
-        Task<ClientUser> GetCurrentSpotifyUser(string authToken);
-        string GetCurrentSpotifyUserId(string authToken);
+        Task<ClientUser> GetCurrentUser(string authToken);
+        string GetCurrentUserId(string authToken);
+
+        Task<ClientPlaylist> GetUserPlaylistCalledAll(string authToken, string playlistId, string nextPageURL = null);
+
+        Task<ClientPlaylistCollection> GetUserPlaylist(string authToken, string nextPageURL = null);
     }
 }

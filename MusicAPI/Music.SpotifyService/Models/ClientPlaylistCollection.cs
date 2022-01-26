@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace Music.Spotify.Models
 {
-    public class UserPlaylists
+    public class ClientPlaylistCollection
     {
-        public string Href { get; set; }
-        public int[] Items { get; set; }
-        public int Limit { get; set; }
+        public ClientPlaylist[] Items { get; set; }
         public string Next { get; set; }
-        public int Offset { get; set; }
         public string Previous { get; set; }
         public int Total { get; set; }
 

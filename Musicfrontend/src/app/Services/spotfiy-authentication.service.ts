@@ -20,7 +20,7 @@ export class SpotfiyAuthenticationService {
  //grant_type: string = 'client_credentials'
  grant_type: string = 'authorization_code'
  token_timer : any;
- scope : string = "user-read-email playlist-read-collaborative playlist-read-private user-read-private"
+ scope : string = "user-read-email playlist-read-collaborative playlist-read-private user-read-private playlist-read-collaborative"
 
 loggedIn$ = new BehaviorSubject(false);
 

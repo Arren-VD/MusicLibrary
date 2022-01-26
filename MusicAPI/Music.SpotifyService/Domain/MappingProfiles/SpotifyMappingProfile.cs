@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Music.Models;
 using Music.Spotify.Models;
+using Music.Spotify.Views;
 using Music.Views;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,19 @@ namespace Music.Spotify.Domain.MappingProfiles
         {
             CreateMap<ExternalUserDTO, ClientUser>();
             CreateMap<ClientUser, ExternalUserDTO>();
+
+            CreateMap<ClientTrackDTO, ClientTrack>();
+            CreateMap<ClientTrack, ClientTrackDTO>();
+
+            CreateMap<ClientTrackCollectionDTO, ClientTrackCollection>();
+            CreateMap<ClientTrackCollection, ClientTrackCollectionDTO>();
+
+            CreateMap<ClientArtistDTO, ClientArtist>();
+            CreateMap<ClientArtist, ClientArtistDTO>();
+
+            CreateMap<ExternalUrlsDTO, ExternalUrls>();
+            CreateMap<ExternalUrls, ExternalUrlsDTO>();
+
         }
     }
 }

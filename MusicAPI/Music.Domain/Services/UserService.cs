@@ -63,13 +63,25 @@ namespace Music.Domain.Services
             {
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
                 var clientId = svc.ReturnClientUserId(userToken.Value);
-                var a = _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
                 userclients.Add(_mapper.Map<UserClientDTO>(_userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
 
                 _userTokensRepository.SaveChanges();
             }
 
             return userclients;
+        }
+        public List<ClientTrackDTO> GetUserPlaylists(int userId, List<UserTokenDTO> userTokens)
+        {
+            var userPlaylists = new List<ClientTrackDTO>();
+            foreach (var userToken in userTokens)
+            {
+                var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
+                userPlaylists.AddRange(svc.GetUserPlaylistCalledAll(userToken.Value));
+
+                _userTokensRepository.SaveChanges();
+            }
+
+            return userPlaylists;
         }
     }
 }

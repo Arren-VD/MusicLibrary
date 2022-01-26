@@ -27,5 +27,11 @@ namespace MusicAPI.Controllers
         {
             return Ok(_userService.LinkUserToExternalAPIs(userId,spotifyTokens));
         }
+        [HttpPost]
+        [Route("user/{userId}/alltracks")]
+        public ActionResult<List<ClientTrackDTO>> GetAllTracks(int userId,List<UserTokenDTO> spotifyTokens)
+        {
+            return Ok(_userService.GetUserPlaylists(userId,spotifyTokens));
+        }
     }
 }
