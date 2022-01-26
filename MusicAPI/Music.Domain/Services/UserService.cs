@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
+using Music.Domain.ErrorHandling;
+using Music.Domain.ErrorHandling.Validations;
 using Music.Domain.Exceptions;
-using Music.Domain.Validators;
 using Music.Models;
 using Music.Spotify.Domain.Contracts.Services;
 using Music.Views;
@@ -21,29 +22,34 @@ namespace Music.Domain.Services
         private readonly IUserRepository _userRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
         private readonly IUserTokensRepository _userTokensRepository;
-        private readonly UserValidators _userValidator;
+        private readonly UserCreationValidator _userValidation;
 
-        public UserService(IMapper mapper, IUserRepository userRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, UserValidators userValidator)
+        public UserService(IMapper mapper, IUserRepository userRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, UserCreationValidator userValidation)
         {
-
-            _userValidator = userValidator;
+            _userValidation = userValidation;
             _mapper = mapper;
             _userRepository = userRepository;
             _externalServices = externalServices;
             _userTokensRepository = userTokensRepository;  
         }
-        public UserDTO CreateUser(UserCreationDTO user)
+        public ValidationResult<UserDTO> CreateUser(UserCreationDTO user)
         {
+            var result = new ValidationResult<UserDTO>();
             if (_userRepository.GetUserByName(user.Name) != null)
-                throw new EntityAlreadyExistsException(nameof(user), typeof(User), user.Name);
+                result.AddError(Error.ErrorValues.AlreadyExists,"User","Name",user.Name);
+
+            result.Errors.AddRange(_userValidation.Validate(user));
+            if (result.Errors.Any())
+                return result;
+
             var userToAdd = _mapper.Map<User>(user);
 
-            _userRepository.AddUser(userToAdd);
-
-
+            var addedUser = _userRepository.AddUser(userToAdd);
             _userRepository.SaveChanges();
 
-            return _mapper.Map<UserDTO>(_userRepository.GetUser(_mapper.Map<User>(user)));
+            var a = _userRepository.GetUser(addedUser);
+            result.Value = _mapper.Map<UserDTO>(_userRepository.GetUser(addedUser));
+            return result;
         }
         public UserDTO Login(LoginDTO user)
         {
@@ -56,7 +62,8 @@ namespace Music.Domain.Services
             foreach (var userToken in userTokens)
             {
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                var clientId = svc.ReturnClientUser(userToken.Value).Id;
+                var clientId = svc.ReturnClientUserId(userToken.Value);
+                var a = _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
                 userclients.Add(_mapper.Map<UserClientDTO>(_userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
 
                 _userTokensRepository.SaveChanges();

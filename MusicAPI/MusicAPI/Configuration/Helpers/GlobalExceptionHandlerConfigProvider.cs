@@ -17,7 +17,7 @@ namespace MusicAPI.Configuration.Helpers
             app.UseGlobalExceptionHandler(config =>
             {
                 config.ContentType = "application/json";
-                config.ResponseBody((ex, context) => JsonConvert.SerializeObject(ex.Message));
+                config.ResponseBody((ex, context) => { return JsonConvert.SerializeObject(ex.Message); });
 
                 config.MapExceptions();
             });

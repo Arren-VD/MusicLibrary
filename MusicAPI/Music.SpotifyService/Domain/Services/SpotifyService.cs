@@ -23,6 +23,10 @@ namespace Music.Spotify.Domain.Services
         {
             return _mapper.Map<ExternalUserDTO>(_client.GetCurrentSpotifyUser(spotifyToken).Result);
         }
+        public string ReturnClientUserId(string spotifyToken)
+        {
+            return _client.GetCurrentSpotifyUserId(spotifyToken);
+        }
         public string GetName()
         {
             return "Spotify";

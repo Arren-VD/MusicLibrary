@@ -10,5 +10,6 @@ namespace Music.Spotify.Domain.Contracts
     public interface IClient
     {
         Task<ClientUser> GetCurrentSpotifyUser(string authToken);
+        string GetCurrentSpotifyUserId(string authToken);
     }
 }

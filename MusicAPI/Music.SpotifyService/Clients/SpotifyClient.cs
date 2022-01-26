@@ -30,5 +30,6 @@ namespace Music.Spotify.Clients
                 return JsonConvert.DeserializeObject<ClientUser>(json);
             }
         }
+        public string GetCurrentSpotifyUserId(string authToken) => GetCurrentSpotifyUser(authToken).Result.Id;
     }
 }

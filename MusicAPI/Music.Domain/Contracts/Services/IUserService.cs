@@ -1,4 +1,5 @@
-﻿using Music.Models;
+﻿using Music.Domain.ErrorHandling;
+using Music.Models;
 using Music.Views;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Music.Domain.Contracts.Services
 
         //SpotifyUserDTO GetSpotifyUser(string spotifyToken);
 
-        UserDTO CreateUser(UserCreationDTO user);
+        ValidationResult<UserDTO> CreateUser(UserCreationDTO user);
 
         UserDTO Login(LoginDTO user);
 

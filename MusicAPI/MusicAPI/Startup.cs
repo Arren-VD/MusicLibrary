@@ -19,10 +19,9 @@ using Music.DataAccess;
 using Music.Domain;
 using AutoMapper;
 using Music.Domain.MappingProfiles;
-using FluentValidation.AspNetCore;
 using Music.Spotify;
 using FluentValidation;
-using Music.Domain.Validators;
+using System.Text.Json.Serialization;
 
 namespace MusicAPI
 {
@@ -43,11 +42,10 @@ namespace MusicAPI
 
             services.ConfigureSwagger();
             services.AddAutoMapper(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
-            services.AddFluentValidation();
-            services.AddValidatorsFromAssemblyContaining<UserValidators>();
 
             services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
             services.RegisterDataAccess().RegisterServices().RegisterValidators();
+
 
             services.AddCors(options =>
             {
@@ -59,7 +57,7 @@ namespace MusicAPI
                     });
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +73,7 @@ namespace MusicAPI
                 });
                 app.UseDeveloperExceptionPage();
             }
+            GlobalExceptionHandlerConfigProvider.ConfigureExceptionHandling(app);
 
             app.UseHttpsRedirection();
 

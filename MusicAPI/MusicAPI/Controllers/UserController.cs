@@ -23,7 +23,10 @@ namespace MusicAPI.Controllers
         [Route("create")]
         public ActionResult<string> CreateUser([FromBody] UserCreationDTO user)
         {
-            return Ok(_userService.CreateUser(user));
+            var result = _userService.CreateUser(user);
+            if (result.IsErrored())
+                return BadRequest(result.Errors);
+            return Ok(result.Value);
         }
         [HttpPost]
         [Route("login")]
