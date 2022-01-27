@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Music.Spotify.Models
 {
-    public class ClientPlaylist
+    public class ClientIdAndName
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Next { get; set; }
-        public List<ClientItem> Items { get; set; }
     }
 }

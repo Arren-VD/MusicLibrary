@@ -17,11 +17,11 @@ namespace Music.DataAccess.Database
         public DbSet<User> Users { get; set; }
         public DbSet<Artist> Artist { get; set; }
         public DbSet<Genre> Genre { get; set; }
-        public DbSet<Playlist> Playlist { get; set; }
-        public DbSet<PlaylistSong> PlaylistSong { get; set; }
-        public DbSet<Song> Song { get; set; }
-        public DbSet<SongArtist> SongArtist { get; set; }
-        public DbSet<SongGenre> SongGenre { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<TrackPlaylist> TrackPlaylists { get; set; }
+        public DbSet<Track> Tracks { get; set; }
+        public DbSet<TrackArtist> TrackArtists { get; set; }
+        public DbSet<TrackGenre> TrackGenres { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

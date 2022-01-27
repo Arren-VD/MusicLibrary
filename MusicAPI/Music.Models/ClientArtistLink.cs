@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Music.Models
 {
-    public class Artist
+    internal class ClientArtistLink
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
     }
 }

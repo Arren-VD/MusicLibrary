@@ -8,7 +8,7 @@ namespace Music.Spotify.Models
 {
     public class ClientPlaylistCollection
     {
-        public ClientPlaylist[] Items { get; set; }
+        public List<ClientPlaylist> Items { get; set; }
         public string Next { get; set; }
         public string Previous { get; set; }
         public int Total { get; set; }

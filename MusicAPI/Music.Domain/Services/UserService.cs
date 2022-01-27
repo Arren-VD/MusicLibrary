@@ -76,9 +76,7 @@ namespace Music.Domain.Services
             foreach (var userToken in userTokens)
             {
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                userPlaylists.AddRange(svc.GetUserPlaylistCalledAll(userToken.Value));
-
-                _userTokensRepository.SaveChanges();
+                userPlaylists.AddRange(svc.GetAllUserTrackswithCategory(userToken.Value));
             }
 
             return userPlaylists;

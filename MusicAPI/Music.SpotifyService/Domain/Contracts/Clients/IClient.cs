@@ -12,8 +12,8 @@ namespace Music.Spotify.Domain.Contracts
         Task<ClientUser> GetCurrentUser(string authToken);
         string GetCurrentUserId(string authToken);
 
-        Task<ClientPlaylist> GetUserPlaylistCalledAll(string authToken, string playlistId, string nextPageURL = null);
+        Task<ClientPlaylist> GetUserPlaylistById(string authToken, string playlistId, string nextPageURL = null);
 
-        Task<ClientPlaylistCollection> GetUserPlaylist(string authToken, string nextPageURL = null);
+        Task<ClientPlaylistCollection> GetAllUserPlaylists(string authToken, string nextPageURL = null);
     }
 }

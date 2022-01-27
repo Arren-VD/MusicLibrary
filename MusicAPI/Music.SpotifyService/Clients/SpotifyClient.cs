@@ -33,7 +33,7 @@ namespace Music.Spotify.Clients
             }
         }
 
-        public async Task<ClientPlaylist> GetUserPlaylistCalledAll(string authToken, string playlistId, string nextPageURL = null)
+        public async Task<ClientPlaylist> GetUserPlaylistById(string authToken, string playlistId, string nextPageURL = null)
         {
             using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, nextPageURL ?? $"https://api.spotify.com/v1/playlists/{playlistId}/tracks?limit=50"))
             {
@@ -47,7 +47,7 @@ namespace Music.Spotify.Clients
             }
         }
 
-        public async Task<ClientPlaylistCollection> GetUserPlaylist(string authToken,string nextPageURL = null)
+        public async Task<ClientPlaylistCollection> GetAllUserPlaylists(string authToken,string nextPageURL = null)
         {
             using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, nextPageURL ?? "https://api.spotify.com/v1/me/playlists?limit=50"))
             {

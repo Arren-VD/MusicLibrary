@@ -8,6 +8,11 @@ namespace Music.Views
 {
     public class ClientTrackDTO
     {
+        public ClientTrackDTO()
+        {
+            PlaylistIdentifier = new List<PlayListIdentifierDTO>();
+        }
+
         public List<ClientArtistDTO> Artists { get; set; }
         public int Duration_ms { get; set; }
         public ExternalUrlsDTO External_urls { get; set; }
@@ -15,5 +20,7 @@ namespace Music.Views
         public string Name { get; set; }
         public int Popularity { get; set; }
         public string Preview_url { get; set; }
+
+        public List<PlayListIdentifierDTO> PlaylistIdentifier { get; set; }
     }
 }

@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Music.Spotify.Models
+namespace Music.Views
 {
-    public class ClientPlaylist
+    public class PlayListIdentifierDTO
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Next { get; set; }
-        public List<ClientItem> Items { get; set; }
     }
 }
