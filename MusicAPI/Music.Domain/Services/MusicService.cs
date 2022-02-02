@@ -2,6 +2,7 @@
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
 using Music.Domain.ErrorHandling.Validations;
+using Music.Domain.Services.Helper;
 using Music.Models;
 using Music.Views;
 using Music.Views.ClientViews;
@@ -21,10 +22,24 @@ namespace Music.Domain.Services
         private readonly IMusicRepository _musicRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
         private readonly IUserTokensRepository _userTokensRepository;
-        private readonly UserCreationValidator _userValidation;
-        public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, UserCreationValidator userValidation)
+        private readonly ImportMusicHelper _importMusicHelper;
+        private IGenericRepository<Artist> _artistRepository;
+        private IGenericRepository<TrackArtist> _trackArtistRepository;
+        private IGenericRepository<Track> _trackRepository;
+        private IGenericRepository<PlaylistTrack> _playlistTrackRepository;
+        private IGenericRepository<Playlist> _playlistRepository;
+        private IGenericRepository<UserTrack> _userTrackRepository;
+        public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, ImportMusicHelper importMusicHelper,
+            IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository, IGenericRepository<Track> trackRepository,
+            IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playlistRepository, IGenericRepository<UserTrack> userTrackRepository)
         {
-            _userValidation = userValidation;
+            _userTrackRepository = userTrackRepository;
+            _artistRepository = artistRepository;
+            _trackArtistRepository = trackArtistRepository;
+            _trackRepository = trackRepository;
+            _playlistTrackRepository = playlistTrackRepository;
+            _playlistRepository = playlistRepository;
+            _importMusicHelper = importMusicHelper;
             _mapper = mapper;
             _musicRepository = musicRepository;
             _externalServices = externalServices;
@@ -32,7 +47,7 @@ namespace Music.Domain.Services
         }
         public List<TrackDTO> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens)
         {
-             var tracks = new List<ClientTrackDTO>();
+            var tracks = new List<ClientTrackDTO>();
             foreach (var userToken in userTokens)
             {
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
@@ -42,39 +57,13 @@ namespace Music.Domain.Services
                 {
                     if (_musicRepository.GetTrackById(track.Id) == null)
                     {
-                        var addedTrack = _musicRepository.AddTrack(_mapper.Map<Track>(track));
-                        _musicRepository.SaveChanges();
-                        _musicRepository.AddUserTrack(new UserTrack(addedTrack.Id,userId));
-                        track.Playlists.ForEach(playlist =>
-                        {
-                            var existingPlaylist = _musicRepository.GetPlaylistByClientId(playlist.Id);
-                            if (existingPlaylist == null)
-                            {
-                                var result = _mapper.Map<Playlist>(playlist);
-                                result.UserId = userId;
-                                var addedPlaylist = _musicRepository.AddPlaylist(result);
-                                _musicRepository.SaveChanges();
-                                _musicRepository.AddPlaylistTrack(new PlaylistTrack(addedPlaylist.Id, addedTrack.Id,userId));
-                            }
-                            else
-                            {
-                                _musicRepository.AddPlaylistTrack(new PlaylistTrack(existingPlaylist.Id, addedTrack.Id, userId));
-                            }
-                        });
-                        track.Artists.ForEach(artist =>
-                        {
-                            var existingArtist = _musicRepository.GetArtistByClientId(artist.Id);
-                            if (existingArtist  == null)
-                            {
-                                var addedArtist = _musicRepository.AddArtist(_mapper.Map<Artist>(artist));
-                                _musicRepository.SaveChanges();
-                                _musicRepository.AddTrackArtist(new TrackArtist(addedTrack.Id, addedArtist.Id));
-                            }
-                            else
-                            {
-                                _musicRepository.AddTrackArtist(new TrackArtist(addedTrack.Id, existingArtist.Id));
-                            }
-                        });
+                        var addedTrack = _trackRepository.Insert(_mapper.Map<Track>(track));
+
+                        _userTrackRepository.Insert(new UserTrack(addedTrack.Id, userId));
+
+                        _importMusicHelper.AddPlaylists(track, addedTrack, userId);
+                        _importMusicHelper.AddArtists(track, addedTrack);
+
                         _musicRepository.SaveChanges();
                     }
                 });

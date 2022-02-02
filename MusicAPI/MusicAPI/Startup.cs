@@ -45,7 +45,7 @@ namespace MusicAPI
 
             services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
                         
-            services.RegisterDataAccess().RegisterServices().RegisterValidators();
+            services.RegisterDataAccess().RegisterServices().RegisterValidators().RegisterHelpers();
 
 
             services.AddCors(options =>
