@@ -41,7 +41,7 @@ namespace MusicAPI
             options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MusicAPI")));
 
             services.ConfigureSwagger();
-            services.AddAutoMapper(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
+            services.AddAutoMapper(typeof(ClientMappingProfile).GetTypeInfo().Assembly);
 
             services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
             services.RegisterDataAccess().RegisterServices().RegisterValidators();
@@ -79,7 +79,7 @@ namespace MusicAPI
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod());
 
             app.UseAuthorization();
 

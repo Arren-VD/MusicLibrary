@@ -19,6 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.UnitTesting", "Music.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.Spotify", "Music.SpotifyService\Music.Spotify.csproj", "{0CFC7AC5-A1A9-44BF-8E42-023F7EBEDA8D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Development", "Development", "{0AD2C164-35AF-413A-9295-66082AEA185E}"
+	ProjectSection(SolutionItems) = preProject
+		Development\DeleteTracksPlaylistsAndArtists.sql = Development\DeleteTracksPlaylistsAndArtists.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -20,6 +20,12 @@ namespace Music.Spotify
 
             return services;
         }
+        internal static IServiceCollection RegisterHelpers(this IServiceCollection services)
+        {
+            services.AddTransient<PlaylistHelper>();
+
+            return services;
+        }
         internal static IServiceCollection RegisterServices(this IServiceCollection services)
         {
    

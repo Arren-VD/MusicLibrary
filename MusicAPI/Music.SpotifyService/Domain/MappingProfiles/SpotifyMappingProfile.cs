@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Music.Models;
 using Music.Spotify.Models;
+using Music.Spotify.Models.PlaylistModels;
 using Music.Views;
+using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +18,13 @@ namespace Music.Spotify.Domain.MappingProfiles
         {
             CreateMap<ExternalUserDTO, ClientUser>();
             CreateMap<ClientUser, ExternalUserDTO>();
+
+            CreateMap<ClientTrackDTO, ClientTrack>();
+            CreateMap<ClientTrack, ClientTrackDTO>()
+                .ForMember(d => d.ISRC_Id, opt => opt.MapFrom(src => src.external_ids.isrc));
+
+            CreateMap<ClientArtist, ClientArtistDTO>();
+            CreateMap<ClientArtistDTO, ClientArtist>();
         }
     }
 }

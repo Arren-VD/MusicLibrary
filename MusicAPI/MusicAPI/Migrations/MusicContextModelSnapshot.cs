@@ -25,27 +25,15 @@ namespace MusicAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Artist");
-                });
-
-            modelBuilder.Entity("Music.Models.Genre", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Genre");
                 });
 
             modelBuilder.Entity("Music.Models.Playlist", b =>
@@ -55,15 +43,21 @@ namespace MusicAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Playlist");
                 });
 
-            modelBuilder.Entity("Music.Models.PlaylistSong", b =>
+            modelBuilder.Entity("Music.Models.PlaylistTrack", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,30 +67,46 @@ namespace MusicAPI.Migrations
                     b.Property<int>("PlaylistId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SongId")
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PlaylistSong");
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("PlaylistTrack");
                 });
 
-            modelBuilder.Entity("Music.Models.Song", b =>
+            modelBuilder.Entity("Music.Models.Track", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ISRC_Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Preview_url")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Song");
+                    b.ToTable("Tracks");
                 });
 
-            modelBuilder.Entity("Music.Models.SongArtist", b =>
+            modelBuilder.Entity("Music.Models.TrackArtist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,30 +116,16 @@ namespace MusicAPI.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SongId")
+                    b.Property<int>("TrackId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SongArtist");
-                });
+                    b.HasIndex("ArtistId");
 
-            modelBuilder.Entity("Music.Models.SongGenre", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.HasIndex("TrackId");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SongId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SongGenre");
+                    b.ToTable("TrackArtists");
                 });
 
             modelBuilder.Entity("Music.Models.User", b =>
@@ -166,6 +162,80 @@ namespace MusicAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserClients");
+                });
+
+            modelBuilder.Entity("Music.Models.UserTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("TrackId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("UserTracks");
+                });
+
+            modelBuilder.Entity("Music.Models.PlaylistTrack", b =>
+                {
+                    b.HasOne("Music.Models.Playlist", "Playlist")
+                        .WithMany()
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Music.Models.Track", null)
+                        .WithMany("PlaylistTracks")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Playlist");
+                });
+
+            modelBuilder.Entity("Music.Models.TrackArtist", b =>
+                {
+                    b.HasOne("Music.Models.Artist", "Artist")
+                        .WithMany()
+                        .HasForeignKey("ArtistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Music.Models.Track", null)
+                        .WithMany("TrackArtists")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artist");
+                });
+
+            modelBuilder.Entity("Music.Models.UserTrack", b =>
+                {
+                    b.HasOne("Music.Models.Track", "Track")
+                        .WithMany("UserTracks")
+                        .HasForeignKey("TrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Track");
+                });
+
+            modelBuilder.Entity("Music.Models.Track", b =>
+                {
+                    b.Navigation("PlaylistTracks");
+
+                    b.Navigation("TrackArtists");
+
+                    b.Navigation("UserTracks");
                 });
 #pragma warning restore 612, 618
         }

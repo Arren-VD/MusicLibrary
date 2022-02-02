@@ -1,5 +1,6 @@
 ﻿using Music.Spotify.Models;
 using Music.Views;
+using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Music.Spotify.Domain.Contracts.Services
         ExternalUserDTO ReturnClientUser(string spotifyToken);
 
         string ReturnClientUserId(string spotifyToken);
+        List<ClientTrackDTO> GetCurrentUserTracksWithPlaylistAndArtist(string authToken);
     }
 }

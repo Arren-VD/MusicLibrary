@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Music.Models
+﻿namespace Music.Views
 {
-    public class Artist
+    public class ArtistDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

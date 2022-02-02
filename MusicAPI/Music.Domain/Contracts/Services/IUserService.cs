@@ -11,10 +11,6 @@ namespace Music.Domain.Contracts.Services
 {
     public interface IUserService
     {
-        //UserDTO LinkUserToSpotify(string spotifyToken, int userid);
-
-        //SpotifyUserDTO GetSpotifyUser(string spotifyToken);
-
         ValidationResult<UserDTO> CreateUser(UserCreationDTO user);
 
         UserDTO Login(LoginDTO user);

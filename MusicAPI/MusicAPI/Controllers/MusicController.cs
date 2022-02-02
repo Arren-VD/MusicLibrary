@@ -15,9 +15,11 @@ namespace MusicAPI.Controllers
     [ApiController]
     public class MusicController : ControllerBase
     {
-        IUserService _userService;
-        public MusicController(IUserService userService)
+        private readonly IUserService _userService;
+        private readonly IMusicService _musicService;
+        public MusicController(IUserService userService, IMusicService musicService)
         {
+            _musicService = musicService;
             _userService = userService;
         }
 
@@ -26,6 +28,12 @@ namespace MusicAPI.Controllers
         public ActionResult<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> spotifyTokens)
         {
             return Ok(_userService.LinkUserToExternalAPIs(userId,spotifyTokens));
+        }     
+        [HttpPost]
+        [Route("user/{userId}/import")]
+        public ActionResult<List<TrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(int userId, List<UserTokenDTO> spotifyTokens)
+        {
+            return Ok(_musicService.ImportClientMusicToDB(userId, spotifyTokens));
         }
     }
 }

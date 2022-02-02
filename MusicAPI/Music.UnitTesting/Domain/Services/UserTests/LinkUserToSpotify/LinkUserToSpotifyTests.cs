@@ -25,9 +25,9 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
             if (_mapper == null)
             {
                 var config = new MapperConfiguration(cfg => {
-                    cfg.AddMaps(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
+                    cfg.AddMaps(typeof(ClientMappingProfile).GetTypeInfo().Assembly);
                 });
-                var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly));
+                var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(ClientMappingProfile).GetTypeInfo().Assembly));
                 IMapper mapper = config.CreateMapper();
                 _mapper = mapper;
             }

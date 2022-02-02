@@ -36,12 +36,12 @@ namespace MusicAPI.Configuration.Helpers
             config.Map<EntityNotFoundException>().ToStatusCode(HttpStatusCode.NotFound);
 
             // 409 Conflict
-            config.Map<EntityAlreadyExistsException>().ToStatusCode(HttpStatusCode.NotFound);
+            config.Map<EntityAlreadyExistsException>().ToStatusCode(HttpStatusCode.BadRequest);
 
             //412 Precondition failed
 
             // 500 Internal server error
-            config.Map<Exception>().ToStatusCode(HttpStatusCode.NotFound);
+            config.Map<Exception>().ToStatusCode(HttpStatusCode.InternalServerError);
             //503 Service Unavailable
 
         }

@@ -14,6 +14,7 @@ namespace Music.DataAccess
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserTokensRepository, UserTokensRepository>();
+            services.AddTransient<IMusicRepository, MusicRepository>();
             return services;
         }
     }

@@ -25,6 +25,7 @@ namespace Music.Spotify
         private static IServiceCollection ConfigureServices (this IServiceCollection services)
         {
             services.RegisterClients();
+            services.RegisterHelpers();
             return services;
         }
         private static void Configure(this IServiceCollection services)

@@ -13,6 +13,7 @@ namespace Music.Domain
         {
             services.AddTransient<IExternalService, SpotifyService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IMusicService, MusicService>();
 
             return services;
         }
