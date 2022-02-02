@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Music.Domain.Contracts.Services;
+using Music.Spotify.Clients.Helpers;
 
 namespace Music.Spotify
 {
@@ -23,13 +25,13 @@ namespace Music.Spotify
         internal static IServiceCollection RegisterHelpers(this IServiceCollection services)
         {
             services.AddTransient<PlaylistHelper>();
+            services.AddTransient<HttpRequestHelper>();
 
             return services;
         }
         internal static IServiceCollection RegisterServices(this IServiceCollection services)
         {
-   
-
+            services.AddTransient<IExternalService, SpotifyService>();
             return services;
         }
     }

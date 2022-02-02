@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Music.Domain.Contracts.Services;
-using Music.Spotify.Views;
 using Music.Views;
 using System;
 using System.Collections.Generic;

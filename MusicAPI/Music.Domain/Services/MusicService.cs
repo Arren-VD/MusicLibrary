@@ -3,7 +3,6 @@ using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
 using Music.Domain.ErrorHandling.Validations;
 using Music.Models;
-using Music.Spotify.Domain.Contracts.Services;
 using Music.Views;
 using Music.Views.ClientViews;
 using System;
@@ -38,6 +37,7 @@ namespace Music.Domain.Services
             {
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
                 tracks = svc.GetCurrentUserTracksWithPlaylistAndArtist(userToken.Value);
+
                 tracks.ForEach(track =>
                 {
                     if (_musicRepository.GetTrackById(track.Id) == null)
@@ -79,9 +79,7 @@ namespace Music.Domain.Services
                     }
                 });
             }
-            var r = _musicRepository.GetCategorizedMusicList(userId);
-            var r2 = _mapper.Map<List<TrackDTO>>(r);
-            return r2;
+            return _mapper.Map<List<TrackDTO>>(_musicRepository.GetCategorizedMusicList(userId));
         }
     }
 }

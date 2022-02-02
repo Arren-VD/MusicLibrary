@@ -1,8 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Music.Domain.Contracts.Services;
 using Music.Domain.Services;
-using Music.Spotify.Domain.Contracts.Services;
-using Music.Spotify.Domain.Services;
 using Music.Domain.ErrorHandling.Validations;
 
 namespace Music.Domain
@@ -11,7 +9,6 @@ namespace Music.Domain
     {
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
-            services.AddTransient<IExternalService, SpotifyService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IMusicService, MusicService>();
 

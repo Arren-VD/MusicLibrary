@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Music.Domain.Contracts.Services;
 using Music.Spotify.Domain.Contracts;
 using Music.Spotify.Domain.Contracts.Clients;
 using Music.Spotify.Domain.Contracts.Services;
@@ -17,8 +18,10 @@ namespace Music.Spotify.Domain.Services
         private readonly IMapper _mapper;
         private readonly IClient _client;
         private readonly PlaylistHelper _playlistHelper;
-        public SpotifyService(IMapper mapper, IClient client, PlaylistHelper playlistHelper)
+        private readonly SpotifyOptions _options;
+        public SpotifyService(IMapper mapper, IClient client, PlaylistHelper playlistHelper, SpotifyOptions options)
         {
+            _options = options;
             _playlistHelper = playlistHelper;
             _mapper = mapper;
             _client = client;

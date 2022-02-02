@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Http;
 using Music.Spotify.Domain.Contracts.Clients;
+using Music.Spotify.Clients.Helpers;
 
 namespace Music.Spotify
 {
@@ -18,20 +19,24 @@ namespace Music.Spotify
         {
             var o = new SpotifyOptions();
             options(o);
+            services.AddOptions<SpotifyOptions>().Configure(options);
+            services.AddTransient<SpotifyOptions>().Configure(options);
             ConfigureServices(services);
-            Configure(services);
+            Configure(services, o);
             return services;
         }
         private static IServiceCollection ConfigureServices (this IServiceCollection services)
         {
+            services.RegisterServices();
             services.RegisterClients();
             services.RegisterHelpers();
             return services;
         }
-        private static void Configure(this IServiceCollection services)
+        private static IServiceCollection Configure(this IServiceCollection services, SpotifyOptions options)
         {
             services.AddAutoMapper(typeof(SpotifyMappingProfile).GetTypeInfo().Assembly);
-            services.AddHttpClient<ISpotifyClient>(c => c.BaseAddress = new System.Uri("https://api.spotify.com/v1"));
+            services.AddHttpClient<HttpRequestHelper>(c => c.BaseAddress = new System.Uri(options.URL));
+            return services;
         }
     }
 }

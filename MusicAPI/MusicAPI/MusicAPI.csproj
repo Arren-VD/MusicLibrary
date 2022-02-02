@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Music.DataAccess\Music.DataAccess.csproj" />
+    <ProjectReference Include="..\Music.SpotifyService\Music.Spotify.csproj" />
   </ItemGroup>
 
 

@@ -19,9 +19,9 @@ using Music.DataAccess;
 using Music.Domain;
 using AutoMapper;
 using Music.Domain.MappingProfiles;
-using Music.Spotify;
 using FluentValidation;
 using System.Text.Json.Serialization;
+using Music.Spotify;
 
 namespace MusicAPI
 {
@@ -44,6 +44,7 @@ namespace MusicAPI
             services.AddAutoMapper(typeof(ClientMappingProfile).GetTypeInfo().Assembly);
 
             services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
+                        
             services.RegisterDataAccess().RegisterServices().RegisterValidators();
 
 

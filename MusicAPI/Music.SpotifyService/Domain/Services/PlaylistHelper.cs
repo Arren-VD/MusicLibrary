@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Options;
 using Music.Spotify.Domain.Contracts;
 using Music.Spotify.Models.PlaylistModels;
 using Music.Views.ClientViews;
@@ -14,8 +15,10 @@ namespace Music.Spotify.Domain.Services
     {
         private readonly IMapper _mapper;
         private readonly IClient _client;
-        public PlaylistHelper(IMapper mapper, IClient client)
+        private readonly SpotifyOptions _options;
+        public PlaylistHelper(IMapper mapper, IClient client, IOptions<SpotifyOptions> options)
         {
+            _options = options.Value;
             _mapper = mapper;
             _client = client;
         }
@@ -48,19 +51,14 @@ namespace Music.Spotify.Domain.Services
         {
             var playlistInfoCollection = new List<PlaylistInfo>();
             var userPlaylists = _client.GetAllUserPlaylists(authToken).Result;
-            playlistInfoCollection.AddRange(userPlaylists.items.Where(x => x.name != "All" && x.owner.display_name  == userName));
-            var playListDifferent = true;
-            PlaylistCollection newUserPlaylists = null;
-            while (playListDifferent)
+
+            while (userPlaylists != null && !(playlistInfoCollection.Count >= _options.MaxPlaylists))
             {
-                if (newUserPlaylists == userPlaylists)
-                    playListDifferent = false;
-                else
-                {
-                    newUserPlaylists = _client.GetAllUserPlaylists(authToken, userPlaylists.next).Result;
-                    playlistInfoCollection.AddRange(newUserPlaylists.items.Where(x => x.name != "All"));
-                    userPlaylists = newUserPlaylists;
-                }
+                playlistInfoCollection.AddRange(userPlaylists.items.Where(x => x.name != "All"));
+                if (userPlaylists.next == null)
+                    userPlaylists = null;
+                if (userPlaylists != null)
+                    userPlaylists = _client.GetAllUserPlaylists(authToken, userPlaylists.next).Result;
             }
             return playlistInfoCollection;
         }
@@ -81,7 +79,7 @@ namespace Music.Spotify.Domain.Services
             var playlistcollection = new Playlist();
             var userPlaylist = _client.GetUserPlaylistById(authToken, playlistId).Result;
 
-            while (userPlaylist != null)
+            while (userPlaylist != null && !(playlistcollection.items.Count >= _options.MaxTracks))
             {
                 playlistcollection.items.AddRange(userPlaylist.items);
                 if (userPlaylist.Next == null )

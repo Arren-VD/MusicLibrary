@@ -44,6 +44,9 @@ namespace MusicAPI.Configuration.Helpers
             config.Map<Exception>().ToStatusCode(HttpStatusCode.InternalServerError);
             //503 Service Unavailable
 
+            //502 Bad Gateway
+            config.Map<HttpException>().ToStatusCode(HttpStatusCode.BadGateway);
+
         }
     }
 }

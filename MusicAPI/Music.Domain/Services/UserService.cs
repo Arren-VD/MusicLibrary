@@ -5,7 +5,6 @@ using Music.Domain.ErrorHandling;
 using Music.Domain.ErrorHandling.Validations;
 using Music.Domain.Exceptions;
 using Music.Models;
-using Music.Spotify.Domain.Contracts.Services;
 using Music.Views;
 using System;
 using System.Collections.Generic;

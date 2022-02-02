@@ -1,12 +1,11 @@
-﻿using Music.Spotify.Models;
-using Music.Views;
+﻿using Music.Views;
 using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Music.Spotify.Domain.Contracts.Services
+namespace Music.Domain.Contracts.Services
 {
     public  interface IExternalService
     {

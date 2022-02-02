@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Music.Spotify.Domain.Contracts.Services;
+using Music.Domain.Contracts.Services;
 
 namespace Music.Spotify.Domain.Contracts.Services
 {

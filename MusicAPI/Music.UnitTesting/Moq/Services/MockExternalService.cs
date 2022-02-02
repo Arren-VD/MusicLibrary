@@ -1,5 +1,5 @@
 ﻿using Moq;
-using Music.Spotify.Domain.Contracts.Services;
+using Music.Domain.Contracts.Services;
 using Music.Views;
 using System;
 using System.Collections.Generic;

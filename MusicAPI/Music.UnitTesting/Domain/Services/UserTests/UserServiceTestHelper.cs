@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Moq;
 using Music.Domain.Contracts.Repositories;
+using Music.Domain.Contracts.Services;
 using Music.Domain.ErrorHandling;
 using Music.Domain.ErrorHandling.Validations;
 using Music.Domain.Services;
-using Music.Spotify.Domain.Contracts.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,5 @@
-﻿using Music.Spotify.Domain.Services;
+﻿using Music.Domain.Contracts.Services;
+using Music.Spotify.Domain.Services;
 using Music.Spotify.Models;
 using System;
 using System.Collections.Generic;
