@@ -21,29 +21,18 @@ namespace Music.Domain.Services
         private readonly IMapper _mapper;
         private readonly IMusicRepository _musicRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
-        private readonly IUserTokensRepository _userTokensRepository;
         private readonly ImportMusicHelper _importMusicHelper;
-        private IGenericRepository<Artist> _artistRepository;
-        private IGenericRepository<TrackArtist> _trackArtistRepository;
         private IGenericRepository<Track> _trackRepository;
-        private IGenericRepository<PlaylistTrack> _playlistTrackRepository;
-        private IGenericRepository<Playlist> _playlistRepository;
         private IGenericRepository<UserTrack> _userTrackRepository;
-        public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, ImportMusicHelper importMusicHelper,
-            IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository, IGenericRepository<Track> trackRepository,
-            IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playlistRepository, IGenericRepository<UserTrack> userTrackRepository)
+        public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, ImportMusicHelper importMusicHelper,
+        IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository)
         {
             _userTrackRepository = userTrackRepository;
-            _artistRepository = artistRepository;
-            _trackArtistRepository = trackArtistRepository;
             _trackRepository = trackRepository;
-            _playlistTrackRepository = playlistTrackRepository;
-            _playlistRepository = playlistRepository;
             _importMusicHelper = importMusicHelper;
             _mapper = mapper;
             _musicRepository = musicRepository;
             _externalServices = externalServices;
-            _userTokensRepository = userTokensRepository;
         }
         public List<TrackDTO> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens)
         {

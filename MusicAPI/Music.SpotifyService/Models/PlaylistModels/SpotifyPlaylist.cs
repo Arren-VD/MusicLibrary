@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Music.Spotify.Models.PlaylistModels
 {
-    public class Playlist
+    public class SpotifyPlaylist
     {
-        public Playlist()
+        public SpotifyPlaylist()
         {
-            items = new List<TrackInfo>();
+            items = new List<SpotifyTrackInfo>();
         }
-        public List<TrackInfo> items { get; set; }
+        public List<SpotifyTrackInfo> items { get; set; }
         public string Next { get; set; }
         public string Name { get; set; }
         public string Id { get; set; }

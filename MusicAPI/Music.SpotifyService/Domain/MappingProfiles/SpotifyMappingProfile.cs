@@ -23,8 +23,8 @@ namespace Music.Spotify.Domain.MappingProfiles
             CreateMap<ClientTrack, ClientTrackDTO>()
                 .ForMember(d => d.ISRC_Id, opt => opt.MapFrom(src => src.external_ids.isrc));
 
-            CreateMap<ClientArtist, ClientArtistDTO>();
-            CreateMap<ClientArtistDTO, ClientArtist>();
+            CreateMap<SpotifyArtist, ClientArtistDTO>();
+            CreateMap<ClientArtistDTO, SpotifyArtist>();
         }
     }
 }

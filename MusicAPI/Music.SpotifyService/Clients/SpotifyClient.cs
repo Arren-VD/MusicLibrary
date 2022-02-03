@@ -38,9 +38,9 @@ namespace Music.Spotify.Clients
             return _httpHelper.Get<Playlist>(authToken, nextPageURL ?? $"/playlists/{playlistId}/tracks?limit={Math.Min(_options.MaxTracks ?? 50, 50)}").Result;
         }
 
-        public async Task<PlaylistCollection> GetAllUserPlaylists(string authToken, string nextPageURL = null)
+        public async Task<SpotifyPlaylistCollection> GetAllUserPlaylists(string authToken, string nextPageURL = null)
         {
-            return _httpHelper.Get<PlaylistCollection>(authToken, nextPageURL ?? $"/me/playlists?limit={Math.Min(_options.MaxPlaylists ?? 50, 50)}").Result;
+            return _httpHelper.Get<SpotifyPlaylistCollection>(authToken, nextPageURL ?? $"/me/playlists?limit={Math.Min(_options.MaxPlaylists ?? 50, 50)}").Result;
         }
         public string GetCurrentClientUserId(string authToken) => GetCurrentClientUser(authToken).Result.Id;
     }

@@ -22,13 +22,13 @@ namespace Music.Spotify.Domain.Services
             _mapper = mapper;
             _client = client;
         }
-        public List<Playlist> GetAllUserPlaylists(string authToken, string userName)
+        public List<SpotifyPlaylist> GetAllUserPlaylists(string authToken, string userName)
         {
             var playlistInfoCollection = GetUserPlaylistInfoCollection(authToken, userName);
             var playlistCollection = GetUserPlaylistWithTracks(authToken, playlistInfoCollection);
             return playlistCollection;
         }
-        public List<ClientTrackDTO> GetAllUserTracksFromPlaylists(List<Playlist> playlistCollection)
+        public List<ClientTrackDTO> GetAllUserTracksFromPlaylists(List<SpotifyPlaylist> playlistCollection)
         {
             var trackList = new List<ClientTrackDTO>();
             playlistCollection.ForEach(playlist => playlist.items.ForEach(item =>
@@ -47,9 +47,9 @@ namespace Music.Spotify.Domain.Services
             ));
             return trackList;
         }
-        private List<PlaylistInfo> GetUserPlaylistInfoCollection(string authToken, string userName)
+        private List<SpotifyPlaylistInfo> GetUserPlaylistInfoCollection(string authToken, string userName)
         {
-            var playlistInfoCollection = new List<PlaylistInfo>();
+            var playlistInfoCollection = new List<SpotifyPlaylistInfo>();
             var userPlaylists = _client.GetAllUserPlaylists(authToken).Result;
 
             while (userPlaylists != null && !(playlistInfoCollection.Count >= _options.MaxPlaylists))
@@ -63,9 +63,9 @@ namespace Music.Spotify.Domain.Services
             return playlistInfoCollection;
         }
 
-        private List<Playlist> GetUserPlaylistWithTracks(string authToken,List<PlaylistInfo> playlistInfos)
+        private List<SpotifyPlaylist> GetUserPlaylistWithTracks(string authToken,List<SpotifyPlaylistInfo> playlistInfos)
         {
-            var playlistCollection = new List<Playlist>();
+            var playlistCollection = new List<SpotifyPlaylist>();
             playlistInfos.ForEach(x => {
                 var playlist = GetUserPlaylistWithTracks(authToken, x.id);
                 playlist.Name = x.name;
@@ -74,9 +74,9 @@ namespace Music.Spotify.Domain.Services
             });
             return playlistCollection;
         }
-        private Playlist GetUserPlaylistWithTracks(string authToken, string playlistId)
+        private SpotifyPlaylist GetUserPlaylistWithTracks(string authToken, string playlistId)
         {
-            var playlistcollection = new Playlist();
+            var playlistcollection = new SpotifyPlaylist();
             var userPlaylist = _client.GetUserPlaylistById(authToken, playlistId).Result;
 
             while (userPlaylist != null && !(playlistcollection.items.Count >= _options.MaxTracks))

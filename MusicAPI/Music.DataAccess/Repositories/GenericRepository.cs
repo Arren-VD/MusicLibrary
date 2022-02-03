@@ -4,6 +4,7 @@ using Music.Domain.Contracts.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 namespace Music.DataAccess.Repositories
@@ -51,6 +52,10 @@ namespace Music.DataAccess.Repositories
         public void Save()
         {
             _context.SaveChanges();
+        }
+        public T FindByConditionAsync(Expression<Func<T, bool>> predicate)
+        {
+            return table.FirstOrDefault(predicate);
         }
 
     }

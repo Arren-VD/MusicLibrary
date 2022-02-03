@@ -1,6 +1,6 @@
 ﻿namespace Music.Spotify.Models.PlaylistModels
 {
-    public class ExternalIds
+    public class SpotifyExternalIds
     {
         public string isrc { get; set; }
     }
