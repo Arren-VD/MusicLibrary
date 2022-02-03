@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Music.Spotify.Models
 {
 
-    public class ClientUser
+    public class SpotifyUser
     {
-        public ClientUser() 
+        public SpotifyUser() 
         { 
 
         }
-        public ClientUser(string id, string country, string email, string displayName) 
+        public SpotifyUser(string id, string country, string email, string displayName) 
         {
             Id = id;
             Country = country;

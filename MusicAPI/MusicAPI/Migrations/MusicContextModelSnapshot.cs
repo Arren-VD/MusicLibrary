@@ -36,7 +36,7 @@ namespace MusicAPI.Migrations
                     b.ToTable("Artist");
                 });
 
-            modelBuilder.Entity("Music.Models.Playlist", b =>
+            modelBuilder.Entity("Music.Models.ClientPlayListTrack", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,6 +45,52 @@ namespace MusicAPI.Migrations
 
                     b.Property<string>("ClientId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientServiceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlaylistTrackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaylistTrackId");
+
+                    b.ToTable("ClientPlayListTracks");
+                });
+
+            modelBuilder.Entity("Music.Models.ClientUserTrack", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientServiceName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Preview_url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserTrackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserTrackId");
+
+                    b.ToTable("ClientUserTracks");
+                });
+
+            modelBuilder.Entity("Music.Models.Playlist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -89,16 +135,10 @@ namespace MusicAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ClientId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ISRC_Id")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Preview_url")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -184,6 +224,24 @@ namespace MusicAPI.Migrations
                     b.ToTable("UserTracks");
                 });
 
+            modelBuilder.Entity("Music.Models.ClientPlayListTrack", b =>
+                {
+                    b.HasOne("Music.Models.PlaylistTrack", null)
+                        .WithMany("ClientPlaylists")
+                        .HasForeignKey("PlaylistTrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Music.Models.ClientUserTrack", b =>
+                {
+                    b.HasOne("Music.Models.UserTrack", null)
+                        .WithMany("ClientTracks")
+                        .HasForeignKey("UserTrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Music.Models.PlaylistTrack", b =>
                 {
                     b.HasOne("Music.Models.Playlist", "Playlist")
@@ -229,6 +287,11 @@ namespace MusicAPI.Migrations
                     b.Navigation("Track");
                 });
 
+            modelBuilder.Entity("Music.Models.PlaylistTrack", b =>
+                {
+                    b.Navigation("ClientPlaylists");
+                });
+
             modelBuilder.Entity("Music.Models.Track", b =>
                 {
                     b.Navigation("PlaylistTracks");
@@ -236,6 +299,11 @@ namespace MusicAPI.Migrations
                     b.Navigation("TrackArtists");
 
                     b.Navigation("UserTracks");
+                });
+
+            modelBuilder.Entity("Music.Models.UserTrack", b =>
+                {
+                    b.Navigation("ClientTracks");
                 });
 #pragma warning restore 612, 618
         }

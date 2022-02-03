@@ -16,15 +16,15 @@ namespace Music.Spotify.Domain.MappingProfiles
     {
         public SpotifyMappingProfile()
         {
-            CreateMap<ExternalUserDTO, ClientUser>();
-            CreateMap<ClientUser, ExternalUserDTO>();
+            CreateMap<ExternalUserDTO, SpotifyUser>();
+            CreateMap<SpotifyUser, ExternalUserDTO>();
 
-            CreateMap<ClientTrackDTO, ClientTrack>();
-            CreateMap<ClientTrack, ClientTrackDTO>()
+            CreateMap<ExternalTrackDTO, SpotifyTrack>();
+            CreateMap<SpotifyTrack, ExternalTrackDTO>()
                 .ForMember(d => d.ISRC_Id, opt => opt.MapFrom(src => src.external_ids.isrc));
 
-            CreateMap<SpotifyArtist, ClientArtistDTO>();
-            CreateMap<ClientArtistDTO, SpotifyArtist>();
+            CreateMap<SpotifyArtist, ExternalArtistDTO>();
+            CreateMap<ExternalArtistDTO, SpotifyArtist>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Music.Views.ClientViews
 {
-    public class ClientPlaylistDTO
+    public class ExternalPlaylistDTO
     {
 
         public string Id { get; set; }

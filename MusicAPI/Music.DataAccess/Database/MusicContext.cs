@@ -21,7 +21,8 @@ namespace Music.DataAccess.Database
         public DbSet<Track> Tracks { get; set; }
         public DbSet<TrackArtist> TrackArtists { get; set; }
         public DbSet<UserTrack> UserTracks { get; set; }
-        
+        public DbSet<ClientUserTrack> ClientUserTracks { get; set; }
+        public DbSet<ClientPlayListTrack> ClientPlayListTracks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

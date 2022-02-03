@@ -13,6 +13,6 @@ namespace Music.Domain.Contracts.Services
         ExternalUserDTO ReturnClientUser(string spotifyToken);
 
         string ReturnClientUserId(string spotifyToken);
-        List<ClientTrackDTO> GetCurrentUserTracksWithPlaylistAndArtist(string authToken);
+        List<ExternalTrackDTO> GetCurrentUserTracksWithPlaylistAndArtist(string authToken);
     }
 }

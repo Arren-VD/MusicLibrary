@@ -24,9 +24,11 @@ namespace Music.Domain.Services
         private readonly ImportMusicHelper _importMusicHelper;
         private IGenericRepository<Track> _trackRepository;
         private IGenericRepository<UserTrack> _userTrackRepository;
+        private IGenericRepository<ClientUserTrack> _clientUserTrackRepository;
         public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, ImportMusicHelper importMusicHelper,
-        IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository)
+        IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository, IGenericRepository<ClientUserTrack> clientUserTrackRepository)
         {
+            _clientUserTrackRepository = clientUserTrackRepository;
             _userTrackRepository = userTrackRepository;
             _trackRepository = trackRepository;
             _importMusicHelper = importMusicHelper;
@@ -36,7 +38,7 @@ namespace Music.Domain.Services
         }
         public List<TrackDTO> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens)
         {
-            var tracks = new List<ClientTrackDTO>();
+            var tracks = new List<ExternalTrackDTO>();
             foreach (var userToken in userTokens)
             {
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
@@ -44,20 +46,42 @@ namespace Music.Domain.Services
 
                 tracks.ForEach(track =>
                 {
-                    if (_musicRepository.GetTrackById(track.Id) == null)
+                    var existingTrack = _trackRepository.FindByConditionAsync(x => x.ISRC_Id == track.ISRC_Id);
+                   
+
+                    Track addedTrack = null;
+                    if (existingTrack == null)
                     {
-                        var addedTrack = _trackRepository.Insert(_mapper.Map<Track>(track));
-
+                        addedTrack = _trackRepository.Insert(_mapper.Map<Track>(track));
                         _userTrackRepository.Insert(new UserTrack(addedTrack.Id, userId));
+                        _clientUserTrackRepository.Insert(new ClientUserTrack(addedTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
 
-                        _importMusicHelper.AddPlaylists(track, addedTrack, userId);
-                        _importMusicHelper.AddArtists(track, addedTrack);
-
-                        _musicRepository.SaveChanges();
                     }
+                    else
+                    {
+                        var existingUserTrack = _userTrackRepository.FindByConditionAsync(x => x.TrackId == existingTrack.Id && x.UserId == userId);
+                        if(existingUserTrack == null)
+                        {
+                            _userTrackRepository.Insert(new UserTrack(addedTrack.Id, userId));
+                            _clientUserTrackRepository.Insert(new ClientUserTrack(existingTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
+                        }                    
+                        else
+                        {
+                            var existingClientUserTrack = _clientUserTrackRepository.FindByConditionAsync(x => x.UserTrackId == existingUserTrack.Id && x.ClientServiceName == track.ClientServiceName);
+                            if (existingClientUserTrack == null)
+                            {
+                                _clientUserTrackRepository.Insert(new ClientUserTrack(existingTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
+                            }
+                        }
+                    }
+
+                    _importMusicHelper.AddPlaylists(track, addedTrack ?? existingTrack, userId);
+                    _importMusicHelper.AddArtists(track, addedTrack ?? existingTrack);
                 });
             }
-            return _mapper.Map<List<TrackDTO>>(_musicRepository.GetCategorizedMusicList(userId));
+            var a = _musicRepository.GetCategorizedMusicList(userId);
+            var r = _mapper.Map<List<TrackDTO>>(a);
+            return r;
         }
     }
 }

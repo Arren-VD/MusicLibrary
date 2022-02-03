@@ -28,21 +28,22 @@ namespace Music.Spotify.Domain.Services
             var playlistCollection = GetUserPlaylistWithTracks(authToken, playlistInfoCollection);
             return playlistCollection;
         }
-        public List<ClientTrackDTO> GetAllUserTracksFromPlaylists(List<SpotifyPlaylist> playlistCollection)
+        public List<ExternalTrackDTO> GetAllUserTracksFromPlaylists(List<SpotifyPlaylist> playlistCollection)
         {
-            var trackList = new List<ClientTrackDTO>();
+            var trackList = new List<ExternalTrackDTO>();
             playlistCollection.ForEach(playlist => playlist.items.ForEach(item =>
             {
                 //Check if track is already in list, if it is add playlist to that item.
                 var existingTrack = trackList.FirstOrDefault(x => x.ISRC_Id == item.track.external_ids.isrc);
                 if (existingTrack == null)
                 {
-                    var track = _mapper.Map<ClientTrackDTO>(item.track);
-                    track.Playlists.Add(new ClientPlaylistDTO() { Id = playlist.Id, Name = playlist.Name });
+                    var track = _mapper.Map<ExternalTrackDTO>(item.track);
+                    track.Playlists.Add(new ExternalPlaylistDTO() { Id = playlist.Id, Name = playlist.Name });
+                    track.ClientServiceName = _options.ServiceName;
                     trackList.Add(track);
                 }
                 else
-                    existingTrack.Playlists.Add(new ClientPlaylistDTO() { Id = playlist.Id, Name = playlist.Name });
+                    existingTrack.Playlists.Add(new ExternalPlaylistDTO() { Id = playlist.Id, Name = playlist.Name });
             }
             ));
             return trackList;

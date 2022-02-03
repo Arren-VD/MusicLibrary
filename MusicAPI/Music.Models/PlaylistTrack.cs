@@ -18,5 +18,7 @@ namespace Music.Models
         public int TrackId { get; set; }
         public int UserId { get; set; }
         public Playlist Playlist { get; set; }
+        public List<ClientPlayListTrack> ClientPlaylists { get; set; }
+
     }
 }

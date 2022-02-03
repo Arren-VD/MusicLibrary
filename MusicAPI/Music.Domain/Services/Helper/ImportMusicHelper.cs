@@ -17,10 +17,12 @@ namespace Music.Domain.Services.Helper
         private readonly IGenericRepository<TrackArtist> _trackArtistRepository;
         private readonly IGenericRepository<PlaylistTrack> _playlistTrackRepository;
         private readonly IGenericRepository<Playlist> _playListRepository;
+        private readonly IGenericRepository<ClientPlayListTrack> _clientPlaylistTrackRepository;
 
         public ImportMusicHelper(IMapper mapper, IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository,
-            IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playListRepository)
+            IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playListRepository, IGenericRepository<ClientPlayListTrack> clientPlaylistTrackRepository)
         {
+            _clientPlaylistTrackRepository = clientPlaylistTrackRepository;
             _mapper = mapper;
             _artistRepository = artistRepository;
             _trackArtistRepository = trackArtistRepository;
@@ -28,7 +30,7 @@ namespace Music.Domain.Services.Helper
             _playListRepository = playListRepository;
         }
 
-        public void AddArtists(ClientTrackDTO track, Track addedTrack)
+        public void AddArtists(ExternalTrackDTO track, Track addedTrack)
         {
             track.Artists.ForEach(artist =>
             {
@@ -44,21 +46,35 @@ namespace Music.Domain.Services.Helper
                 }
             });
         }
-        public void AddPlaylists(ClientTrackDTO track, Track addedTrack, int userId)
+        public void AddPlaylists(ExternalTrackDTO track, Track addedTrack, int userId)
         {
             track.Playlists.ForEach(playlist =>
             {
-                var existingPlaylist = _playListRepository.FindByConditionAsync(x => x.ClientId == playlist.Id);
+                var existingPlaylist = _playListRepository.FindByConditionAsync(x => x.Name == playlist.Name && x.UserId == userId);
                 if (existingPlaylist == null)
                 {
                     var result = _mapper.Map<Playlist>(playlist);
                     result.UserId = userId;
                     var addedPlaylist = _playListRepository.Insert(result);
-                    _playlistTrackRepository.Insert(new PlaylistTrack(addedPlaylist.Id, addedTrack.Id, userId));
+                    var addedPlaylistTrack = _playlistTrackRepository.Insert(new PlaylistTrack(addedPlaylist.Id, addedTrack.Id, userId));
+                    _clientPlaylistTrackRepository.Insert(new ClientPlayListTrack(playlist.Id,track.ClientServiceName, addedPlaylistTrack.Id));
                 }
                 else
                 {
-                    _playlistTrackRepository.Insert(new PlaylistTrack(existingPlaylist.Id, addedTrack.Id, userId));
+                    int playlistId;
+                    var existingPlaylistTrack = _playlistTrackRepository.FindByConditionAsync(x => x.TrackId == addedTrack.Id && x.PlaylistId == existingPlaylist.Id && x.UserId == userId);
+                    if (existingPlaylistTrack == null)
+                    {
+                        playlistId = _playlistTrackRepository.Insert(new PlaylistTrack(existingPlaylist.Id, addedTrack.Id, userId)).PlaylistId;
+                    }
+                    else
+                    {
+                        playlistId = existingPlaylistTrack.PlaylistId;
+                    }
+                    if (_clientPlaylistTrackRepository.FindByConditionAsync(x => x.PlaylistTrackId == existingPlaylist.Id) == null)
+                    {
+                        _clientPlaylistTrackRepository.Insert(new ClientPlayListTrack(playlist.Id, track.ClientServiceName, playlistId));
+                    }
                 }
             });
         }

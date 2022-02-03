@@ -6,18 +6,20 @@ using System.Threading.Tasks;
 
 namespace Music.Views.ClientViews
 {
-    public class ClientTrackDTO
+    public class ExternalTrackDTO
     {
-        public ClientTrackDTO()
+        public ExternalTrackDTO()
         {
-            Artists = new List<ClientArtistDTO>();
-            Playlists = new List<ClientPlaylistDTO>();
+            Artists = new List<ExternalArtistDTO>();
+            Playlists = new List<ExternalPlaylistDTO>();
         }
-        public List<ClientArtistDTO> Artists { get; set; }
+
+        public List<ExternalArtistDTO> Artists { get; set; }
         public string ISRC_Id { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public string Preview_url { get; set; }
-        public List<ClientPlaylistDTO> Playlists { get; set; }
+        public string ClientServiceName { get; set; }
+        public List<ExternalPlaylistDTO> Playlists { get; set; }
     }
 }

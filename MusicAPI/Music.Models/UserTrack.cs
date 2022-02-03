@@ -18,6 +18,7 @@ namespace Music.Models
         public int TrackId { get; set; }
         public int UserId { get; set; }
         public Track Track { get; set; }
+        public List<ClientUserTrack> ClientTracks { get; set; }
 
     }
 }

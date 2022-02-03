@@ -3,7 +3,7 @@
     public class PlaylistDTO
     {
         public int Id { get; set; }
-        public string ClientId { get; set; }
+        public ClientPlaylistDTO ClientPlayList{get;set;}
         public string Name { get; set; }
     }
 }

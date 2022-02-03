@@ -22,6 +22,8 @@ namespace Music.DataAccess
             services.AddTransient<IGenericRepository<UserTrack>, GenericRepository<UserTrack>>();
             services.AddTransient<IGenericRepository<Playlist>, GenericRepository<Playlist>>();
             services.AddTransient<IGenericRepository<PlaylistTrack>, GenericRepository<PlaylistTrack>>();
+            services.AddTransient<IGenericRepository<ClientPlayListTrack>, GenericRepository<ClientPlayListTrack>>();
+            services.AddTransient<IGenericRepository<ClientUserTrack>, GenericRepository<ClientUserTrack>>();
             return services;
         }
     }

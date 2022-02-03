@@ -28,14 +28,14 @@ namespace Music.Spotify.Clients
             _options = options.Value;
         }
         //TODO : Refactor this to be cleaner/ more reusable
-        public async Task<ClientUser> GetCurrentClientUser(string authToken)
+        public async Task<SpotifyUser> GetCurrentClientUser(string authToken)
         {
-            return _httpHelper.Get<ClientUser>(authToken, "/me/").Result;
+            return await _httpHelper.Get<SpotifyUser>(authToken, "/me/");
         }
 
-        public async Task<Playlist> GetUserPlaylistById(string authToken, string playlistId, string nextPageURL = null)
+        public async Task<SpotifyPlaylist> GetUserPlaylistById(string authToken, string playlistId, string nextPageURL = null)
         {
-            return _httpHelper.Get<Playlist>(authToken, nextPageURL ?? $"/playlists/{playlistId}/tracks?limit={Math.Min(_options.MaxTracks ?? 50, 50)}").Result;
+            return _httpHelper.Get<SpotifyPlaylist>(authToken, nextPageURL ?? $"/playlists/{playlistId}/tracks?limit={Math.Min(_options.MaxTracks ?? 50, 50)}").Result;
         }
 
         public async Task<SpotifyPlaylistCollection> GetAllUserPlaylists(string authToken, string nextPageURL = null)

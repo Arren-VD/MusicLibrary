@@ -26,7 +26,6 @@ namespace MusicAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -42,8 +41,6 @@ namespace MusicAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Preview_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ISRC_Id = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -152,6 +149,59 @@ namespace MusicAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ClientPlayListTracks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClientServiceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlaylistTrackId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientPlayListTracks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClientPlayListTracks_PlaylistTrack_PlaylistTrackId",
+                        column: x => x.PlaylistTrackId,
+                        principalTable: "PlaylistTrack",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClientUserTracks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserTrackId = table.Column<int>(type: "int", nullable: false),
+                    ClientServiceName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClientId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Preview_url = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientUserTracks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClientUserTracks_UserTracks_UserTrackId",
+                        column: x => x.UserTrackId,
+                        principalTable: "UserTracks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientPlayListTracks_PlaylistTrackId",
+                table: "ClientPlayListTracks",
+                column: "PlaylistTrackId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientUserTracks_UserTrackId",
+                table: "ClientUserTracks",
+                column: "UserTrackId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_PlaylistTrack_PlaylistId",
                 table: "PlaylistTrack",
@@ -181,7 +231,10 @@ namespace MusicAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PlaylistTrack");
+                name: "ClientPlayListTracks");
+
+            migrationBuilder.DropTable(
+                name: "ClientUserTracks");
 
             migrationBuilder.DropTable(
                 name: "TrackArtists");
@@ -193,13 +246,16 @@ namespace MusicAPI.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "PlaylistTrack");
+
+            migrationBuilder.DropTable(
                 name: "UserTracks");
 
             migrationBuilder.DropTable(
-                name: "Playlist");
+                name: "Artist");
 
             migrationBuilder.DropTable(
-                name: "Artist");
+                name: "Playlist");
 
             migrationBuilder.DropTable(
                 name: "Tracks");
