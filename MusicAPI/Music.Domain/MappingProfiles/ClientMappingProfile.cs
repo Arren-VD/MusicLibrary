@@ -14,6 +14,10 @@ namespace Music.Domain.MappingProfiles
     {
         public ClientMappingProfile()
         {
+            var config = new MapperConfiguration(cfg => {
+                CreateMap<Playlist, PlaylistDTO>();
+            });
+            var mapper = config.CreateMapper();
             CreateMap<Playlist, Views.ClientViews.ExternalPlaylistDTO>();
             CreateMap<Views.ClientViews.ExternalPlaylistDTO, Playlist>()
              .ForMember(d => d.Id, opt => opt.Ignore());
@@ -33,10 +37,21 @@ namespace Music.Domain.MappingProfiles
             .ForMember(d => d.Playlists, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Playlist)))
             .ForMember(d => d.Artists, opt => opt.MapFrom(src => src.TrackArtists.Select(x => x.Artist)));
 
-            CreateMap<Playlist, PlaylistDTO>()
-                .ForMember(d => d.ClientPlayList, opt  => opt.MapFrom(src => src.))
+            //CreateMap<Playlist, PlaylistDTO>();
+            //CreateMap<PlaylistDTO, Playlist>();
+
+            CreateMap<PlaylistTrack, PlaylistDTO>()
+                 .ForMember(d => d.ClientPlayList, opt => opt.MapFrom(src => src.ClientPlaylists))
+            .ForMember(d => d.Name, opt => opt.MapFrom(src => src.Playlist.Name))
+             .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Playlist.Id));
                 ;
-            CreateMap<PlaylistDTO, Playlist>();
+            CreateMap<PlaylistDTO, PlaylistTrack>();
+
+            CreateMap<Playlist, PlaylistDTO>()
+                            .ForMember(d => d.ClientPlayList, opt => opt.Ignore());
+
+            CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();
+
 
             CreateMap<ArtistDTO, Artist>();
             CreateMap<Artist, ArtistDTO>();
@@ -52,9 +67,14 @@ namespace Music.Domain.MappingProfiles
 
             CreateMap<TrackDTO, Track>();
             CreateMap<Track, TrackDTO>()
-            .ForMember(d => d.Playlists, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Playlist)))
-            .ForMember(d => d.Artists, opt => opt.MapFrom(src => src.TrackArtists.Select(x => x.Artist)))
-            .ForMember(d => d.ClientTrackInfo, opt => opt.MapFrom(src => src.UserTracks.Select(x => x.ClientTracks)));
+              // .ForMember(d => d.Playlists, opt => opt.MapFrom(src => mapper.Map<List<PlaylistDTO>>(src.PlaylistTracks.Select(x => x.Playlist).ToList())))
+              // .ForMember(d => d.Playlists, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Playlist)))
+              .ForMember(d => d.Playlists, opt => opt.MapFrom(src => src.PlaylistTracks))
+            .ForMember(d => d.Artists, opt => opt.Ignore())
+            //  .ForMember(d => d.Artists, opt => opt.MapFrom(src => src.TrackArtists.Select(x => x.Artist)))
+            //.ForMember(d=>d.Playlists, opt => opt.MapFrom(src => Map<>))
+            //.ForMember(d => d.ClientTrackInfo, opt => opt.MapFrom(src => src.UserTracks.Select(x => x.ClientTracks)))
+            ;
         }
     }
 }

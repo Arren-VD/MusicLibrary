@@ -11,7 +11,7 @@ namespace Music.Views
         public int Id { get; set; }
         public string Name { get; set; }
         public string ISRC_Id { get; set; }
-        public List<ClientTrackDTO> ClientTrackInfo { get; set; }
+    //    public List<ClientTrackDTO> ClientTrackInfo { get; set; }
         public List<PlaylistDTO> Playlists { get; set; }
         public List<ArtistDTO> Artists { get; set; }
     }
