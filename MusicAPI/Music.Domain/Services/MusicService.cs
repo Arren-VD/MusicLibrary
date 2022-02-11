@@ -22,15 +22,21 @@ namespace Music.Domain.Services
         private readonly IMusicRepository _musicRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
         private readonly ImportMusicHelper _importMusicHelper;
-        private IGenericRepository<Track> _trackRepository;
-        private IGenericRepository<UserTrack> _userTrackRepository;
-        private IGenericRepository<ClientUserTrack> _clientUserTrackRepository;
-        public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, ImportMusicHelper importMusicHelper,
-        IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository, IGenericRepository<ClientUserTrack> clientUserTrackRepository)
+        private readonly IGenericRepository<Track> _trackRepository;
+        private readonly IGenericRepository<UserTrack> _userTrackRepository;
+        private readonly IGenericRepository<ClientUserTrack> _clientUserTrackRepository;
+        private readonly IUserTrackService _userTrackService;
+        private readonly ITrackService _trackService;
+        private readonly IClientUserTrackService _clientUserTrackService;
+        public MusicService(IMapper mapper, IMusicRepository musicRepository, IEnumerable<IExternalService> externalServices, ImportMusicHelper importMusicHelper, IClientUserTrackService clientUserTrackService,
+        IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository, IGenericRepository<ClientUserTrack> clientUserTrackRepository, ITrackService trackService, IUserTrackService userTrackService)
         {
+            _clientUserTrackService = clientUserTrackService;
+            _userTrackService = userTrackService;
+            _trackService = trackService;
             _clientUserTrackRepository = clientUserTrackRepository;
             _userTrackRepository = userTrackRepository;
-            _trackRepository = trackRepository;
+             _trackRepository = trackRepository;
             _importMusicHelper = importMusicHelper;
             _mapper = mapper;
             _musicRepository = musicRepository;
@@ -44,39 +50,14 @@ namespace Music.Domain.Services
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
                 tracks = svc.GetCurrentUserTracksWithPlaylistAndArtist(userToken.Value);
 
-                tracks.ForEach(track =>
+                tracks.ForEach(externalTrack =>
                 {
-                    var existingTrack = _trackRepository.FindByConditionAsync(x => x.ISRC_Id == track.ISRC_Id);
-                   
+                    var track = _trackRepository.Insert(_mapper.Map<Track>(externalTrack)) ?? _trackRepository.FindByConditionAsync(x => x.ISRC_Id == externalTrack.ISRC_Id);
+                    var userTrack = _userTrackRepository.Insert(new UserTrack(track.Id, userId)) ?? _userTrackRepository.FindByConditionAsync(x => x.UserId == userId && x.TrackId == track.Id);
+                    var clientUserTrack = _clientUserTrackRepository.Insert(new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url)) ?? _clientUserTrackRepository.FindByConditionAsync(x =>x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id);
 
-                    Track addedTrack = null;
-                    if (existingTrack == null)
-                    {
-                        addedTrack = _trackRepository.Insert(_mapper.Map<Track>(track));
-                        _userTrackRepository.Insert(new UserTrack(addedTrack.Id, userId));
-                        _clientUserTrackRepository.Insert(new ClientUserTrack(addedTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
-
-                    }
-                    else
-                    {
-                        var existingUserTrack = _userTrackRepository.FindByConditionAsync(x => x.TrackId == existingTrack.Id && x.UserId == userId);
-                        if(existingUserTrack == null)
-                        {
-                            _userTrackRepository.Insert(new UserTrack(addedTrack.Id, userId));
-                            _clientUserTrackRepository.Insert(new ClientUserTrack(existingTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
-                        }                    
-                        else
-                        {
-                            var existingClientUserTrack = _clientUserTrackRepository.FindByConditionAsync(x => x.UserTrackId == existingUserTrack.Id && x.ClientServiceName == track.ClientServiceName);
-                            if (existingClientUserTrack == null)
-                            {
-                                _clientUserTrackRepository.Insert(new ClientUserTrack(existingTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
-                            }
-                        }
-                    }
-
-                    _importMusicHelper.AddPlaylists(track, addedTrack ?? existingTrack, userId);
-                    _importMusicHelper.AddArtists(track, addedTrack ?? existingTrack);
+                    _importMusicHelper.AddPlaylists(externalTrack, addedTrack ?? existingTrack, userId);
+                    _importMusicHelper.AddArtists(externalTrack, addedTrack ?? existingTrack);
                 });
             }
             var a = _musicRepository.GetCategorizedMusicList(userId);

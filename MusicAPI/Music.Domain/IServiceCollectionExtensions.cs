@@ -12,7 +12,9 @@ namespace Music.Domain
         {
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IMusicService, MusicService>();
-
+            services.AddTransient<IUserTrackService, UserTrackService>();
+            services.AddTransient<ITrackService, TrackService>();
+            services.AddTransient<IClientUserTrackService, ClientUserTrackService>();
             return services;
         }
         public static IServiceCollection RegisterValidators(this IServiceCollection services)

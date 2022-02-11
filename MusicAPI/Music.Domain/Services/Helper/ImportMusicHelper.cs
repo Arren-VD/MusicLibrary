@@ -18,10 +18,16 @@ namespace Music.Domain.Services.Helper
         private readonly IGenericRepository<PlaylistTrack> _playlistTrackRepository;
         private readonly IGenericRepository<Playlist> _playListRepository;
         private readonly IGenericRepository<ClientPlayListTrack> _clientPlaylistTrackRepository;
+        private readonly IGenericRepository<Track> _trackRepository;
+        private readonly IGenericRepository<UserTrack> _userTrackRepository;
+        private readonly IGenericRepository<ClientUserTrack> _clientUserTrackRepository;
 
-        public ImportMusicHelper(IMapper mapper, IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository,
-            IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playListRepository, IGenericRepository<ClientPlayListTrack> clientPlaylistTrackRepository)
+        public ImportMusicHelper(IMapper mapper, IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository, IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository,
+        IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playListRepository, IGenericRepository<ClientPlayListTrack> clientPlaylistTrackRepository, IGenericRepository<ClientUserTrack> clientUserTrackRepository)
         {
+            _userTrackRepository = userTrackRepository;
+            _clientUserTrackRepository = clientUserTrackRepository;
+            _trackRepository = trackRepository;
             _clientPlaylistTrackRepository = clientPlaylistTrackRepository;
             _mapper = mapper;
             _artistRepository = artistRepository;
@@ -30,6 +36,23 @@ namespace Music.Domain.Services.Helper
             _playListRepository = playListRepository;
         }
 
+        public void AddUserTrack(ExternalTrackDTO track, Track existingTrack, Track addedTrack, int userId)
+        {
+            var existingUserTrack = _userTrackRepository.FindByConditionAsync(x => x.TrackId == existingTrack.Id && x.UserId == userId);
+            if (existingUserTrack == null)
+            {
+                _userTrackRepository.Insert(new UserTrack(addedTrack.Id, userId));
+                _clientUserTrackRepository.Insert(new ClientUserTrack(existingTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
+            }
+            else
+            {
+                var existingClientUserTrack = _clientUserTrackRepository.FindByConditionAsync(x => x.UserTrackId == existingUserTrack.Id && x.ClientServiceName == track.ClientServiceName);
+                if (existingClientUserTrack == null)
+                {
+                    _clientUserTrackRepository.Insert(new ClientUserTrack(existingTrack.Id, track.ClientServiceName, track.Id, track.Preview_url));
+                }
+            }
+        }
         public void AddArtists(ExternalTrackDTO track, Track addedTrack)
         {
             track.Artists.ForEach(artist =>
