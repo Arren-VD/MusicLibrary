@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Music.DataAccess.Database;
 using Music.Domain.Contracts.Repositories;
 using System;
@@ -57,6 +58,5 @@ namespace Music.DataAccess.Repositories
         {
             return table.FirstOrDefault(predicate);
         }
-
     }
 }

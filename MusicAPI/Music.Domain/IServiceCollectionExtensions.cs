@@ -2,7 +2,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Music.Domain.Contracts.Services;
 using Music.Domain.Services;
 using Music.Domain.ErrorHandling.Validations;
-using Music.Domain.Services.Helper;
 
 namespace Music.Domain
 {
@@ -12,9 +11,9 @@ namespace Music.Domain
         {
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IMusicService, MusicService>();
-            services.AddTransient<IUserTrackService, UserTrackService>();
             services.AddTransient<ITrackService, TrackService>();
-            services.AddTransient<IClientUserTrackService, ClientUserTrackService>();
+            services.AddTransient<IArtistService, ArtistService>();
+            services.AddTransient<IPlaylistService, PlaylistService>();
             return services;
         }
         public static IServiceCollection RegisterValidators(this IServiceCollection services)
@@ -25,7 +24,6 @@ namespace Music.Domain
         
         public static IServiceCollection RegisterHelpers(this IServiceCollection services)
         {
-            services.AddTransient<ImportMusicHelper>();
             return services;
         }
     }

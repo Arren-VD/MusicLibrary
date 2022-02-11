@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Music.DataAccess.Database;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Exceptions;
@@ -28,6 +29,10 @@ namespace Music.DataAccess.Repositories
                 .Select(t => t.Track).ToList();
             
             return a1;
+        }
+        public IDbContextTransaction Transaction()
+        {
+            return  _context.Database.BeginTransaction();
         }
         public void SaveChanges()
         {

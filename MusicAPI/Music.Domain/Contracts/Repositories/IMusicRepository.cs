@@ -1,4 +1,5 @@
-﻿using Music.Models;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Music.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Music.Domain.Contracts.Repositories
     {
         public List<Track> GetCategorizedMusicList(int userId);
         public void SaveChanges();
+        IDbContextTransaction Transaction();
     }
 }

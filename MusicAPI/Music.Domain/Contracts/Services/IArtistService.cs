@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Music.Domain.Contracts.Services
 {
-    public interface ITrackService
+    public interface IArtistService
     {
-        Track AddTrack(ExternalTrackDTO externalTrack, int userId);
+        Artist AddArtist(ExternalArtistDTO externalArtist, int trackId);
     }
 }

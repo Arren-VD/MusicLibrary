@@ -4,9 +4,9 @@ using Music.Views;
 
 namespace Music.Domain.MappingProfiles
 {
-    public class UserMappingProfile : Profile
+    public class UserProfile : Profile
     {
-        public UserMappingProfile()
+        public UserProfile()
         {
             CreateMap<UserDTO, User>();
             CreateMap<User, UserDTO>();
@@ -14,6 +14,8 @@ namespace Music.Domain.MappingProfiles
             CreateMap<UserCreationDTO, User>();
             CreateMap<User, UserCreationDTO>();
 
+            CreateMap<UserClient, UserClientDTO>();
+            CreateMap<UserClientDTO, UserClient>();
         }
     }
 }

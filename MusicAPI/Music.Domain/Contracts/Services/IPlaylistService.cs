@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Music.Domain.Contracts.Repositories;
-using Music.Models;
+﻿using Music.Models;
 using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;
@@ -8,11 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Music.Domain.Services
+namespace Music.Domain.Contracts.Services
 {
     public interface IPlaylistService
     {
-        public Playlist AddPlaylist(Playlist playlist);
-        Playlist GetPlaylistByName(string playlistName);
+        Playlist AddPlaylist(ExternalPlaylistDTO externalPlaylist, int userId, int trackId, string clientServiceName);
     }
 }

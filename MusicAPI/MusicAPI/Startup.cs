@@ -41,7 +41,7 @@ namespace MusicAPI
             options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MusicAPI")));
 
             services.ConfigureSwagger();
-            services.AddAutoMapper(typeof(ClientMappingProfile).GetTypeInfo().Assembly);
+            services.AddAutoMapper(typeof(PlaylistProfile).GetTypeInfo().Assembly);
 
             services.AddSpotify(options => Configuration.GetSection(nameof(SpotifyOptions)).Bind(options));
                         
