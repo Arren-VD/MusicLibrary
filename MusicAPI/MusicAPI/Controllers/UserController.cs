@@ -21,18 +21,24 @@ namespace MusicAPI.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public ActionResult<string> CreateUser([FromBody] UserCreationDTO user)
+        public ActionResult<UserDTO> CreateUser([FromBody] UserCreationDTO user)
         {
             var result = _userService.CreateUser(user);
             if (result.IsErrored())
                 return BadRequest(result.Errors);
-            return Ok(result.Value);
+            return CreatedAtAction(nameof(GetUser), nameof(UserController), new { userId = result.Value.Id }, result.Value);
         }
         [HttpPost]
         [Route("login")]
-        public ActionResult<string> Login(LoginDTO loginInfo)
+        public ActionResult<UserDTO> Login(LoginDTO loginInfo)
         {
             return Ok(_userService.Login(loginInfo));
+        }
+        [HttpGet]
+        [Route("{userId}")]
+        public ActionResult<UserDTO> GetUser([FromRoute] int userId)
+        {
+            return Ok(_userService.GetUserById(userId));
         }
     }
 }

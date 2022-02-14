@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.Domain.Services
@@ -34,16 +35,18 @@ namespace Music.Domain.Services
             _artistService = artistService;
         }
 
-        public List<TrackDTO> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens)
+        public async Task<List<TrackDTO>> ImportClientMusicToDB(CancellationToken cancellationToken,int userId, List<UserTokenDTO> userTokens)
         {
             var tracks = new List<ExternalTrackDTO>();
             foreach (var userToken in userTokens)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                tracks = svc.GetCurrentUserTracksWithPlaylistAndArtist(userToken.Value);
+                tracks = await svc.GetCurrentUserTracksWithPlaylistAndArtist(cancellationToken,userToken.Value);
 
                 tracks.ForEach(externalTrack =>
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     using (var transaction = _musicRepository.Transaction())
                     {
                         var track = _trackService.AddTrack(externalTrack, userId);
@@ -51,10 +54,12 @@ namespace Music.Domain.Services
                         Artist artist = null;
                         externalTrack.Playlists.ForEach(externalPlaylist =>
                         {
+                            cancellationToken.ThrowIfCancellationRequested();
                             playlist = _playlistService.AddPlaylist(externalPlaylist, userId, track.Id, externalTrack.ClientServiceName);
                         });
                         externalTrack.Artists.ForEach(externalArtist =>
                         {
+                            cancellationToken.ThrowIfCancellationRequested();
                             artist = _artistService.AddArtist(externalArtist, track.Id);                     
                         });
                         if (playlist == null || track == null || artist == null)

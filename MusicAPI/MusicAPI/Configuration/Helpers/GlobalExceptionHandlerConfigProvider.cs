@@ -27,7 +27,7 @@ namespace MusicAPI.Configuration.Helpers
         {
             //400 Bad Request
             config.Map<ArgumentNullException>().ToStatusCode(HttpStatusCode.BadRequest);
-
+            config.Map<OperationCanceledException>().ToStatusCode(HttpStatusCode.BadRequest);
             //401 Unauthorized
 
             //403 Forbidden

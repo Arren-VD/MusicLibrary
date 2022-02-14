@@ -26,7 +26,7 @@ namespace Music.Spotify.Clients.Helpers
                 var result = await _client.SendAsync(requestMessage);
 
                 if (result.IsSuccessStatusCode)
-                    return result.Content.ReadFromJsonAsync<T>().Result;
+                    return await result.Content.ReadFromJsonAsync<T>();
                 throw new HttpException(result.StatusCode, result.Content.ReadFromJsonAsync<ClientError>().Result.Error.Message);
             }
         }

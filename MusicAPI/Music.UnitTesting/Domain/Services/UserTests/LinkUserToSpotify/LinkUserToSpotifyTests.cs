@@ -14,6 +14,8 @@ using Music.Views;
 using System.Collections.Generic;
 using Music.UnitTesting.Moq.Services;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
 {
@@ -34,21 +36,21 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
         }
         [Theory]
         [MemberData(nameof(LinkUserToSpotifyTestData.LinkUserToExternalAPISpotifyTest), MemberType = typeof(LinkUserToSpotifyTestData))]
-        public void LinkUserToSpotifyWorkingData(int userId , List<UserTokenDTO> tokens,string spotifyId, List<UserClient> userClients, UserClient outputUserClient)
+        public async void LinkUserToSpotifyWorkingData(CancellationToken cancellationToken,int userId , List<UserTokenDTO> tokens,Task<string> spotifyId, List<UserClient> userClients, UserClient outputUserClient)
         {
             // Arrange
             var svcs = new List<MockExternalService>();
-            svcs.Add(new MockExternalService().GetName("Spotify").ReturnClientUserId(tokens.FirstOrDefault().Value,spotifyId));
+            svcs.Add(await new MockExternalService().GetName("Spotify").ReturnClientUserId(cancellationToken,tokens.FirstOrDefault().Value,spotifyId));
             var mockUserTokenRepository = new MockUserTokenRepository().AddTokenById(userClients.FirstOrDefault(), outputUserClient);
 
             var userService = UserServiceTestHelper.CreateUserService(_mapper,null, svcs.ToList(), mockUserTokenRepository,null);
        
             // Act
-            var result = userService.LinkUserToExternalAPIs(userId, tokens);
+            var result = await userService.LinkUserToExternalAPIs(cancellationToken,userId, tokens);
 
             // Assert
             result.First().Should().NotBeNull();
-            result.First().ClientId.Should().Be(spotifyId);
+            result.First().ClientId.Should().Be(spotifyId.Result);
             result.First().ClientName.Should().Be(tokens.First().Name);
             result.First().UserId.Should().Be(userClients.First().UserId);
         }

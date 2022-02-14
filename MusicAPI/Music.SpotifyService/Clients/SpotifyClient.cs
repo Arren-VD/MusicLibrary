@@ -15,6 +15,7 @@ using System.Web.Http;
 using Music.Spotify.Clients.ClientErrors;
 using Music.Domain.Exceptions;
 using Music.Spotify.Clients.Helpers;
+using System.Threading;
 
 namespace Music.Spotify.Clients
 {
@@ -28,20 +29,24 @@ namespace Music.Spotify.Clients
             _options = options.Value;
         }
         //TODO : Refactor this to be cleaner/ more reusable
-        public async Task<SpotifyUser> GetCurrentClientUser(string authToken)
+        public async Task<SpotifyUser> GetCurrentClientUser(CancellationToken cancellationToken,string authToken)
         {
             return await _httpHelper.Get<SpotifyUser>(authToken, "/me/");
         }
 
-        public async Task<SpotifyPlaylist> GetUserPlaylistById(string authToken, string playlistId, string nextPageURL = null)
+        public async Task<SpotifyPlaylist> GetUserPlaylistById(CancellationToken cancellationToken,string authToken, string playlistId, string nextPageURL = null)
         {
-            return _httpHelper.Get<SpotifyPlaylist>(authToken, nextPageURL ?? $"/playlists/{playlistId}/tracks?limit={Math.Min(_options.MaxTracks ?? 50, 50)}").Result;
+            return await _httpHelper.Get<SpotifyPlaylist>(authToken, nextPageURL ?? $"/playlists/{playlistId}/tracks?limit={Math.Min(_options.MaxTracks ?? 50, 50)}");
         }
 
-        public async Task<SpotifyPlaylistCollection> GetAllUserPlaylists(string authToken, string nextPageURL = null)
+        public async Task<SpotifyPlaylistCollection> GetAllUserPlaylists(CancellationToken cancellationToken,string authToken, string nextPageURL = null)
         {
-            return _httpHelper.Get<SpotifyPlaylistCollection>(authToken, nextPageURL ?? $"/me/playlists?limit={Math.Min(_options.MaxPlaylists ?? 50, 50)}").Result;
+            return await _httpHelper.Get<SpotifyPlaylistCollection>(authToken, nextPageURL ?? $"/me/playlists?limit={Math.Min(_options.MaxPlaylists ?? 50, 50)}");
         }
-        public string GetCurrentClientUserId(string authToken) => GetCurrentClientUser(authToken).Result.Id;
+        public async Task<string> GetCurrentClientUserId(CancellationToken cancellationToken,string authToken)
+        {
+            return (await GetCurrentClientUser(cancellationToken,authToken)).Id;
+    
+        }
     }
 }

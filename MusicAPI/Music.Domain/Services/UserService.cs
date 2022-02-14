@@ -10,8 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using static Music.Domain.IServiceCollectionExtensions;
 
 namespace Music.Domain.Services
 {
@@ -34,12 +34,12 @@ namespace Music.Domain.Services
         public ValidationResult<UserDTO> CreateUser(UserCreationDTO user)
         {
             var result = new ValidationResult<UserDTO>();
-            if (_userRepository.GetUserByName(user.Name) != null)
-                result.AddError(Error.ErrorValues.AlreadyExists,"User","Name",user.Name);
-
             result.Errors.AddRange(_userValidation.Validate(user));
             if (result.Errors.Any())
                 return result;
+
+            if (_userRepository.GetUserByName(user.Name) != null)
+                result.AddError(Error.ErrorValues.AlreadyExists,"User","Name",user.Name);
 
             var userToAdd = _mapper.Map<User>(user);
 
@@ -55,13 +55,15 @@ namespace Music.Domain.Services
             return _mapper.Map<UserDTO>(_userRepository.GetUserByName(user.Name));
         }
 
-        public List<UserClientDTO> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> userTokens)
+        public async Task<List<UserClientDTO>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId,List<UserTokenDTO> userTokens)
         {
             List<UserClientDTO> userclients = new List<UserClientDTO>();
             foreach (var userToken in userTokens)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                var clientId = svc.ReturnClientUserId(userToken.Value);
+                var clientId = await svc.ReturnClientUserId(cancellationToken,userToken.Value);
                 var a = _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
                 userclients.Add(_mapper.Map<UserClientDTO>(_userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
 
@@ -69,6 +71,10 @@ namespace Music.Domain.Services
             }
 
             return userclients;
+        }
+        public UserDTO GetUserById(int userId)
+        {
+            return _mapper.Map<UserDTO>(_userRepository.GetUserById(userId));
         }
     }
 }

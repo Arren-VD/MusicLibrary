@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Music.Spotify.Domain.Services
 {
@@ -27,25 +29,25 @@ namespace Music.Spotify.Domain.Services
             _mapper = mapper;
             _client = client;
         }
-        public ExternalUserDTO ReturnClientUser(string spotifyToken)
+        public async Task<ExternalUserDTO> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken)
         {
-            return _mapper.Map<ExternalUserDTO>(_client.GetCurrentClientUser(spotifyToken).Result);
+            return  _mapper.Map<ExternalUserDTO>(await _client.GetCurrentClientUser(cancellationToken,spotifyToken));
         }
-        public string ReturnClientUserId(string spotifyToken)
+        public async Task<string> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken)
         {
-            return _client.GetCurrentClientUserId(spotifyToken);
+            return await _client.GetCurrentClientUserId(cancellationToken,spotifyToken);
         }
-        public List<ExternalTrackDTO> GetCurrentUserTracksWithPlaylistAndArtist(string authToken)
+        public async Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken)
         {
-            var userName = _client.GetCurrentClientUser(authToken).Result.Display_Name;
-            var userPlaylists = _playlistHelper.GetAllUserPlaylists(authToken, userName);
-            var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(userPlaylists);
+            var userName = (await _client.GetCurrentClientUser(cancellationToken,authToken)).Display_Name;
+            var userPlaylists = _playlistHelper.GetAllUserPlaylists(cancellationToken,authToken, userName);
+            var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(cancellationToken,userPlaylists);
 
             return trackList;
         }
         public string GetName()
         {
-            return _options.ServiceName;
+            return  _options.ServiceName;
         }
     }
 }

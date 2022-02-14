@@ -4,15 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 namespace Music.Domain.Contracts.Services
 {
     public  interface IExternalService
     {
         string GetName();
-        ExternalUserDTO ReturnClientUser(string spotifyToken);
+        Task<ExternalUserDTO> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken);
 
-        string ReturnClientUserId(string spotifyToken);
-        List<ExternalTrackDTO> GetCurrentUserTracksWithPlaylistAndArtist(string authToken);
+        Task<string> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken);
+        Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken);
     }
 }

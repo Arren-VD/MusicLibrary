@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.Domain.Contracts.Services
@@ -15,7 +16,9 @@ namespace Music.Domain.Contracts.Services
 
         UserDTO Login(LoginDTO user);
 
-        List<UserClientDTO> LinkUserToExternalAPIs(int userId, List<UserTokenDTO> spotifyTokens);
+        Task<List<UserClientDTO>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId, List<UserTokenDTO> spotifyTokens);
+
+        UserDTO GetUserById(int userId);
 
     }
 }

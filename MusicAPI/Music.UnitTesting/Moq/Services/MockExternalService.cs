@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.UnitTesting.Moq.Services
@@ -16,14 +17,14 @@ namespace Music.UnitTesting.Moq.Services
             Setup(svc => svc.GetName()).Returns(output);
             return this;
         }
-        public MockExternalService ReturnClientUser(string spotifyToken, ExternalUserDTO output)
+        public async Task<MockExternalService> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken, Task<ExternalUserDTO> output)
         {
-            Setup(svc => svc.ReturnClientUser(spotifyToken)).Returns(output);
+            Setup(svc => svc.ReturnClientUser(cancellationToken, spotifyToken)).Returns(output);
             return this;
         }
-        public MockExternalService ReturnClientUserId(string spotifyToken, string output)
+        public async Task<MockExternalService> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken, Task<string> output)
         {
-            Setup(svc => svc.ReturnClientUserId(spotifyToken)).Returns(output);
+            Setup(svc => svc.ReturnClientUserId(cancellationToken,spotifyToken)).Returns(output);
             return this;
         }
     }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MusicAPI.Controllers
@@ -24,15 +25,15 @@ namespace MusicAPI.Controllers
 
         [HttpPost]
         [Route("user/{userId}/link")]
-        public ActionResult<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> spotifyTokens)
+        public async Task<ActionResult<List<UserClientDTO>>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId,List<UserTokenDTO> spotifyTokens)
         {
-            return Ok(_userService.LinkUserToExternalAPIs(userId,spotifyTokens));
+            return Ok(await (_userService.LinkUserToExternalAPIs(cancellationToken,userId, spotifyTokens)));
         }     
         [HttpPost]
         [Route("user/{userId}/import")]
-        public ActionResult<List<TrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(int userId, List<UserTokenDTO> spotifyTokens)
-        {
-            return Ok(_musicService.ImportClientMusicToDB(userId, spotifyTokens));
+        public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,int userId, List<UserTokenDTO> spotifyTokens)
+        {      
+            return Ok(await(_musicService.ImportClientMusicToDB(cancellationToken,userId, spotifyTokens)));
         }
     }
 }
