@@ -21,19 +21,19 @@ namespace Music.DataAccess.Repositories
             _context = context;
             table = _context.Set<T>();
         }
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return table.ToList();
+            return await table.ToListAsync();
         }
-        public T GetById(object id)
+        public async Task<T> GetById(object id)
         {
-            return table.Find(id);
+            return await table.FindAsync(id);
         }
-        public T Insert(T obj)
+        public async Task<T> Insert(T obj)
         {
-            var result =  table.Add(obj).Entity;
+            var result =  await table.AddAsync(obj);
             Save();
-            return result;
+            return  result.Entity;
 
         }
         public void Update(T obj)
@@ -50,13 +50,13 @@ namespace Music.DataAccess.Repositories
             Save();
 
         }
-        public void Save()
+        public async void Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public T FindByConditionAsync(Expression<Func<T, bool>> predicate)
+        public async Task<T> FindByConditionAsync(Expression<Func<T, bool>> predicate)
         {
-            return table.FirstOrDefault(predicate);
+            return await table.FirstOrDefaultAsync(predicate);
         }
     }
 }

@@ -36,11 +36,11 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
         }
         [Theory]
         [MemberData(nameof(LinkUserToSpotifyTestData.LinkUserToExternalAPISpotifyTest), MemberType = typeof(LinkUserToSpotifyTestData))]
-        public async void LinkUserToSpotifyWorkingData(CancellationToken cancellationToken,int userId , List<UserTokenDTO> tokens,Task<string> spotifyId, List<UserClient> userClients, UserClient outputUserClient)
+        public async void LinkUserToSpotifyWorkingData(CancellationToken cancellationToken, int userId , List<UserTokenDTO> tokens,Task<string> spotifyId, List<UserClient> userClients, Task<UserClient> outputUserClient)
         {
             // Arrange
             var svcs = new List<MockExternalService>();
-            svcs.Add(await new MockExternalService().GetName("Spotify").ReturnClientUserId(cancellationToken,tokens.FirstOrDefault().Value,spotifyId));
+            svcs.Add(new MockExternalService().GetName("Spotify").ReturnClientUserId(cancellationToken,tokens.FirstOrDefault().Value,spotifyId));
             var mockUserTokenRepository = new MockUserTokenRepository().AddTokenById(userClients.FirstOrDefault(), outputUserClient);
 
             var userService = UserServiceTestHelper.CreateUserService(_mapper,null, svcs.ToList(), mockUserTokenRepository,null);

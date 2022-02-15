@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.Domain.Contracts.Services
 {
     public interface IPlaylistService
     {
-        Playlist AddPlaylist(ExternalPlaylistDTO externalPlaylist, int userId, int trackId, string clientServiceName);
+        Task<Playlist> AddPlaylist(CancellationToken cancellationToken,ExternalPlaylistDTO externalPlaylist, int userId, int trackId, string clientServiceName);
     }
 }

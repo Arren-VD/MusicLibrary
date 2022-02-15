@@ -17,13 +17,13 @@ namespace Music.DataAccess.Repositories
         {
             _context = context;
         }
-        public UserClient AddTokenById(UserClient userToken)
+        public async Task<UserClient> AddTokenById(UserClient userToken)
         {
-            return  _context.UserClients.Add(userToken).Entity;
+            return  (await _context.UserClients.AddAsync(userToken)).Entity;
         }
-        public void SaveChanges()
+        public async void SaveChanges()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

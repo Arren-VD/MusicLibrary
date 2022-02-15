@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.Domain.Services
@@ -26,14 +27,14 @@ namespace Music.Domain.Services
             _mapper = mapper;
         }
 
-        public Playlist AddPlaylist(ExternalPlaylistDTO externalPlaylist, int userId, int trackId,string clientServiceName)
+        public async Task<Playlist> AddPlaylist(CancellationToken cancellationToken, ExternalPlaylistDTO externalPlaylist, int userId, int trackId,string clientServiceName)
         {
             var mappedPlaylist = _mapper.Map<Playlist>(externalPlaylist);
             mappedPlaylist.UserId = userId;
-            var playlist = _playListRepository.FindByConditionAsync(x => x.Name == externalPlaylist.Name && x.UserId == userId) ?? _playListRepository.Insert(mappedPlaylist);
+            var playlist = await _playListRepository.FindByConditionAsync(x => x.Name == externalPlaylist.Name && x.UserId == userId) ?? await _playListRepository.Insert(mappedPlaylist);
 
-            var playlistTrack = _playlistTrackRepository.FindByConditionAsync(x => x.PlaylistId == playlist.Id && x.UserId == userId && x.TrackId == trackId) ?? _playlistTrackRepository.Insert(new PlaylistTrack(playlist.Id, trackId, userId));
-            var clientPlaylist = _clientPlaylistTrackRepository.FindByConditionAsync(x => x.ClientId == externalPlaylist.Id && x.PlaylistTrackId == playlistTrack.Id && x.ClientServiceName == clientServiceName) ?? _clientPlaylistTrackRepository.Insert(new ClientPlayListTrack(externalPlaylist.Id, clientServiceName, playlistTrack.Id));
+            var playlistTrack = await _playlistTrackRepository.FindByConditionAsync(x => x.PlaylistId == playlist.Id && x.UserId == userId && x.TrackId == trackId) ?? await _playlistTrackRepository.Insert(new PlaylistTrack(playlist.Id, trackId, userId));
+            var clientPlaylist = await _clientPlaylistTrackRepository.FindByConditionAsync(x => x.ClientId == externalPlaylist.Id && x.PlaylistTrackId == playlistTrack.Id && x.ClientServiceName == clientServiceName) ?? await _clientPlaylistTrackRepository.Insert(new ClientPlayListTrack(externalPlaylist.Id, clientServiceName, playlistTrack.Id));
             return playlist;
         }
     }

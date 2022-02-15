@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.Domain.Services
@@ -24,10 +25,10 @@ namespace Music.Domain.Services
             _mapper = mapper;
         }
 
-        public Artist AddArtist(ExternalArtistDTO externalArtist, int trackId)
+        public async Task<Artist> AddArtist(CancellationToken cancellationToken,ExternalArtistDTO externalArtist, int trackId)
         {
-            var artist = _artistRepository.FindByConditionAsync(x => x.ClientId == externalArtist.Id) ?? _artistRepository.Insert(_mapper.Map<Artist>(externalArtist));
-            var trackArtist = _trackArtistRepository.FindByConditionAsync(x => x.ArtistId == artist.Id && x.TrackId == trackId) ?? _trackArtistRepository.Insert(new TrackArtist(trackId, artist.Id));
+            var artist = await _artistRepository.FindByConditionAsync(x => x.ClientId == externalArtist.Id) ?? await _artistRepository.Insert(_mapper.Map<Artist>(externalArtist));
+            var trackArtist = await _trackArtistRepository.FindByConditionAsync(x => x.ArtistId == artist.Id && x.TrackId == trackId) ?? await  _trackArtistRepository.Insert(new TrackArtist(trackId, artist.Id));
             return artist;
         }
     }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MusicAPI.Controllers
@@ -21,24 +22,24 @@ namespace MusicAPI.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public ActionResult<UserDTO> CreateUser([FromBody] UserCreationDTO user)
+        public async Task<ActionResult<UserDTO>> CreateUser(CancellationToken cancellationToken,[FromBody] UserCreationDTO user)
         {
-            var result = _userService.CreateUser(user);
+            var result = await _userService.CreateUser(cancellationToken,user);
             if (result.IsErrored())
                 return BadRequest(result.Errors);
             return CreatedAtAction(nameof(GetUser), nameof(UserController), new { userId = result.Value.Id }, result.Value);
         }
         [HttpPost]
         [Route("login")]
-        public ActionResult<UserDTO> Login(LoginDTO loginInfo)
+        public async Task<ActionResult<UserDTO>> Login(CancellationToken cancellationToken,LoginDTO loginInfo)
         {
-            return Ok(_userService.Login(loginInfo));
+            return Ok(await _userService.Login(cancellationToken,loginInfo));
         }
         [HttpGet]
         [Route("{userId}")]
-        public ActionResult<UserDTO> GetUser([FromRoute] int userId)
+        public async Task<ActionResult<UserDTO>> GetUser(CancellationToken cancellationToken,[FromRoute] int userId)
         {
-            return Ok(_userService.GetUserById(userId));
+            return Ok(await _userService.GetUserById(cancellationToken,userId));
         }
     }
 }

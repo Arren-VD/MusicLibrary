@@ -9,15 +9,15 @@ namespace Music.Domain.Contracts.Repositories
 {
     public interface IUserRepository
     {
-        User GetUserById(int id);
-        public User AddUser(User user);
+        Task<User> GetUserById(int id);
+        public Task<User> AddUser(User user);
 
-        public User GetUserByName(string name);
+        public Task<User> GetUserByName(string name);
 
         void SaveChanges();
 
-        User GetUser(User user);
+        Task<User> GetUser(User user);
 
-        User UpdateUser(User user);
+        Task<User> UpdateUser(User user);
     }
 }

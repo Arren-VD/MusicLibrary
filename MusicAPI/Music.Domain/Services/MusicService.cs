@@ -44,23 +44,23 @@ namespace Music.Domain.Services
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
                 tracks = await svc.GetCurrentUserTracksWithPlaylistAndArtist(cancellationToken,userToken.Value);
 
-                tracks.ForEach(externalTrack =>
+                tracks.ForEach(async externalTrack =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    using (var transaction = _musicRepository.Transaction())
+                    using (var transaction = await _musicRepository.Transaction())
                     {
-                        var track = _trackService.AddTrack(externalTrack, userId);
+                        var track = await _trackService.AddTrack(cancellationToken,externalTrack, userId);
                         Playlist playlist = null;
                         Artist artist = null;
-                        externalTrack.Playlists.ForEach(externalPlaylist =>
+                        externalTrack.Playlists.ForEach(async externalPlaylist =>
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            playlist = _playlistService.AddPlaylist(externalPlaylist, userId, track.Id, externalTrack.ClientServiceName);
+                            playlist = await _playlistService.AddPlaylist(cancellationToken,externalPlaylist, userId, track.Id, externalTrack.ClientServiceName);
                         });
-                        externalTrack.Artists.ForEach(externalArtist =>
+                        externalTrack.Artists.ForEach(async externalArtist =>
                         {
                             cancellationToken.ThrowIfCancellationRequested();
-                            artist = _artistService.AddArtist(externalArtist, track.Id);                     
+                            artist = await _artistService.AddArtist(cancellationToken,externalArtist, track.Id);                     
                         });
                         if (playlist == null || track == null || artist == null)
                             transaction.Rollback();
@@ -69,7 +69,7 @@ namespace Music.Domain.Services
                     }
                 });
             }
-            return _mapper.Map<List<TrackDTO>>(_musicRepository.GetCategorizedMusicList(userId));
+            return _mapper.Map<List<TrackDTO>>(await _musicRepository.GetCategorizedMusicList(userId));
         }
     }
 }

@@ -19,24 +19,24 @@ namespace Music.DataAccess.Repositories
         {
             _context = context;
         }
-        public List<Track> GetCategorizedMusicList(int userId)
+        public async Task<List<Track>> GetCategorizedMusicList(int userId)
         {
-            var a1 = _context.UserTracks.Where(x => x.UserId == userId)
+            var list = await _context.UserTracks.Where(x => x.UserId == userId)
                 .Include(ut => ut.Track).ThenInclude(t => t.TrackArtists).ThenInclude(ta => ta.Artist)
                 .Include(ut => ut.Track).ThenInclude(t => t.PlaylistTracks.Where(x => x.UserId == userId)).ThenInclude(pt => pt.Playlist)
                 .Include(ut => ut.Track).ThenInclude(t => t.PlaylistTracks.Where(x => x.UserId == userId)).ThenInclude(pt => pt.ClientPlaylists).Where(x => x.UserId == userId)
                 .Include(ut => ut.Track).ThenInclude(t => t.UserTracks).ThenInclude(x => x.ClientTracks).Where(x => x.UserId == userId)
-                .Select(t => t.Track).ToList();
+                .Select(t => t.Track).ToListAsync();
             
-            return a1;
+            return list;
         }
-        public IDbContextTransaction Transaction()
+        public async Task<IDbContextTransaction> Transaction()
         {
-            return  _context.Database.BeginTransaction();
+            return  await _context.Database.BeginTransactionAsync();
         }
-        public void SaveChanges()
+        public async void SaveChanges()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

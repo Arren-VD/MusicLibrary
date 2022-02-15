@@ -10,8 +10,8 @@ namespace Music.Domain.Contracts.Repositories
 {
     public interface IMusicRepository
     {
-        public List<Track> GetCategorizedMusicList(int userId);
+        public Task<List<Track>> GetCategorizedMusicList(int userId);
         public void SaveChanges();
-        IDbContextTransaction Transaction();
+        Task<IDbContextTransaction> Transaction();
     }
 }

@@ -31,28 +31,26 @@ namespace Music.Domain.Services
             _externalServices = externalServices;
             _userTokensRepository = userTokensRepository;  
         }
-        public ValidationResult<UserDTO> CreateUser(UserCreationDTO user)
+        public async Task<ValidationResult<UserDTO>> CreateUser(CancellationToken cancellationToken,UserCreationDTO user)
         {
             var result = new ValidationResult<UserDTO>();
             result.Errors.AddRange(_userValidation.Validate(user));
             if (result.Errors.Any())
                 return result;
 
-            if (_userRepository.GetUserByName(user.Name) != null)
+            if (await _userRepository.GetUserByName(user.Name) != null)
                 result.AddError(Error.ErrorValues.AlreadyExists,"User","Name",user.Name);
 
             var userToAdd = _mapper.Map<User>(user);
 
-            var addedUser = _userRepository.AddUser(userToAdd);
+            var addedUser = await _userRepository.AddUser(userToAdd);
             _userRepository.SaveChanges();
-
-            var a = _userRepository.GetUser(addedUser);
-            result.Value = _mapper.Map<UserDTO>(_userRepository.GetUser(addedUser));
+            result.Value = _mapper.Map<UserDTO>(await _userRepository.GetUser(addedUser));
             return result;
         }
-        public UserDTO Login(LoginDTO user)
+        public async Task<UserDTO> Login(CancellationToken cancellationToken,LoginDTO user)
         {
-            return _mapper.Map<UserDTO>(_userRepository.GetUserByName(user.Name));
+            return _mapper.Map<UserDTO>(await _userRepository.GetUserByName(user.Name));
         }
 
         public async Task<List<UserClientDTO>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId,List<UserTokenDTO> userTokens)
@@ -62,19 +60,19 @@ namespace Music.Domain.Services
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
+                var svc =  _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
                 var clientId = await svc.ReturnClientUserId(cancellationToken,userToken.Value);
-                var a = _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
-                userclients.Add(_mapper.Map<UserClientDTO>(_userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
+                var a = await _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
+                userclients.Add(_mapper.Map<UserClientDTO>(await _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
 
                 _userTokensRepository.SaveChanges();
             }
 
             return userclients;
         }
-        public UserDTO GetUserById(int userId)
+        public async Task<UserDTO> GetUserById(CancellationToken cancellationToken,int userId)
         {
-            return _mapper.Map<UserDTO>(_userRepository.GetUserById(userId));
+            return _mapper.Map<UserDTO>(await _userRepository.GetUserById(userId));
         }
     }
 }

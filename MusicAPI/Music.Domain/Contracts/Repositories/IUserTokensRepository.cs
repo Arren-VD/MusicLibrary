@@ -9,7 +9,7 @@ namespace Music.Domain.Contracts.Repositories
 {
     public interface IUserTokensRepository
     {
-        UserClient AddTokenById(UserClient userClient);
+        Task<UserClient> AddTokenById(UserClient userClient);
 
         void SaveChanges();
     }

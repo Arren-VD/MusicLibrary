@@ -1,4 +1,5 @@
-﻿using Music.DataAccess.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Music.DataAccess.Database;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Exceptions;
 using Music.Models;
@@ -17,33 +18,32 @@ namespace Music.DataAccess.Repositories
         {
             _context = context;
         }
-        public User AddUser(User user)
+        public async Task<User> AddUser(User user)
         {
-            return  _context.Users.Add(user).Entity;
+            return  (await _context.Users.AddAsync(user)).Entity;
         }
-        public User GetUserByName(string name)
+        public async Task<User> GetUserByName(string name)
         {
-            return _context.Users.FirstOrDefault(x => x.Name == name);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
         }
-        public User GetUser(User user)
+        public async Task<User> GetUser(User user)
         {
-            return _context.Users.FirstOrDefault(x => x == user);
+            return await _context.Users.FirstOrDefaultAsync(x => x == user);
         }
-        public User GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            return _context.Users.FirstOrDefault(x => x.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
-        public User UpdateUser(User user)
+        public async Task<User> UpdateUser(User user)
         {
-            var userToUpdate = _context.Users.FirstOrDefault(x => x == user);
+            var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x == user);
             userToUpdate = user;
             return userToUpdate;
-
         }
 
-        public void SaveChanges()
+        public async void SaveChanges()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

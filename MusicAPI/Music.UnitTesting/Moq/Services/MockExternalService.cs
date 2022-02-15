@@ -17,12 +17,12 @@ namespace Music.UnitTesting.Moq.Services
             Setup(svc => svc.GetName()).Returns(output);
             return this;
         }
-        public async Task<MockExternalService> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken, Task<ExternalUserDTO> output)
+        public MockExternalService ReturnClientUser(CancellationToken cancellationToken,string spotifyToken, Task<ExternalUserDTO> output)
         {
             Setup(svc => svc.ReturnClientUser(cancellationToken, spotifyToken)).Returns(output);
             return this;
         }
-        public async Task<MockExternalService> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken, Task<string> output)
+        public MockExternalService ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken, Task<string> output)
         {
             Setup(svc => svc.ReturnClientUserId(cancellationToken,spotifyToken)).Returns(output);
             return this;

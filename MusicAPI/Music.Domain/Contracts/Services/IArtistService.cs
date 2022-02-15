@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Music.Domain.Contracts.Services
 {
     public interface IArtistService
     {
-        Artist AddArtist(ExternalArtistDTO externalArtist, int trackId);
+        Task<Artist> AddArtist(CancellationToken cancellationToken, ExternalArtistDTO externalArtist, int trackId);
     }
 }
