@@ -14,25 +14,31 @@ namespace Music.DataAccess.Repositories
 {
     public class MusicRepository : IMusicRepository
     {
-        readonly MusicContext _context;
-        public MusicRepository(MusicContext context)
+        readonly IDbContextFactory<MusicContext> _context;
+        public MusicRepository(IDbContextFactory<MusicContext> context)
         {
             _context = context;
         }
         public async Task<List<Track>> GetCategorizedMusicList(int userId)
         {
-            var list = await _context.UserTracks.Where(x => x.UserId == userId)
+            using (var context = _context.CreateDbContext())
+            {
+                var list = await context.UserTracks.Where(x => x.UserId == userId)
                 .Include(ut => ut.Track).ThenInclude(t => t.TrackArtists).ThenInclude(ta => ta.Artist)
                 .Include(ut => ut.Track).ThenInclude(t => t.PlaylistTracks.Where(x => x.UserId == userId)).ThenInclude(pt => pt.Playlist)
                 .Include(ut => ut.Track).ThenInclude(t => t.PlaylistTracks.Where(x => x.UserId == userId)).ThenInclude(pt => pt.ClientPlaylists).Where(x => x.UserId == userId)
                 .Include(ut => ut.Track).ThenInclude(t => t.UserTracks).ThenInclude(x => x.ClientTracks).Where(x => x.UserId == userId)
                 .Select(t => t.Track).ToListAsync();
-            
-            return list;
+
+                return list;
+            }
         }
         public async Task<IDbContextTransaction> Transaction()
         {
-            return  await _context.Database.BeginTransactionAsync();
+            using (var context = _context.CreateDbContext())
+            {
+                return await context.Database.BeginTransactionAsync();
+            }
         }
         public async Task CloseConnection()
         {
@@ -40,7 +46,10 @@ namespace Music.DataAccess.Repositories
         }
         public async Task SaveChanges()
         {
-            await _context.SaveChangesAsync();
+            using (var context = _context.CreateDbContext())
+            {
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

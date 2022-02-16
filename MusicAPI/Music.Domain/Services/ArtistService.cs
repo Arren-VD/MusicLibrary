@@ -17,18 +17,20 @@ namespace Music.Domain.Services
         private readonly IGenericRepository<Artist> _artistRepository;
         private readonly IGenericRepository<TrackArtist> _trackArtistRepository;
         private readonly IMapper _mapper;
+        private readonly ITrueGenericRepository _repo;
 
-        public ArtistService(IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository, IMapper mapper)
+        public ArtistService(IGenericRepository<Artist> artistRepository, IGenericRepository<TrackArtist> trackArtistRepository, IMapper mapper, ITrueGenericRepository repo)
         {
             _artistRepository = artistRepository;
             _trackArtistRepository = trackArtistRepository;
             _mapper = mapper;
+            _repo = repo;
         }
 
         public async Task<Artist> AddArtist(CancellationToken cancellationToken,ExternalArtistDTO externalArtist, int trackId)
         {
-            var artist = await _artistRepository.FindByConditionAsync(x => x.ClientId == externalArtist.Id) ?? await _artistRepository.Insert(_mapper.Map<Artist>(externalArtist));
-            var trackArtist = await _trackArtistRepository.FindByConditionAsync(x => x.ArtistId == artist.Id && x.TrackId == trackId) ?? await  _trackArtistRepository.Insert(new TrackArtist(trackId, artist.Id));
+            var artist = await _repo.FindByConditionAsync<Artist>(x => x.ClientId == externalArtist.Id) ?? await _repo.Insert<Artist>(_mapper.Map<Artist>(externalArtist));
+            var trackArtist = await _repo.FindByConditionAsync<TrackArtist>(x => x.ArtistId == artist.Id && x.TrackId == trackId) ?? await _repo.Insert<TrackArtist>(new TrackArtist(trackId, artist.Id));
             return artist;
         }
         public async Task<List<Artist>>AddArtistCollection(CancellationToken cancellationToken, List<ExternalArtistDTO> externalArtistCollection, int trackId)

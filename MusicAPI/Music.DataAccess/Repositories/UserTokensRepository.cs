@@ -1,4 +1,5 @@
-﻿using Music.DataAccess.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Music.DataAccess.Database;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Exceptions;
 using Music.Models;
@@ -12,18 +13,24 @@ namespace Music.DataAccess.Repositories
 {
     public class UserTokensRepository : IUserTokensRepository
     {
-        readonly MusicContext _context;
-        public UserTokensRepository(MusicContext context)
+        readonly IDbContextFactory<MusicContext> _context;
+        public UserTokensRepository(IDbContextFactory<MusicContext> context)
         {
             _context = context;
         }
         public async Task<UserClient> AddTokenById(UserClient userToken)
         {
-            return  (await _context.UserClients.AddAsync(userToken)).Entity;
+            using (var context = _context.CreateDbContext())
+            {
+                return (await context.UserClients.AddAsync(userToken)).Entity;
+            }
         }
         public async Task SaveChanges()
         {
-            await _context.SaveChangesAsync();
+            using (var context = _context.CreateDbContext())
+            {
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

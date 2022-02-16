@@ -29,7 +29,7 @@ namespace Music.Domain.Services
             _mapper = mapper;
             _userRepository = userRepository;
             _externalServices = externalServices;
-            _userTokensRepository = userTokensRepository;  
+            _userTokensRepository = userTokensRepository;
         }
         public async Task<ValidationResult<UserDTO>> CreateUser(CancellationToken cancellationToken,UserCreationDTO user)
         {

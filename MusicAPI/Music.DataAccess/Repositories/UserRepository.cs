@@ -13,37 +13,55 @@ namespace Music.DataAccess.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        readonly MusicContext _context;
-        public UserRepository(MusicContext context)
+        readonly IDbContextFactory<MusicContext> _context;
+        public UserRepository(IDbContextFactory<MusicContext> context)
         {
             _context = context;
         }
         public async Task<User> AddUser(User user)
         {
-            return  (await _context.Users.AddAsync(user)).Entity;
+            using (var context = _context.CreateDbContext())
+            {
+                return (await context.Users.AddAsync(user)).Entity;
+            }
         }
         public async Task<User> GetUserByName(string name)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
+            using (var context = _context.CreateDbContext())
+            {
+                return await context.Users.FirstOrDefaultAsync(x => x.Name == name);
+            }
         }
         public async Task<User> GetUser(User user)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x == user);
+            using (var context = _context.CreateDbContext())
+            {
+                return await context.Users.FirstOrDefaultAsync(x => x == user);
+            }
         }
         public async Task<User> GetUserById(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            using (var context = _context.CreateDbContext())
+            {
+                return await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            }
         }
         public async Task<User> UpdateUser(User user)
         {
-            var userToUpdate = await _context.Users.FirstOrDefaultAsync(x => x == user);
-            userToUpdate = user;
-            return userToUpdate;
+            using (var context = _context.CreateDbContext())
+            {
+                var userToUpdate = await context.Users.FirstOrDefaultAsync(x => x == user);
+                userToUpdate = user;
+                return userToUpdate;
+            }
         }
 
         public async Task SaveChanges()
         {
-            await _context.SaveChangesAsync();
+            using (var context = _context.CreateDbContext())
+            {
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
