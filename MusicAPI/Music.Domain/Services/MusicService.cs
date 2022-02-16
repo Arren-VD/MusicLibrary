@@ -35,32 +35,36 @@ namespace Music.Domain.Services
             _artistService = artistService;
         }
 
-        public async Task<List<TrackDTO>> ImportClientMusicToDB(CancellationToken cancellationToken,int userId, List<UserTokenDTO> userTokens)
+        public async Task<List<TrackDTO>> ImportClientMusicToDB(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens)
         {
             var tracks = new List<ExternalTrackDTO>();
             foreach (var userToken in userTokens)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                tracks = await svc.GetCurrentUserTracksWithPlaylistAndArtist(cancellationToken,userToken.Value);
+                tracks = await svc.GetCurrentUserTracksWithPlaylistAndArtist(cancellationToken, userToken.Value);
 
                 tracks.ForEach(async externalTrack =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                 //   using (var transaction = await _musicRepository.Transaction())
+                    //   using (var transaction = await _musicRepository.Transaction())
                     {
-                        var track = await _trackService.AddTrack(cancellationToken,externalTrack, userId);
+                        var track = await _trackService.AddTrack(cancellationToken, externalTrack, userId);
                         var playlistCollection = await _playlistService.AddPlaylistCollection(cancellationToken, externalTrack.Playlists, userId, track.Id, externalTrack.ClientServiceName);
                         var artistCollection = await _artistService.AddArtistCollection(cancellationToken, externalTrack.Artists, track.Id);
 
-                       // if (!playlistCollection.Any()|| track == null || !artistCollection.Any())
-                         //   transaction.Rollback();
-                       // else
-                         //   transaction.Commit();
+                        // if (!playlistCollection.Any()|| track == null || !artistCollection.Any())
+                        //   transaction.Rollback();
+                        // else
+                        //   transaction.Commit();
 
                     }
                 });
             }
+            return _mapper.Map<List<TrackDTO>>(await _musicRepository.GetCategorizedMusicList(userId));
+        }
+        public async Task<List<TrackDTO>> GetAllTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens)
+        {
             return _mapper.Map<List<TrackDTO>>(await _musicRepository.GetCategorizedMusicList(userId));
         }
     }
