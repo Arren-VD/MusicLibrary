@@ -36,7 +36,7 @@ namespace MusicAPI.Controllers
             return Ok(await(_musicService.ImportClientMusicToDB(cancellationToken,userId, spotifyTokens)));
         }
         [HttpPost]
-        [Route("user/{userId}/import")]
+        [Route("user/{userId}/getalltracks")]
         public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> spotifyTokens)
         {
             return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(cancellationToken,userId,spotifyTokens)));

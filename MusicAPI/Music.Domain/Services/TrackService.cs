@@ -15,17 +15,11 @@ namespace Music.Domain.Services
 {
     public class TrackService : ITrackService
     {
-        private readonly IGenericRepository<Track> _trackRepository;
-        private readonly IGenericRepository<UserTrack> _userTrackRepository;
-        private readonly IGenericRepository<ClientUserTrack> _clientUserTrackRepository;
         private readonly IMapper _mapper;
-        private readonly ITrueGenericRepository _repo;
+        private readonly IGenericRepository _repo;
 
-        public TrackService(IGenericRepository<Track> trackRepository, IGenericRepository<UserTrack> userTrackRepository, IGenericRepository<ClientUserTrack> clientUserTrackRepository, IMapper mapper, ITrueGenericRepository repo)
+        public TrackService( IMapper mapper, IGenericRepository repo)
         {
-            _trackRepository = trackRepository;
-            _userTrackRepository = userTrackRepository;
-            _clientUserTrackRepository = clientUserTrackRepository;
             _mapper = mapper;
             _repo= repo;
         }

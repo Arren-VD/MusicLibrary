@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Music.Domain.Contracts.Repositories
 {
-    public interface ITrueGenericRepository
+    public interface IGenericRepository
     {
         Task<IEnumerable<T>> GetAll<T>() where T : class;
         Task<T> GetById<T>(object id) where T : class;

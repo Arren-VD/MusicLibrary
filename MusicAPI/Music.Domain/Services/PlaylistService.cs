@@ -14,17 +14,11 @@ namespace Music.Domain.Services
 {
     public class PlaylistService : IPlaylistService
     {
-        private readonly IGenericRepository<PlaylistTrack> _playlistTrackRepository;
-        private readonly IGenericRepository<Playlist> _playListRepository;
-        private readonly IGenericRepository<ClientPlayListTrack> _clientPlaylistTrackRepository;
         private readonly IMapper _mapper;
-        private readonly ITrueGenericRepository _repo;
+        private readonly IGenericRepository _repo;
 
-        public PlaylistService(IGenericRepository<PlaylistTrack> playlistTrackRepository, IGenericRepository<Playlist> playListRepository, IGenericRepository<ClientPlayListTrack> clientPlaylistTrackRepository, IMapper mapper, ITrueGenericRepository repo)
+        public PlaylistService(IMapper mapper, IGenericRepository repo)
         {
-            _playlistTrackRepository = playlistTrackRepository;
-            _playListRepository = playListRepository;
-            _clientPlaylistTrackRepository = clientPlaylistTrackRepository;
             _mapper = mapper;
             _repo = repo;
         }

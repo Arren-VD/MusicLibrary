@@ -11,13 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Music.DataAccess.Repositories
 {
-    public class TrueGenericRepository : ITrueGenericRepository
+    public class GenericRepository : IGenericRepository
 
     {
         private readonly IDbContextFactory<MusicContext> _context;
         //private readonly DbSet<T> table;
 
-        public TrueGenericRepository(IDbContextFactory<MusicContext> context)
+        public GenericRepository(IDbContextFactory<MusicContext> context)
         {
             _context = context ?? throw new ArgumentNullException("MusicDB is null", (Exception)null); ;
             //table = _contextSet<T>();
