@@ -11,7 +11,7 @@ namespace Music.Domain.Contracts.Repositories
     public interface IMusicRepository
     {
         public Task<List<Track>> GetCategorizedMusicList(int userId);
-        public void SaveChanges();
+        public Task SaveChanges();
         Task<IDbContextTransaction> Transaction();
     }
 }

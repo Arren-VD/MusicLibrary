@@ -37,5 +37,15 @@ namespace Music.Domain.Services
             var clientPlaylist = await _clientPlaylistTrackRepository.FindByConditionAsync(x => x.ClientId == externalPlaylist.Id && x.PlaylistTrackId == playlistTrack.Id && x.ClientServiceName == clientServiceName) ?? await _clientPlaylistTrackRepository.Insert(new ClientPlayListTrack(externalPlaylist.Id, clientServiceName, playlistTrack.Id));
             return playlist;
         }
+        public async Task<List<Playlist>> AddPlaylistCollection(CancellationToken cancellationToken, List<ExternalPlaylistDTO> playlistCollection, int userId, int trackId, string clientServiceName)
+        {
+            List<Playlist> addedPlaylists = new List<Playlist>();
+            playlistCollection.ForEach(async externalPlaylist =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                addedPlaylists.Add(await AddPlaylist(cancellationToken, externalPlaylist, userId, trackId, clientServiceName));
+            });
+            return  addedPlaylists;
+        }
     }
 }

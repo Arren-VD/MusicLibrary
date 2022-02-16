@@ -13,9 +13,9 @@ namespace Music.Domain.Contracts.Repositories
         Task<IEnumerable<T>> GetAll();
         Task<T> GetById(object id);
         Task<T> Insert(T obj);
-        void Update(T obj);
-        void Delete(object id);
-        void Save();
+        Task Update(T obj);
+        Task Delete(object id);
+        Task Save();
         Task<T> FindByConditionAsync(Expression<Func<T, bool>> predicate);
     }
 }

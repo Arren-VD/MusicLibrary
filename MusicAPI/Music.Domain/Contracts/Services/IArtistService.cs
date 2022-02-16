@@ -12,5 +12,6 @@ namespace Music.Domain.Contracts.Services
     public interface IArtistService
     {
         Task<Artist> AddArtist(CancellationToken cancellationToken, ExternalArtistDTO externalArtist, int trackId);
+        Task<List<Artist>> AddArtistCollection(CancellationToken cancellationToken, List<ExternalArtistDTO> externalArtistCollection, int trackId);
     }
 }

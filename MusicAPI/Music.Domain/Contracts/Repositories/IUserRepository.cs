@@ -14,10 +14,14 @@ namespace Music.Domain.Contracts.Repositories
 
         public Task<User> GetUserByName(string name);
 
-        void SaveChanges();
+        Task SaveChanges();
 
         Task<User> GetUser(User user);
 
         Task<User> UpdateUser(User user);
+    }
+    public interface ITempRepo
+    {
+        Task<Track> FindByConditionAsync(int id);
     }
 }

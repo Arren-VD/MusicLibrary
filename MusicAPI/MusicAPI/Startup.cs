@@ -38,7 +38,9 @@ namespace MusicAPI
         public void ConfigureServices(IServiceCollection services)
         {          
             services.AddDbContext<MusicContext>(
-            options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MusicAPI")));
+            options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MusicAPI"))
+            , ServiceLifetime.Transient
+            );
 
             services.ConfigureSwagger();
             services.AddAutoMapper(typeof(PlaylistProfile).GetTypeInfo().Assembly);

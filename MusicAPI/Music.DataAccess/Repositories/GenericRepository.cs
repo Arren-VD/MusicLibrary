@@ -13,12 +13,12 @@ namespace Music.DataAccess.Repositories
     public class GenericRepository<T> : IGenericRepository<T> where T : class
 
     {
-        private MusicContext _context;
-        private DbSet<T> table;
+        private readonly MusicContext _context;
+        private readonly DbSet<T> table;
 
         public GenericRepository(MusicContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException("MusicDB is null", (Exception)null); ;
             table = _context.Set<T>();
         }
         public async Task<IEnumerable<T>> GetAll()
@@ -32,31 +32,34 @@ namespace Music.DataAccess.Repositories
         public async Task<T> Insert(T obj)
         {
             var result =  await table.AddAsync(obj);
-            Save();
+            await Save();
             return  result.Entity;
 
         }
-        public void Update(T obj)
+        public async Task Update(T obj)
         {
             table.Attach(obj);
             _context.Entry(obj).State = EntityState.Modified;
-            Save();
+            await Save();
 
         }
-        public void Delete(object id)
+        public async Task Delete(object id)
         {
-            T existing = table.Find(id);
+            T existing = await table.FindAsync(id);
             table.Remove(existing);
-            Save();
+            await Save();
 
         }
-        public async void Save()
+        public async Task Save()
         {
             await _context.SaveChangesAsync();
         }
         public async Task<T> FindByConditionAsync(Expression<Func<T, bool>> predicate)
         {
-            return await table.FirstOrDefaultAsync(predicate);
+            var result =  await table.FirstOrDefaultAsync(predicate);
+            await Save();
+            return result;
+
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Music.Domain.Contracts.Repositories
     {
         Task<UserClient> AddTokenById(UserClient userClient);
 
-        void SaveChanges();
+        Task SaveChanges();
     }
 }

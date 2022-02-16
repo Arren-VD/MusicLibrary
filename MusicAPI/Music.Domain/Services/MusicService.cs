@@ -47,25 +47,17 @@ namespace Music.Domain.Services
                 tracks.ForEach(async externalTrack =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    using (var transaction = await _musicRepository.Transaction())
+                 //   using (var transaction = await _musicRepository.Transaction())
                     {
                         var track = await _trackService.AddTrack(cancellationToken,externalTrack, userId);
-                        Playlist playlist = null;
-                        Artist artist = null;
-                        externalTrack.Playlists.ForEach(async externalPlaylist =>
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            playlist = await _playlistService.AddPlaylist(cancellationToken,externalPlaylist, userId, track.Id, externalTrack.ClientServiceName);
-                        });
-                        externalTrack.Artists.ForEach(async externalArtist =>
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            artist = await _artistService.AddArtist(cancellationToken,externalArtist, track.Id);                     
-                        });
-                        if (playlist == null || track == null || artist == null)
-                            transaction.Rollback();
-                        else
-                            transaction.Commit();
+                        var playlistCollection = await _playlistService.AddPlaylistCollection(cancellationToken, externalTrack.Playlists, userId, track.Id, externalTrack.ClientServiceName);
+                        var artistCollection = await _artistService.AddArtistCollection(cancellationToken, externalTrack.Artists, track.Id);
+
+                       // if (!playlistCollection.Any()|| track == null || !artistCollection.Any())
+                         //   transaction.Rollback();
+                       // else
+                         //   transaction.Commit();
+
                     }
                 });
             }

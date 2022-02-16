@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
 using Music.Models;
@@ -29,7 +30,9 @@ namespace Music.Domain.Services
 
         public async Task<Track>  AddTrack(CancellationToken cancellationToken,ExternalTrackDTO externalTrack, int userId)
         {
-            var track = await _trackRepository.FindByConditionAsync(x => x.ISRC_Id == externalTrack.ISRC_Id) ?? await _trackRepository.Insert(_mapper.Map<Track>(externalTrack));
+            var track = await _trackRepository.FindByConditionAsync(x => x.ISRC_Id == externalTrack.ISRC_Id);
+             if ( track == null)
+               track = await _trackRepository.Insert(_mapper.Map<Track>(externalTrack));
             var userTrack = await _userTrackRepository.FindByConditionAsync(x => x.UserId == userId && x.TrackId == track.Id) ?? await _userTrackRepository.Insert(new UserTrack(track.Id, userId));
             var clientUserTrack = await _clientUserTrackRepository.FindByConditionAsync(x => x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id) ?? await _clientUserTrackRepository.Insert(new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url));
             return track;

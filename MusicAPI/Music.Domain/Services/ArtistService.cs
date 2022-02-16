@@ -31,5 +31,15 @@ namespace Music.Domain.Services
             var trackArtist = await _trackArtistRepository.FindByConditionAsync(x => x.ArtistId == artist.Id && x.TrackId == trackId) ?? await  _trackArtistRepository.Insert(new TrackArtist(trackId, artist.Id));
             return artist;
         }
+        public async Task<List<Artist>>AddArtistCollection(CancellationToken cancellationToken, List<ExternalArtistDTO> externalArtistCollection, int trackId)
+        {
+            List<Artist> artistCollection = new List<Artist>();
+            externalArtistCollection.ForEach(async externalArtist =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                artistCollection.Add(await AddArtist(cancellationToken, externalArtist, trackId));
+            });
+            return artistCollection;
+        }
     }
 }

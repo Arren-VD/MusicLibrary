@@ -21,7 +21,7 @@ namespace Music.DataAccess.Repositories
         {
             return  (await _context.UserClients.AddAsync(userToken)).Entity;
         }
-        public async void SaveChanges()
+        public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
         }

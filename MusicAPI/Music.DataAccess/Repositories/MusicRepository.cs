@@ -34,7 +34,11 @@ namespace Music.DataAccess.Repositories
         {
             return  await _context.Database.BeginTransactionAsync();
         }
-        public async void SaveChanges()
+        public async Task CloseConnection()
+        {
+
+        }
+        public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
         }

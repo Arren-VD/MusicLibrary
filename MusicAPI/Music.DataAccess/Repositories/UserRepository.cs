@@ -41,7 +41,7 @@ namespace Music.DataAccess.Repositories
             return userToUpdate;
         }
 
-        public async void SaveChanges()
+        public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();
         }
