@@ -39,15 +39,9 @@ namespace MusicAPI.Controllers
         }
         [HttpPost]
         [Route("user/{userId}/getalltracks")]
-        public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> spotifyTokens)
+        public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> spotifyTokens, [FromQuery] List<int> playlistIds, int page, int pageSize)
         {
-            return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(cancellationToken,userId,spotifyTokens)));
-        }
-        [HttpGet]
-        [Route("user/{userId}/getallplaylists")]
-        public async Task<ActionResult<List<PlaylistDTO>>> GetCurrentUserPlaylists(CancellationToken cancellationToken, int userId)
-        {
-            return Ok(await (_playlistService.GetAllUserPlaylists(cancellationToken, userId)));
+            return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(cancellationToken,userId,spotifyTokens, playlistIds, page, pageSize)));
         }
     }
 }
