@@ -25,8 +25,13 @@ namespace Music.Domain.MappingProfiles
                 ;
             CreateMap<PlaylistDTO, PlaylistTrack>();
 
+            CreateMap<PlaylistDTO, Playlist>();
             CreateMap<Playlist, PlaylistDTO>()
-                            .ForMember(d => d.ClientPlayList, opt => opt.Ignore());
+                            .ForMember(d => d.ClientPlayList, opt => opt.Ignore())
+                            .ForMember(d => d.Name, opt => opt.MapFrom(src => src.Name))
+                            .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Id))
+                            ;
+
 
             CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();
 

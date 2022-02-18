@@ -15,12 +15,10 @@ namespace Music.DataAccess.Repositories
 
     {
         private readonly IDbContextFactory<MusicContext> _context;
-        //private readonly DbSet<T> table;
 
         public GenericRepository(IDbContextFactory<MusicContext> context)
         {
             _context = context ?? throw new ArgumentNullException("MusicDB is null", (Exception)null); ;
-            //table = _contextSet<T>();
         }
         public async Task<IEnumerable<T>> GetAll<T>() where T : class
         {
@@ -37,14 +35,14 @@ namespace Music.DataAccess.Repositories
                 var table = context.Set<T>();
                 return await table.FindAsync(id);
             }
-        } 
+        }
         public async Task<T> Insert<T>(T obj) where T : class
         {
             using (var context = _context.CreateDbContext())
             {
                 var table = context.Set<T>();
                 var result = await table.AddAsync(obj);
-                await Save();
+                await context.SaveChangesAsync();
                 return result.Entity;
             }
         }
@@ -55,7 +53,7 @@ namespace Music.DataAccess.Repositories
                 var table = context.Set<T>();
                 table.Attach(obj);
                 context.Entry(obj).State = EntityState.Modified;
-                await Save();
+                await context.SaveChangesAsync();
             }
         }
         public async Task Delete<T>(object id) where T : class
@@ -65,13 +63,6 @@ namespace Music.DataAccess.Repositories
                 var table = context.Set<T>();
                 T existing = await table.FindAsync(id);
                 table.Remove(existing);
-                await Save();
-            }
-        }
-        public async Task Save()
-        {
-            using (var context = _context.CreateDbContext())
-            {
                 await context.SaveChangesAsync();
             }
         }
@@ -81,7 +72,17 @@ namespace Music.DataAccess.Repositories
             {
                 var table = context.Set<T>();
                 var result = await table.FirstOrDefaultAsync(predicate);
-                await Save();
+                await context.SaveChangesAsync();
+                return result;
+            }
+        }
+        public async Task<List<T>> FindAllByConditionAsync<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            using (var context = _context.CreateDbContext())
+            {
+                var table = context.Set<T>();
+                var result = await table.Where(predicate).ToListAsync();
+                await context.SaveChangesAsync();
                 return result;
             }
         }

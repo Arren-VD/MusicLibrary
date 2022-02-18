@@ -15,7 +15,7 @@ namespace Music.Domain.Contracts.Repositories
         Task<T> Insert<T>(T obj) where T : class;
         Task Update<T>(T obj) where T : class;
         Task Delete<T>(object id) where T : class;
-        Task Save();
         Task<T> FindByConditionAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
+        Task<List<T>> FindAllByConditionAsync<T>(Expression<Func<T, bool>> predicate) where T : class;
     }
 }

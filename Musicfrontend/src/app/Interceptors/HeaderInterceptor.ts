@@ -9,20 +9,21 @@ export class HeaderInterceptor implements HttpInterceptor {
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let reqUrl = httpRequest.url;
-    console.log(reqUrl)
     if(reqUrl.indexOf('5001')!== -1)
     {
-      console.log("MusicAPI Call");
+      console.log("localdbcall")
       return next.handle(
         httpRequest.clone({
             setHeaders: {
-              "Authorization" : `Bearer ${this.authSvc.apiKey?.access_token}`,
-              // "Content-Type": "application/x-www-form-urlencoded"
+              //"Authorization" : `Bearer ${this.authSvc.apiKey?.access_token}`,
+               "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
+              "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
                }}))
     }
     else(reqUrl.indexOf('accounts.spotify.com')!== -1)
     {
-      console.log("SpotifyAPI Call");
       return next.handle(
         httpRequest.clone({
             setHeaders: {

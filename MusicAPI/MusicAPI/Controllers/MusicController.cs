@@ -17,10 +17,12 @@ namespace MusicAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMusicService _musicService;
-        public MusicController(IUserService userService, IMusicService musicService)
+        private readonly IPlaylistService _playlistService;
+        public MusicController(IUserService userService, IMusicService musicService, IPlaylistService playlistService)
         {
             _musicService = musicService;
             _userService = userService;
+            _playlistService = playlistService;
         }
 
         [HttpPost]
@@ -40,6 +42,12 @@ namespace MusicAPI.Controllers
         public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> spotifyTokens)
         {
             return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(cancellationToken,userId,spotifyTokens)));
+        }
+        [HttpGet]
+        [Route("user/{userId}/getallplaylists")]
+        public async Task<ActionResult<List<PlaylistDTO>>> GetCurrentUserPlaylists(CancellationToken cancellationToken, int userId)
+        {
+            return Ok(await (_playlistService.GetAllUserPlaylists(cancellationToken, userId)));
         }
     }
 }

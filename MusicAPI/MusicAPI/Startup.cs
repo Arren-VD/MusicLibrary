@@ -39,7 +39,7 @@ namespace MusicAPI
         {          
             services.AddDbContextFactory<MusicContext>(
             options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("MusicAPI"))
-            , ServiceLifetime.Transient
+            //, ServiceLifetime.Transient
             );
 
             services.ConfigureSwagger();
@@ -78,13 +78,13 @@ namespace MusicAPI
             }
             GlobalExceptionHandlerConfigProvider.ConfigureExceptionHandling(app);
 
-            app.UseHttpsRedirection();
+            
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod());
-
-            app.UseAuthorization();
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseHttpsRedirection();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

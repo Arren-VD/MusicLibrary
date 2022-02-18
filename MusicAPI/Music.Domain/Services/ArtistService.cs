@@ -2,6 +2,7 @@
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
 using Music.Models;
+using Music.Views;
 using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;

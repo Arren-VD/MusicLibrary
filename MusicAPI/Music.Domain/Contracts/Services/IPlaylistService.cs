@@ -1,4 +1,5 @@
 ﻿using Music.Models;
+using Music.Views;
 using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,6 @@ namespace Music.Domain.Contracts.Services
     {
         Task<Playlist> AddPlaylist(CancellationToken cancellationToken,ExternalPlaylistDTO externalPlaylist, int userId, int trackId, string clientServiceName);
         Task<List<Playlist>> AddPlaylistCollection(CancellationToken cancellationToken, List<ExternalPlaylistDTO> playlistCollection, int userId, int trackId, string clientServiceName);
+        Task<List<PlaylistDTO>> GetAllUserPlaylists(CancellationToken cancellationToken, int userId);
     }
 }
