@@ -10,6 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { SpotifyLoginComponent } from './spotify-login/spotify-login.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { SpotifyLoginComponent } from './spotify-login/spotify-login.component';
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    FormsModule,
     RouterModule.forRoot(
       [
         {path:"tracklist/:id",component:TrackListComponent},

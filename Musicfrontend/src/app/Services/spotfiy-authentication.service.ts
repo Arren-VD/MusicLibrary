@@ -24,7 +24,6 @@ export class SpotfiyAuthenticationService {
  token_timer : any;
  scope : string = "user-read-email playlist-read-collaborative playlist-read-private user-read-private"
  accesToken : any;
-
 loggedIn$ = new BehaviorSubject(false);
 
   GetAccessToken(code : string)

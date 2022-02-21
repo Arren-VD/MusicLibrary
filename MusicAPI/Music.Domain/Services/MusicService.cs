@@ -65,9 +65,11 @@ namespace Music.Domain.Services
         }
         public async Task<List<TrackDTO>> GetAllTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize)
         {
-            var result = await _musicRepository.GetCategorizedMusicList(userId);
-            var result2 = result.Where(x => x.PlaylistTracks.Any(y => playlistIds.Any(z => z == y.PlaylistId))).ToList();var result3 = result2.Skip(pageSize * (page - 1)).Take(pageSize);
-            return _mapper.Map<List<TrackDTO>>(result3);
+            var categorizedMusicList = await _musicRepository.GetCategorizedMusicList(userId);
+            if (playlistIds.Any())
+                categorizedMusicList = categorizedMusicList.Where(x => x.PlaylistTracks.Any(y => playlistIds.Any(z => z == y.PlaylistId))).ToList();     
+            categorizedMusicList = categorizedMusicList.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            return _mapper.Map<List<TrackDTO>>(categorizedMusicList);
         }
     }
 }
