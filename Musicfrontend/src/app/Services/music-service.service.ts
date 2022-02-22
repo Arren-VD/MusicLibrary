@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient ,HttpParams  } from '@angular/common/http';
-import { ITrackListCollection } from '../Interfaces/ITrackCollection';
+import { ITrackCollection } from '../Interfaces/ITrackCollection';
 import { IAccesToken } from '../Interfaces/IAccesToken';
 import { IPlaylist } from '../Interfaces/IPlaylist';
 @Injectable({
@@ -18,16 +18,14 @@ export class MusicServiceService {
   GetTrackList(id : number, page : number, pageSize : number, playlistIds : number[])
   {
     let queryParameters :string = "";
+    let list = "";
+    console.log(playlistIds.length)
     if(playlistIds.length > 0)
     {
-      Array(playlistIds).forEach(x =>
-        {
-           queryParameters = queryParameters + "&playlistIds="+x.toString()
-          })
+       list = "&playlistIds=" + playlistIds.join("&playlistIds=")
     }
-    let list = "&playlistIds=" + playlistIds.join("&playlistIds=")
-    console.log(list)
-    return this.http.post<ITrackListCollection>(`${this.MusicApiURL}/api/Music/user/${id}/getalltracks?page=${page}&pageSize=${pageSize}${list}`, this.AccessTokens)
+
+    return this.http.post<ITrackCollection>(`${this.MusicApiURL}/api/Music/user/${id}/getalltracks?page=${page}&pageSize=${pageSize}${list}`, this.AccessTokens)
   }
   GetPlaylists(id : number)
   {

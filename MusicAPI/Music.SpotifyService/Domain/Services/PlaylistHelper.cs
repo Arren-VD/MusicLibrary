@@ -23,9 +23,9 @@ namespace Music.Spotify.Domain.Services
             _mapper = mapper;
             _client = client;
         }
-        public List<SpotifyPlaylist> GetAllUserPlaylists(CancellationToken cancellationToken,string authToken, string userName)
+        public List<SpotifyPlaylist> GetAllUserPlaylists(CancellationToken cancellationToken,string authToken, string userName, string userId)
         {
-            var playlistInfoCollection = GetUserPlaylistInfoCollection(cancellationToken,authToken, userName);
+            var playlistInfoCollection = GetUserPlaylistInfoCollection(cancellationToken,authToken, userName, userId);
             var playlistCollection = GetUserPlaylistWithTracks(cancellationToken, authToken, playlistInfoCollection);
             return playlistCollection;
         }
@@ -50,7 +50,7 @@ namespace Music.Spotify.Domain.Services
             ));
             return trackList;
         }
-        private List<SpotifyPlaylistInfo> GetUserPlaylistInfoCollection(CancellationToken cancellationToken,string authToken, string userName)
+        private List<SpotifyPlaylistInfo> GetUserPlaylistInfoCollection(CancellationToken cancellationToken,string authToken, string userName, string userId)
         {
             var playlistInfoCollection = new List<SpotifyPlaylistInfo>();
             var userPlaylists = _client.GetAllUserPlaylists(cancellationToken,authToken).Result;
@@ -58,7 +58,7 @@ namespace Music.Spotify.Domain.Services
             while (userPlaylists != null && !(playlistInfoCollection.Count >= _options.MaxPlaylists))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                playlistInfoCollection.AddRange(userPlaylists.items.Where(x => x.name != "All"));
+                playlistInfoCollection.AddRange(userPlaylists.items.Where(x => x.name != "All" && x.owner.id == userId));
                 if (userPlaylists.next == null)
                     userPlaylists = null;
                 if (userPlaylists != null)

@@ -14,7 +14,7 @@ namespace MusicAPI.Controllers
     public class PlaylistController : ControllerBase
     {
         private readonly IPlaylistService _playlistService;
-        public PlaylistController( IPlaylistService playlistService)
+        public PlaylistController(IPlaylistService playlistService)
         {
             _playlistService = playlistService;
         }

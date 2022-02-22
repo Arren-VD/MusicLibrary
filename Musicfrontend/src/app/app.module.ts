@@ -28,7 +28,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     RouterModule.forRoot(
       [
-        {path:"tracklist/:id",component:TrackListComponent},
+        {path:"tracklist/user/:id/page/:page",component:TrackListComponent},
         {path:"home",component:HomeComponent},
         {path:"spotifylogin",component:SpotifyLoginComponent}
       ]
