@@ -41,9 +41,42 @@ namespace Music.DataAccess.Repositories
             using (var context = _context.CreateDbContext())
             {
                 var table = context.Set<T>();
-                var result = await table.AddAsync(obj);
+                var result =  table.Add(obj);
                 await context.SaveChangesAsync();
                 return result.Entity;
+            }
+        }
+        private Object UpsertLock = new Object();
+        public T UpsertByCondition<T>(Expression<Func<T, bool>> predicate, T obj) where T : class
+        {
+            lock (UpsertLock)
+            {
+                using (var context = _context.CreateDbContext())
+                {
+
+                    var table = context.Set<T>();
+                    var result =  table.FirstOrDefault(predicate);
+                    if(result != null)
+                    {
+                        table.Attach(result);
+                        context.Entry(result).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                         result = table.Add(obj).Entity;
+                    }
+                    context.SaveChanges();
+                    return result;
+                }
+            }
+        }
+        public void UpsertRangeByCondition<T>(List<T> itemsToUpsert) where T : class        
+            {
+            using (var context = _context.CreateDbContext())
+            {
+                var table = context.Set<T>();
+                table.UpdateRange(itemsToUpsert);
+                context.SaveChanges();
             }
         }
         public async Task Update<T>(T obj) where T : class

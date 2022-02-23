@@ -47,17 +47,10 @@ namespace Music.Domain.Services
                 tracks.ForEach(async externalTrack =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    //   using (var transaction = await _musicRepository.Transaction())
                     {
                         var track = await _trackService.AddTrack(cancellationToken, externalTrack, userId);
                         var playlistCollection = await _playlistService.AddPlaylistCollection(cancellationToken, externalTrack.Playlists, userId, track.Id, externalTrack.ClientServiceName);
                         var artistCollection = await _artistService.AddArtistCollection(cancellationToken, externalTrack.Artists, track.Id);
-
-                        // if (!playlistCollection.Any()|| track == null || !artistCollection.Any())
-                        //   transaction.Rollback();
-                        // else
-                        //   transaction.Commit();
-
                     }
                 });
             }

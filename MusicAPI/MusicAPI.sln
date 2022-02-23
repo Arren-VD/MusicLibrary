@@ -22,6 +22,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Development", "Development", "{0AD2C164-35AF-413A-9295-66082AEA185E}"
 	ProjectSection(SolutionItems) = preProject
 		Development\DeleteTracksPlaylistsAndArtists.sql = Development\DeleteTracksPlaylistsAndArtists.sql
+		Development\GetConnectionPools.sql = Development\GetConnectionPools.sql
 	EndProjectSection
 EndProject
 Global
