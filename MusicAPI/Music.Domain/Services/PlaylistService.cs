@@ -48,5 +48,9 @@ namespace Music.Domain.Services
         {
             return _mapper.Map<List<PlaylistDTO>>(await _repo.FindAllByConditionAsync<Playlist>(x => x.UserId == userId)).Distinct().ToList();
         }
+        public async Task<PlaylistDTO> AddPlaylistToUserTrack(CancellationToken cancellationToken, int userId, int trackId, List<PlaylistDTO> playlist)
+        {
+
+        }
     }
 }
