@@ -28,9 +28,9 @@ namespace Music.Domain.Services
         {
             var mappedPlaylist = _mapper.Map<Playlist>(externalPlaylist);
             mappedPlaylist.UserId = userId;
-            var playlist = _repo.UpsertByCondition<Playlist>(x => x.Name == externalPlaylist.Name && x.UserId == userId, mappedPlaylist);
-            var playlistTrack = _repo.UpsertByCondition<PlaylistTrack>(x => x.PlaylistId == playlist.Id && x.UserId == userId && x.TrackId == trackId, new PlaylistTrack(playlist.Id, trackId, userId));
-            var clientPlaylist = _repo.UpsertByCondition<ClientPlayListTrack>(x => x.ClientId == externalPlaylist.Id && x.PlaylistTrackId == playlistTrack.Id && x.ClientServiceName == clientServiceName, new ClientPlayListTrack(externalPlaylist.Id, clientServiceName, playlistTrack.Id));
+            var playlist = await _repo.UpsertByCondition<Playlist>(x => x.Name == externalPlaylist.Name && x.UserId == userId, mappedPlaylist);
+            var playlistTrack = await _repo.UpsertByCondition<PlaylistTrack>(x => x.PlaylistId == playlist.Id && x.UserId == userId && x.TrackId == trackId, new PlaylistTrack(playlist.Id, trackId, userId));
+            var clientPlaylist = await _repo.UpsertByCondition<ClientPlayListTrack>(x => x.ClientId == externalPlaylist.Id && x.PlaylistTrackId == playlistTrack.Id && x.ClientServiceName == clientServiceName, new ClientPlayListTrack(externalPlaylist.Id, clientServiceName, playlistTrack.Id));
             return playlist;
         }
         public async Task<List<Playlist>> AddPlaylistCollection(CancellationToken cancellationToken, List<ExternalPlaylistDTO> playlistCollection, int userId, int trackId, string clientServiceName)

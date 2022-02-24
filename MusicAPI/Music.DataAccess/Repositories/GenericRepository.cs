@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 namespace Music.DataAccess.Repositories
 {
@@ -46,10 +47,10 @@ namespace Music.DataAccess.Repositories
                 return result.Entity;
             }
         }
-        private Object UpsertLock = new Object();
-        public T UpsertByCondition<T>(Expression<Func<T, bool>> predicate, T obj) where T : class
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+        public async Task<T> UpsertByCondition<T>(Expression<Func<T, bool>> predicate, T obj) where T : class
         {
-            lock (UpsertLock)
+            await _lock.WaitAsync();
             {
                 using (var context = _context.CreateDbContext())
                 {
@@ -66,6 +67,7 @@ namespace Music.DataAccess.Repositories
                          result = table.Add(obj).Entity;
                     }
                     context.SaveChanges();
+                    _lock.Release();
                     return result;
                 }
             }

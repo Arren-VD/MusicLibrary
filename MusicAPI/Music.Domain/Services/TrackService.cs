@@ -26,9 +26,9 @@ namespace Music.Domain.Services
 
         public async Task<Track>  AddTrack(CancellationToken cancellationToken,ExternalTrackDTO externalTrack, int userId)
         {
-            var track =   _repo.UpsertByCondition(x => x.ISRC_Id == externalTrack.ISRC_Id,_mapper.Map<Track>(externalTrack));
-            var userTrack =  _repo.UpsertByCondition(x => x.UserId == userId && x.TrackId == track.Id,new UserTrack(track.Id, userId));
-            var clientUserTrack =  _repo.UpsertByCondition(x => x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id,new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url));
+            var track = await  _repo.UpsertByCondition(x => x.ISRC_Id == externalTrack.ISRC_Id,_mapper.Map<Track>(externalTrack));
+            var userTrack = await _repo.UpsertByCondition(x => x.UserId == userId && x.TrackId == track.Id,new UserTrack(track.Id, userId));
+            var clientUserTrack = await _repo.UpsertByCondition(x => x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id,new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url));
             return track;
         }
         public void AddTrackCollection(CancellationToken cancellationToken, List<ExternalTrackDTO> tracks,int userId)
