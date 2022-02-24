@@ -22,8 +22,4 @@ export class NavBarComponent implements OnInit {
   {
     window.open(`https://accounts.spotify.com/authorize/?client_id=${this.spotAuth.client_id}&response_type=code&scope=${this.spotAuth.scope}&redirect_uri=http:%2F%2Flocalhost:4200/spotifylogin`,"_self")
   }
-  loginTest()
-  {
-    let a = this.mscSvc.GetTrackList(this.id).subscribe(x => console.log(x), (error) => console.log(console.error()));
-  }
 }

@@ -11,7 +11,6 @@ export class HeaderInterceptor implements HttpInterceptor {
     let reqUrl = httpRequest.url;
     if(reqUrl.indexOf('5001')!== -1)
     {
-      console.log("localdbcall")
       return next.handle(
         httpRequest.clone({
             setHeaders: {

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 namespace Music.DataAccess.Repositories
 {
@@ -41,9 +42,43 @@ namespace Music.DataAccess.Repositories
             using (var context = _context.CreateDbContext())
             {
                 var table = context.Set<T>();
-                var result = await table.AddAsync(obj);
+                var result =  table.Add(obj);
                 await context.SaveChangesAsync();
                 return result.Entity;
+            }
+        }
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+        public async Task<T> UpsertByCondition<T>(Expression<Func<T, bool>> predicate, T obj) where T : class
+        {
+            await _lock.WaitAsync();
+            {
+                using (var context = _context.CreateDbContext())
+                {
+
+                    var table = context.Set<T>();
+                    var result =  table.FirstOrDefault(predicate);
+                    if(result != null)
+                    {
+                        table.Attach(result);
+                        context.Entry(result).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                         result = table.Add(obj).Entity;
+                    }
+                    context.SaveChanges();
+                    _lock.Release();
+                    return result;
+                }
+            }
+        }
+        public void UpsertRangeByCondition<T>(List<T> itemsToUpsert) where T : class        
+            {
+            using (var context = _context.CreateDbContext())
+            {
+                var table = context.Set<T>();
+                table.UpdateRange(itemsToUpsert);
+                context.SaveChanges();
             }
         }
         public async Task Update<T>(T obj) where T : class

@@ -26,12 +26,15 @@ namespace Music.Domain.Services
 
         public async Task<Track>  AddTrack(CancellationToken cancellationToken,ExternalTrackDTO externalTrack, int userId)
         {
-            var track = await _repo.FindByConditionAsync<Track>(x => x.ISRC_Id == externalTrack.ISRC_Id);
-             if ( track == null)
-               track = await _repo.Insert<Track>(_mapper.Map<Track>(externalTrack));
-            var userTrack = await _repo.FindByConditionAsync<UserTrack>(x => x.UserId == userId && x.TrackId == track.Id) ?? await _repo.Insert(new UserTrack(track.Id, userId));
-            var clientUserTrack = await _repo.FindByConditionAsync<ClientUserTrack>(x => x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id) ?? await _repo.Insert(new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url));
+            var track = await  _repo.UpsertByCondition(x => x.ISRC_Id == externalTrack.ISRC_Id,_mapper.Map<Track>(externalTrack));
+            var userTrack = await _repo.UpsertByCondition(x => x.UserId == userId && x.TrackId == track.Id,new UserTrack(track.Id, userId));
+            var clientUserTrack = await _repo.UpsertByCondition(x => x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id,new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url));
             return track;
+        }
+        public void AddTrackCollection(CancellationToken cancellationToken, List<ExternalTrackDTO> tracks,int userId)
+        {
+            var mapped = _mapper.Map<List<Track>>(tracks);
+            _repo.UpsertRangeByCondition<Track>(mapped);
         }
     }
 }

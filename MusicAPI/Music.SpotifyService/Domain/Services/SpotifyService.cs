@@ -39,8 +39,8 @@ namespace Music.Spotify.Domain.Services
         }
         public async Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken)
         {
-            var userName = (await _client.GetCurrentClientUser(cancellationToken,authToken)).Display_Name;
-            var userPlaylists = _playlistHelper.GetAllUserPlaylists(cancellationToken,authToken, userName);
+            var user = (await _client.GetCurrentClientUser(cancellationToken,authToken));
+            var userPlaylists = _playlistHelper.GetAllUserPlaylists(cancellationToken,authToken, user.Display_Name,user.Id);
             var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(cancellationToken,userPlaylists);
 
             return trackList;

@@ -26,8 +26,8 @@ namespace Music.Domain.Services
 
         public async Task<Artist> AddArtist(CancellationToken cancellationToken,ExternalArtistDTO externalArtist, int trackId)
         {
-            var artist = await _repo.FindByConditionAsync<Artist>(x => x.ClientId == externalArtist.Id) ?? await _repo.Insert<Artist>(_mapper.Map<Artist>(externalArtist));
-            var trackArtist = await _repo.FindByConditionAsync<TrackArtist>(x => x.ArtistId == artist.Id && x.TrackId == trackId) ?? await _repo.Insert<TrackArtist>(new TrackArtist(trackId, artist.Id));
+            var artist = await _repo.UpsertByCondition(x => x.ClientId == externalArtist.Id,_mapper.Map<Artist>(externalArtist));
+            var trackArtist = await _repo.UpsertByCondition(x => x.ArtistId == artist.Id && x.TrackId == trackId,new TrackArtist(trackId, artist.Id));
             return artist;
         }
         public async Task<List<Artist>>AddArtistCollection(CancellationToken cancellationToken, List<ExternalArtistDTO> externalArtistCollection, int trackId)

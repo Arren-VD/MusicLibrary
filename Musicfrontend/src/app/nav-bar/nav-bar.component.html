@@ -21,13 +21,10 @@
           <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/tracklist', id]" href="#">Music Library</a>
+          <a class="nav-link" [routerLink]="['/tracklist/user', id,'page',1]" href="#">Music Library</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" (click)="login()">Login to spotify</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" (click)="loginTest()">TESTING</a>
           </li>
       </ul>
     </div>
