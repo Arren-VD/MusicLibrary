@@ -24,14 +24,14 @@ namespace Music.Domain.Services
             _repo= repo;
         }
 
-        public async Task<Track>  AddTrack(CancellationToken cancellationToken,ExternalTrackDTO externalTrack, int userId)
+        public async Task<Track>  AddTrack(ExternalTrackDTO externalTrack, int userId, CancellationToken cancellationToken)
         {
             var track = await  _repo.UpsertByCondition(x => x.ISRC_Id == externalTrack.ISRC_Id,_mapper.Map<Track>(externalTrack));
             var userTrack = await _repo.UpsertByCondition(x => x.UserId == userId && x.TrackId == track.Id,new UserTrack(track.Id, userId));
             var clientUserTrack = await _repo.UpsertByCondition(x => x.ClientId == externalTrack.Id && x.UserTrackId == userTrack.Id,new ClientUserTrack(userTrack.Id, externalTrack.ClientServiceName, externalTrack.Id, externalTrack.Preview_url));
             return track;
         }
-        public void AddTrackCollection(CancellationToken cancellationToken, List<ExternalTrackDTO> tracks,int userId)
+        public void AddTrackCollection( List<ExternalTrackDTO> tracks,int userId, CancellationToken cancellationToken)
         {
             var mapped = _mapper.Map<List<Track>>(tracks);
             _repo.UpsertRangeByCondition<Track>(mapped);

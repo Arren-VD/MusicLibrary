@@ -11,7 +11,7 @@ namespace Music.Domain.Contracts.Services
 {
     public interface ITrackService
     {
-        Task<Track> AddTrack(CancellationToken cancellationToken,ExternalTrackDTO externalTrack, int userId);
-       void AddTrackCollection(CancellationToken cancellationToken, List<ExternalTrackDTO> tracks, int userId);
+        Task<Track> AddTrack(ExternalTrackDTO externalTrack, int userId, CancellationToken cancellationToken);
+       void AddTrackCollection(List<ExternalTrackDTO> tracks, int userId, CancellationToken cancellationToken);
     }
 }

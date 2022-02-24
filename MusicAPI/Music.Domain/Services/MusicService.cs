@@ -35,28 +35,28 @@ namespace Music.Domain.Services
             _artistService = artistService;
         }
 
-        public async Task<List<TrackDTO>> ImportClientMusicToDB(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens)
+        public async Task<List<TrackDTO>> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens, CancellationToken cancellationToken)
         {
             var tracks = new List<ExternalTrackDTO>();
             foreach (var userToken in userTokens)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var svc = _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                tracks = await svc.GetCurrentUserTracksWithPlaylistAndArtist(cancellationToken, userToken.Value);
+                tracks = await svc.GetCurrentUserTracksWithPlaylistAndArtist( userToken.Value, cancellationToken);
 
                 tracks.ForEach(async externalTrack =>
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     {
-                        var track = await _trackService.AddTrack(cancellationToken, externalTrack, userId);
-                        var playlistCollection = await _playlistService.AddPlaylistCollection(cancellationToken, externalTrack.Playlists, userId, track.Id, externalTrack.ClientServiceName);
-                        var artistCollection = await _artistService.AddArtistCollection(cancellationToken, externalTrack.Artists, track.Id);
+                        var track = await _trackService.AddTrack( externalTrack, userId, cancellationToken);
+                        var playlistCollection = await _playlistService.AddPlaylistCollection(externalTrack.Playlists, userId, track.Id, externalTrack.ClientServiceName, cancellationToken);
+                        var artistCollection = await _artistService.AddArtistCollection( externalTrack.Artists, track.Id, cancellationToken);
                     }
                 });
             }
             return _mapper.Map<List<TrackDTO>>(await _musicRepository.GetCategorizedMusicList(userId));
         }
-        public async Task<TrackCollectionDTO> GetAllTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize)
+        public async Task<TrackCollectionDTO> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
         {
             var trackCollection = new TrackCollectionDTO();
             var categorizedMusicList = await _musicRepository.GetCategorizedMusicList(userId);

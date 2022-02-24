@@ -27,21 +27,21 @@ namespace MusicAPI.Controllers
 
         [HttpPost]
         [Route("user/{userId}/link")]
-        public async Task<ActionResult<List<UserClientDTO>>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId,List<UserTokenDTO> spotifyTokens)
+        public async Task<ActionResult<List<UserClientDTO>>> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> spotifyTokens, CancellationToken cancellationToken)
         {
-            return Ok(await (_userService.LinkUserToExternalAPIs(cancellationToken,userId, spotifyTokens)));
+            return Ok(await (_userService.LinkUserToExternalAPIs(userId, spotifyTokens, cancellationToken)));
         }     
         [HttpPost]
         [Route("user/{userId}/import")]
-        public async Task<ActionResult<List<TrackDTO>>> ImportCurrentUserTracksWithPlaylistAndArtistFromExternalServicesToDB(CancellationToken cancellationToken,int userId, List<UserTokenDTO> spotifyTokens)
+        public async Task<ActionResult<List<TrackDTO>>> ImportCurrentUserTracksWithPlaylistAndArtistFromExternalServicesToDB(int userId, List<UserTokenDTO> spotifyTokens, CancellationToken cancellationToken)
         {      
-            return Ok(await(_musicService.ImportClientMusicToDB(cancellationToken,userId, spotifyTokens)));
+            return Ok(await(_musicService.ImportClientMusicToDB(userId, spotifyTokens, cancellationToken)));
         }
         [HttpPost]
         [Route("user/{userId}/getalltracks")]
-        public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> spotifyTokens, [FromQuery] List<int> playlistIds, int page, int pageSize)
+        public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(int userId, List<UserTokenDTO> spotifyTokens, [FromQuery] List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
         {
-            return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(cancellationToken,userId,spotifyTokens, playlistIds, page, pageSize)));
+            return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(userId,spotifyTokens, playlistIds, page, pageSize, cancellationToken)));
         }
     }
 }

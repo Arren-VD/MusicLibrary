@@ -23,13 +23,13 @@ namespace Music.Spotify.Domain.Services
             _mapper = mapper;
             _client = client;
         }
-        public List<SpotifyPlaylist> GetAllUserPlaylists(CancellationToken cancellationToken,string authToken, string userName, string userId)
+        public List<SpotifyPlaylist> GetAllUserPlaylists(string authToken, string userName, string userId, CancellationToken cancellationToken)
         {
-            var playlistInfoCollection = GetUserPlaylistInfoCollection(cancellationToken,authToken, userName, userId);
-            var playlistCollection = GetUserPlaylistWithTracks(cancellationToken, authToken, playlistInfoCollection);
+            var playlistInfoCollection = GetUserPlaylistInfoCollection(authToken, userName, userId, cancellationToken);
+            var playlistCollection = GetUserPlaylistWithTracks( authToken, playlistInfoCollection, cancellationToken);
             return playlistCollection;
         }
-        public List<ExternalTrackDTO> GetAllUserTracksFromPlaylists(CancellationToken cancellationToken,List<SpotifyPlaylist> playlistCollection)
+        public List<ExternalTrackDTO> GetAllUserTracksFromPlaylists(List<SpotifyPlaylist> playlistCollection, CancellationToken cancellationToken)
         {
             var trackList = new List<ExternalTrackDTO>();
             playlistCollection.ForEach(playlist => playlist.items.ForEach(item =>
@@ -50,10 +50,10 @@ namespace Music.Spotify.Domain.Services
             ));
             return trackList;
         }
-        private List<SpotifyPlaylistInfo> GetUserPlaylistInfoCollection(CancellationToken cancellationToken,string authToken, string userName, string userId)
+        private List<SpotifyPlaylistInfo> GetUserPlaylistInfoCollection(string authToken, string userName, string userId, CancellationToken cancellationToken)
         {
             var playlistInfoCollection = new List<SpotifyPlaylistInfo>();
-            var userPlaylists = _client.GetAllUserPlaylists(cancellationToken,authToken).Result;
+            var userPlaylists = _client.GetAllUserPlaylists(authToken, cancellationToken).Result;
 
             while (userPlaylists != null && !(playlistInfoCollection.Count >= _options.MaxPlaylists))
             {
@@ -62,26 +62,26 @@ namespace Music.Spotify.Domain.Services
                 if (userPlaylists.next == null)
                     userPlaylists = null;
                 if (userPlaylists != null)
-                    userPlaylists = _client.GetAllUserPlaylists(cancellationToken,authToken, userPlaylists.next).Result;
+                    userPlaylists = _client.GetAllUserPlaylists(authToken, cancellationToken, userPlaylists.next).Result;
             }
             return playlistInfoCollection;
         }
 
-        private List<SpotifyPlaylist> GetUserPlaylistWithTracks(CancellationToken cancellationToken,string authToken,List<SpotifyPlaylistInfo> playlistInfos)
+        private List<SpotifyPlaylist> GetUserPlaylistWithTracks(string authToken,List<SpotifyPlaylistInfo> playlistInfos, CancellationToken cancellationToken)
         {
             var playlistCollection = new List<SpotifyPlaylist>();
             playlistInfos.ForEach(x => {
-                var playlist = GetUserPlaylistWithTracks(cancellationToken, authToken, x.id);
+                var playlist = GetUserPlaylistWithTracks( authToken, x.id, cancellationToken);
                 playlist.Name = x.name;
                 playlist.Id = x.id;
                 playlistCollection.Add(playlist);
             });
             return playlistCollection;
         }
-        private SpotifyPlaylist GetUserPlaylistWithTracks(CancellationToken cancellationToken,string authToken, string playlistId)
+        private SpotifyPlaylist GetUserPlaylistWithTracks(string authToken, string playlistId, CancellationToken cancellationToken)
         {
             var playlistcollection = new SpotifyPlaylist();
-            var userPlaylist = _client.GetUserPlaylistById(cancellationToken,authToken, playlistId).Result;
+            var userPlaylist = _client.GetUserPlaylistById(authToken, playlistId, cancellationToken).Result;
 
             while (userPlaylist != null && !(playlistcollection.items.Count >= _options.MaxTracks))
             {
@@ -90,7 +90,7 @@ namespace Music.Spotify.Domain.Services
                 if (userPlaylist.Next == null )
                     userPlaylist = null;
                 if(userPlaylist != null)
-                    userPlaylist = _client.GetUserPlaylistById(cancellationToken,authToken, playlistId, userPlaylist.Next).Result;
+                    userPlaylist = _client.GetUserPlaylistById(authToken, playlistId, cancellationToken, userPlaylist.Next).Result;
             }
             return playlistcollection;
 

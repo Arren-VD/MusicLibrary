@@ -11,8 +11,8 @@ namespace Music.Domain.Contracts.Services
 {
     public interface IMusicService
     {
-        Task<List<TrackDTO>> ImportClientMusicToDB(CancellationToken cancellationToken,int userId, List<UserTokenDTO> userTokens);
-        Task<TrackCollectionDTO> GetAllTracksWithPlaylistAndArtist(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize);
+        Task<List<TrackDTO>> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens, CancellationToken cancellationToken);
+        Task<TrackCollectionDTO> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken);
         
     }
 }

@@ -11,9 +11,9 @@ namespace Music.Spotify.Domain.Contracts
 {
     public interface IClient
     {
-        Task<SpotifyUser> GetCurrentClientUser(CancellationToken cancellationToken,string authToken);
-        Task<string> GetCurrentClientUserId(CancellationToken cancellationToken,string authToken);
-        Task<SpotifyPlaylistCollection> GetAllUserPlaylists(CancellationToken cancellationToken,string authToken, string nextPageURL = null);
-        Task<SpotifyPlaylist> GetUserPlaylistById(CancellationToken cancellationToken,string authToken, string playlistId, string nextPageURL = null);
+        Task<SpotifyUser> GetCurrentClientUser(string authToken, CancellationToken cancellationToken);
+        Task<string> GetCurrentClientUserId(string authToken, CancellationToken cancellationToken);
+        Task<SpotifyPlaylistCollection> GetAllUserPlaylists(string authToken, CancellationToken cancellationToken, string nextPageURL = null);
+        Task<SpotifyPlaylist> GetUserPlaylistById(string authToken, string playlistId, CancellationToken cancellationToken, string nextPageURL = null);
     }
 }

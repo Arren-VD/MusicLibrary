@@ -31,7 +31,7 @@ namespace Music.Domain.Services
             _externalServices = externalServices;
             _userTokensRepository = userTokensRepository;
         }
-        public async Task<ValidationResult<UserDTO>> CreateUser(CancellationToken cancellationToken,UserCreationDTO user)
+        public async Task<ValidationResult<UserDTO>> CreateUser(UserCreationDTO user, CancellationToken cancellationToken)
         {
             var result = new ValidationResult<UserDTO>();
             result.Errors.AddRange(_userValidation.Validate(user));
@@ -48,12 +48,12 @@ namespace Music.Domain.Services
             result.Value = _mapper.Map<UserDTO>(await _userRepository.GetUser(addedUser));
             return result;
         }
-        public async Task<UserDTO> Login(CancellationToken cancellationToken,LoginDTO user)
+        public async Task<UserDTO> Login(LoginDTO user, CancellationToken cancellationToken)
         {
             return _mapper.Map<UserDTO>(await _userRepository.GetUserByName(user.Name));
         }
 
-        public async Task<List<UserClientDTO>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId,List<UserTokenDTO> userTokens)
+        public async Task<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> userTokens, CancellationToken cancellationToken)
         {
             List<UserClientDTO> userclients = new List<UserClientDTO>();
             foreach (var userToken in userTokens)
@@ -61,7 +61,7 @@ namespace Music.Domain.Services
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var svc =  _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
-                var clientId = await svc.ReturnClientUserId(cancellationToken,userToken.Value);
+                var clientId = await svc.ReturnClientUserId(userToken.Value,cancellationToken);
                 var a = await _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
                 userclients.Add(_mapper.Map<UserClientDTO>(await _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
 
@@ -70,7 +70,7 @@ namespace Music.Domain.Services
 
             return userclients;
         }
-        public async Task<UserDTO> GetUserById(CancellationToken cancellationToken,int userId)
+        public async Task<UserDTO> GetUserById(int userId, CancellationToken cancellationToken)
         {
             return _mapper.Map<UserDTO>(await _userRepository.GetUserById(userId));
         }

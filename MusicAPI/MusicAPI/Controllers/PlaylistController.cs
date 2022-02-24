@@ -20,9 +20,9 @@ namespace MusicAPI.Controllers
         }
         [HttpGet]
         [Route("user/{userId}/getallplaylists")]
-        public async Task<ActionResult<List<PlaylistDTO>>> GetCurrentUserPlaylists(CancellationToken cancellationToken, int userId)
+        public async Task<ActionResult<List<PlaylistDTO>>> GetCurrentUserPlaylists( int userId, CancellationToken cancellationToken)
         {
-            return Ok(await (_playlistService.GetAllUserPlaylists(cancellationToken, userId)));
+            return Ok(await (_playlistService.GetAllUserPlaylists( userId, cancellationToken)));
         }
     }
 }

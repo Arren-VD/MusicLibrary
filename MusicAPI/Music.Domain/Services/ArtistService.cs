@@ -24,19 +24,19 @@ namespace Music.Domain.Services
             _repo = repo;
         }
 
-        public async Task<Artist> AddArtist(CancellationToken cancellationToken,ExternalArtistDTO externalArtist, int trackId)
+        public async Task<Artist> AddArtist(ExternalArtistDTO externalArtist, int trackId, CancellationToken cancellationToken)
         {
             var artist = await _repo.UpsertByCondition(x => x.ClientId == externalArtist.Id,_mapper.Map<Artist>(externalArtist));
             var trackArtist = await _repo.UpsertByCondition(x => x.ArtistId == artist.Id && x.TrackId == trackId,new TrackArtist(trackId, artist.Id));
             return artist;
         }
-        public async Task<List<Artist>>AddArtistCollection(CancellationToken cancellationToken, List<ExternalArtistDTO> externalArtistCollection, int trackId)
+        public async Task<List<Artist>>AddArtistCollection(List<ExternalArtistDTO> externalArtistCollection, int trackId, CancellationToken cancellationToken)
         {
             List<Artist> artistCollection = new List<Artist>();
             externalArtistCollection.ForEach(async externalArtist =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                artistCollection.Add(await AddArtist(cancellationToken, externalArtist, trackId));
+                artistCollection.Add(await AddArtist( externalArtist, trackId, cancellationToken));
             });
             return artistCollection;
         }

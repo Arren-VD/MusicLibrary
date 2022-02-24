@@ -22,24 +22,24 @@ namespace MusicAPI.Controllers
         }
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<UserDTO>> CreateUser(CancellationToken cancellationToken,[FromBody] UserCreationDTO user)
+        public async Task<ActionResult<UserDTO>> CreateUser([FromBody] UserCreationDTO user, CancellationToken cancellationToken)
         {
-            var result = await _userService.CreateUser(cancellationToken,user);
+            var result = await _userService.CreateUser(user, cancellationToken);
             if (result.IsErrored())
                 return BadRequest(result.Errors);
             return CreatedAtAction(nameof(GetUser), nameof(UserController), new { userId = result.Value.Id }, result.Value);
         }
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<UserDTO>> Login(CancellationToken cancellationToken,LoginDTO loginInfo)
+        public async Task<ActionResult<UserDTO>> Login(LoginDTO loginInfo, CancellationToken cancellationToken)
         {
-            return Ok(await _userService.Login(cancellationToken,loginInfo));
+            return Ok(await _userService.Login(loginInfo, cancellationToken));
         }
         [HttpGet]
         [Route("{userId}")]
-        public async Task<ActionResult<UserDTO>> GetUser(CancellationToken cancellationToken,[FromRoute] int userId)
+        public async Task<ActionResult<UserDTO>> GetUser([FromRoute] int userId, CancellationToken cancellationToken)
         {
-            return Ok(await _userService.GetUserById(cancellationToken,userId));
+            return Ok(await _userService.GetUserById(userId, cancellationToken));
         }
     }
 }

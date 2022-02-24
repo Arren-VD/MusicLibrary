@@ -29,19 +29,19 @@ namespace Music.Spotify.Domain.Services
             _mapper = mapper;
             _client = client;
         }
-        public async Task<ExternalUserDTO> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken)
+        public async Task<ExternalUserDTO> ReturnClientUser(string spotifyToken, CancellationToken cancellationToken)
         {
-            return  _mapper.Map<ExternalUserDTO>(await _client.GetCurrentClientUser(cancellationToken,spotifyToken));
+            return  _mapper.Map<ExternalUserDTO>(await _client.GetCurrentClientUser(spotifyToken, cancellationToken));
         }
-        public async Task<string> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken)
+        public async Task<string> ReturnClientUserId(string spotifyToken, CancellationToken cancellationToken)
         {
-            return await _client.GetCurrentClientUserId(cancellationToken,spotifyToken);
+            return await _client.GetCurrentClientUserId(spotifyToken, cancellationToken);
         }
-        public async Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken)
+        public async Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(string authToken, CancellationToken cancellationToken)
         {
-            var user = (await _client.GetCurrentClientUser(cancellationToken,authToken));
-            var userPlaylists = _playlistHelper.GetAllUserPlaylists(cancellationToken,authToken, user.Display_Name,user.Id);
-            var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(cancellationToken,userPlaylists);
+            var user = (await _client.GetCurrentClientUser(authToken, cancellationToken));
+            var userPlaylists = _playlistHelper.GetAllUserPlaylists(authToken, user.Display_Name,user.Id, cancellationToken);
+            var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(userPlaylists, cancellationToken);
 
             return trackList;
         }

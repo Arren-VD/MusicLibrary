@@ -46,7 +46,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
 
             // Act
-            var result = await userService.CreateUser(cancellationToken,userCreation);
+            var result = await userService.CreateUser(userCreation, cancellationToken);
 
             // Assert
             result.Value.Id.Should().Be(1);
@@ -63,7 +63,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
 
             // Act
-            var result = await userService.CreateUser(cancellationToken,userCreation);
+            var result = await userService.CreateUser(userCreation, cancellationToken);
 
             // Assert
             result.Value.Should().BeNull();
@@ -84,7 +84,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
 
             // Act
-            var result = await userService.CreateUser(cancellationToken,userCreation);
+            var result = await userService.CreateUser(userCreation, cancellationToken);
 
             // Assert
             result.Value.Should().BeNull();
@@ -102,7 +102,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
 
             // Act
-            var result = await userService.CreateUser(cancellationToken,userCreation);
+            var result = await userService.CreateUser(userCreation, cancellationToken);
 
             // Assert
             result.Value.Should().BeNull();
@@ -120,7 +120,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
 
             // Act
-            var result = await userService.CreateUser(cancellationToken,userCreation);
+            var result = await userService.CreateUser(userCreation, cancellationToken);
 
             // Assert
             result.Value.Should().BeNull();
@@ -139,7 +139,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
 
             // Act
-            var result = await userService.CreateUser(cancellationToken,userCreation);
+            var result = await userService.CreateUser(userCreation, cancellationToken);
 
             // Assert
             result.Value.Should().BeNull();

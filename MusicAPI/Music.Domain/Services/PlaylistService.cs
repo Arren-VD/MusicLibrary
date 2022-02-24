@@ -24,7 +24,7 @@ namespace Music.Domain.Services
             _repo = repo;
         }
 
-        public async Task<Playlist> AddPlaylist(CancellationToken cancellationToken, ExternalPlaylistDTO externalPlaylist, int userId, int trackId,string clientServiceName)
+        public async Task<Playlist> AddPlaylist(ExternalPlaylistDTO externalPlaylist, int userId, int trackId,string clientServiceName, CancellationToken cancellationToken)
         {
             var mappedPlaylist = _mapper.Map<Playlist>(externalPlaylist);
             mappedPlaylist.UserId = userId;
@@ -33,17 +33,17 @@ namespace Music.Domain.Services
             var clientPlaylist = await _repo.UpsertByCondition<ClientPlayListTrack>(x => x.ClientId == externalPlaylist.Id && x.PlaylistTrackId == playlistTrack.Id && x.ClientServiceName == clientServiceName, new ClientPlayListTrack(externalPlaylist.Id, clientServiceName, playlistTrack.Id));
             return playlist;
         }
-        public async Task<List<Playlist>> AddPlaylistCollection(CancellationToken cancellationToken, List<ExternalPlaylistDTO> playlistCollection, int userId, int trackId, string clientServiceName)
+        public async Task<List<Playlist>> AddPlaylistCollection(List<ExternalPlaylistDTO> playlistCollection, int userId, int trackId, string clientServiceName, CancellationToken cancellationToken)
         {
             List<Playlist> addedPlaylists = new List<Playlist>();
             playlistCollection.ForEach(async externalPlaylist =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                addedPlaylists.Add(await AddPlaylist(cancellationToken, externalPlaylist, userId, trackId, clientServiceName));
+                addedPlaylists.Add(await AddPlaylist(externalPlaylist, userId, trackId, clientServiceName, cancellationToken));
             });
             return  addedPlaylists;
         }
-        public async Task<List<PlaylistDTO>> GetAllUserPlaylists(CancellationToken cancellationToken, int userId)
+        public async Task<List<PlaylistDTO>> GetAllUserPlaylists(int userId, CancellationToken cancellationToken)
         {
             return _mapper.Map<List<PlaylistDTO>>(await _repo.FindAllByConditionAsync<Playlist>(x => x.UserId == userId)).Distinct().ToList();
         }

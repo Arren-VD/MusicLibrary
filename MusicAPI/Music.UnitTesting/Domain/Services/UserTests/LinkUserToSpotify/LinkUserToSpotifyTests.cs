@@ -46,7 +46,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
             var userService = UserServiceTestHelper.CreateUserService(_mapper,null, svcs.ToList(), mockUserTokenRepository,null);
        
             // Act
-            var result = await userService.LinkUserToExternalAPIs(cancellationToken,userId, tokens);
+            var result = await userService.LinkUserToExternalAPIs(userId, tokens, cancellationToken);
 
             // Assert
             result.First().Should().NotBeNull();

@@ -12,13 +12,13 @@ namespace Music.Domain.Contracts.Services
 {
     public interface IUserService
     {
-        Task<ValidationResult<UserDTO>> CreateUser(CancellationToken cancellationToken,UserCreationDTO user);
+        Task<ValidationResult<UserDTO>> CreateUser(UserCreationDTO user, CancellationToken cancellationToken);
 
-        Task<UserDTO> Login(CancellationToken cancellationToken,LoginDTO user);
+        Task<UserDTO> Login(LoginDTO user, CancellationToken cancellationToken);
 
-        Task<List<UserClientDTO>> LinkUserToExternalAPIs(CancellationToken cancellationToken,int userId, List<UserTokenDTO> spotifyTokens);
+        Task<List<UserClientDTO>> LinkUserToExternalAPIs(int userId, List<UserTokenDTO> spotifyTokens, CancellationToken cancellationToken);
 
-        Task<UserDTO> GetUserById(CancellationToken cancellationToken,int userId);
+        Task<UserDTO> GetUserById(int userId, CancellationToken cancellationToken);
 
     }
 }

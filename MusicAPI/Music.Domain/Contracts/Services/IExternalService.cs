@@ -11,9 +11,9 @@ namespace Music.Domain.Contracts.Services
     public  interface IExternalService
     {
         string GetName();
-        Task<ExternalUserDTO> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken);
+        Task<ExternalUserDTO> ReturnClientUser(string spotifyToken, CancellationToken cancellationToken);
 
-        Task<string> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken);
-        Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken);
+        Task<string> ReturnClientUserId(string spotifyToken, CancellationToken cancellationToken);
+        Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(string authToken, CancellationToken cancellationToken);
     }
 }
