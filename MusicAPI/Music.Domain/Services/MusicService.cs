@@ -37,7 +37,7 @@ namespace Music.Domain.Services
 
         public async Task<List<TrackDTO>> ImportClientMusicToDB(CancellationToken cancellationToken, int userId, List<UserTokenDTO> userTokens)
         {
-            var tracks = new List<ExternalTrackDTO>();
+            var tracks = new List<ExternalTrackOutput>();
             foreach (var userToken in userTokens)
             {
                 cancellationToken.ThrowIfCancellationRequested();

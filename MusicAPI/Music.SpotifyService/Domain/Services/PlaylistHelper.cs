@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Music.Spotify.Domain.Contracts;
 using Music.Spotify.Models.PlaylistModels;
 using Music.Views.ClientViews;
+using Music.Views.GlobalViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +30,9 @@ namespace Music.Spotify.Domain.Services
             var playlistCollection = GetUserPlaylistWithTracks(cancellationToken, authToken, playlistInfoCollection);
             return playlistCollection;
         }
-        public List<ExternalTrackDTO> GetAllUserTracksFromPlaylists(CancellationToken cancellationToken,List<SpotifyPlaylist> playlistCollection)
+        public List<ExternalTrackOutput> GetAllUserTracksFromPlaylists(CancellationToken cancellationToken,List<SpotifyPlaylist> playlistCollection)
         {
-            var trackList = new List<ExternalTrackDTO>();
+            var trackList = new List<ExternalTrackOutput>();
             playlistCollection.ForEach(playlist => playlist.items.ForEach(item =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -39,13 +40,13 @@ namespace Music.Spotify.Domain.Services
                 var existingTrack = trackList.FirstOrDefault(x => x.ISRC_Id == item.track.external_ids.isrc);
                 if (existingTrack == null)
                 {
-                    var track = _mapper.Map<ExternalTrackDTO>(item.track);
-                    track.Playlists.Add(new ExternalPlaylistDTO() { Id = playlist.Id, Name = playlist.Name });
+                    var track = _mapper.Map<ExternalTrackOutput>(item.track);
+                    track.Playlists.Add(new NameDTO<string>(playlist.Id,playlist.Name));
                     track.ClientServiceName = _options.ServiceName;
                     trackList.Add(track);
                 }
                 else
-                    existingTrack.Playlists.Add(new ExternalPlaylistDTO() { Id = playlist.Id, Name = playlist.Name });
+                    existingTrack.Playlists.Add(new NameDTO<string>(playlist.Id, playlist.Name));
             }
             ));
             return trackList;

@@ -5,8 +5,10 @@ using Music.Spotify.Domain.Contracts;
 using Music.Spotify.Domain.Contracts.Clients;
 using Music.Spotify.Domain.Contracts.Services;
 using Music.Spotify.Models;
+using Music.Spotify.Models.PlaylistModels;
 using Music.Views;
 using Music.Views.ClientViews;
+using Music.Views.GlobalViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,13 +39,26 @@ namespace Music.Spotify.Domain.Services
         {
             return await _client.GetCurrentClientUserId(cancellationToken,spotifyToken);
         }
-        public async Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken)
+        public async Task<List<ExternalTrackOutput>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken)
         {
             var user = (await _client.GetCurrentClientUser(cancellationToken,authToken));
             var userPlaylists = _playlistHelper.GetAllUserPlaylists(cancellationToken,authToken, user.Display_Name,user.Id);
             var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(cancellationToken,userPlaylists);
 
             return trackList;
+        }
+        public async Task<NameDTO<string>> UpsertPlaylist(string authToken,int userId, NameDTO<string> clientPlaylist, CancellationToken cancellationToken)
+        {
+            var user = (await _client.GetCurrentClientUser(cancellationToken, authToken));
+            var userPlaylists = _playlistHelper.GetAllUserPlaylists(cancellationToken, authToken, user.Display_Name, user.Id);
+            var existingPlaylist = userPlaylists.FirstOrDefault(x => x.Name == clientPlaylist.Name || clientPlaylist.Id == x.Id) ;
+
+            if (existingPlaylist == null)
+            {
+                var result = await _client.AddPlaylist(user.Id, authToken, new CreatePlaylistDTO(clientPlaylist.Name, null, false), cancellationToken);
+                return new NameDTO<string> { Name = result.Name, Id = result.Id };
+            }
+            return new NameDTO<string> { Name = existingPlaylist.Name, Id = existingPlaylist.Id };
         }
         public string GetName()
         {

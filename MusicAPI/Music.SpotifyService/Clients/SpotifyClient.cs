@@ -48,5 +48,9 @@ namespace Music.Spotify.Clients
             return (await GetCurrentClientUser(cancellationToken,authToken)).Id;
     
         }
+        public async Task<SpotifyPlaylist> AddPlaylist(string clientUserId,string authToken, CreatePlaylistDTO playlistDTO, CancellationToken cancellationToken)
+        {
+            return await _httpHelper.Post<CreatePlaylistDTO,SpotifyPlaylist>(authToken, $"/users/{clientUserId}/playlists", playlistDTO);
+        }
     }
 }

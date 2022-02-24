@@ -30,5 +30,22 @@ namespace Music.Spotify.Clients.Helpers
                 throw new HttpException(result.StatusCode, result.Content.ReadFromJsonAsync<ClientError>().Result.Error.Message);
             }
         }
+        public async Task<TTwo> Post<TOne, TTwo>(string authToken, string path, TOne body)
+        {
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Post, _client.BaseAddress + path.Replace(_client.BaseAddress.AbsoluteUri, "")))
+            {
+                requestMessage.Headers.Add("Authorization", "Bearer " + authToken);
+                requestMessage.Content = JsonContent.Create(body);
+                var result = await _client.SendAsync(requestMessage);
+
+                if (result.IsSuccessStatusCode)
+                    return await result.Content.ReadFromJsonAsync<TTwo>();
+                throw new HttpException(result.StatusCode, result.Content.ReadFromJsonAsync<ClientError>().Result.Error.Message);
+            }
+        }
+        public async Task<T> Post< T>(string authToken, string path, T body)
+        {
+            return await Post<T, T>(authToken,path,body);
+        }
     }
 }

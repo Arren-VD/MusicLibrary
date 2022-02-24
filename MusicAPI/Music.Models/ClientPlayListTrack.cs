@@ -2,14 +2,14 @@
 {
     public class ClientPlayListTrack
     {
-        public ClientPlayListTrack(string clientId, string clientServiceName, int playlistTrackId)
+        public ClientPlayListTrack(string clientPlaylistId, string clientServiceName, int playlistTrackId)
         {
-            ClientId = clientId;
+            ClientPlaylistId = clientPlaylistId;
             ClientServiceName = clientServiceName;
             PlaylistTrackId = playlistTrackId;
         }
 
-        public string ClientId { get; set; }
+        public string ClientPlaylistId { get; set; }
         public string ClientServiceName { get; set; }
         public int Id { get; set; }
         public int PlaylistTrackId { get; set; }

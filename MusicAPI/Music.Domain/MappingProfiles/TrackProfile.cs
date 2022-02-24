@@ -18,9 +18,9 @@ namespace Music.Domain.MappingProfiles
             CreateMap<ClientTrackDTO, Track>()
             .ForMember(d => d.Id, opt => opt.Ignore());
 
-            CreateMap<ExternalTrackDTO, Track>()
+            CreateMap<ExternalTrackOutput, Track>()
             .ForMember(d => d.Id, opt => opt.Ignore());
-            CreateMap<Track, ExternalTrackDTO>()
+            CreateMap<Track, ExternalTrackOutput>()
             .ForMember(d => d.Playlists, opt => opt.MapFrom(src => src.PlaylistTracks.Select(x => x.Playlist)))
             .ForMember(d => d.Artists, opt => opt.MapFrom(src => src.TrackArtists.Select(x => x.Artist)));
 

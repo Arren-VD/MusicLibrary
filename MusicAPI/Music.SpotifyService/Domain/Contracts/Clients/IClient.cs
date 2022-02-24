@@ -15,5 +15,6 @@ namespace Music.Spotify.Domain.Contracts
         Task<string> GetCurrentClientUserId(CancellationToken cancellationToken,string authToken);
         Task<SpotifyPlaylistCollection> GetAllUserPlaylists(CancellationToken cancellationToken,string authToken, string nextPageURL = null);
         Task<SpotifyPlaylist> GetUserPlaylistById(CancellationToken cancellationToken,string authToken, string playlistId, string nextPageURL = null);
+        Task<SpotifyPlaylist> AddPlaylist(string clientUserId, string authToken, CreatePlaylistDTO playlistDTO, CancellationToken cancellationToken);
     }
 }

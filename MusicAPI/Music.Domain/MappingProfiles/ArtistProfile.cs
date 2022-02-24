@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Music.Views.ClientViews;
+using Music.Views.GlobalViews;
 
 namespace Music.Domain.MappingProfiles
 {
@@ -14,8 +15,8 @@ namespace Music.Domain.MappingProfiles
     {
         public ArtistProfile()
         {
-            CreateMap<Artist, ExternalArtistDTO>();
-            CreateMap<ExternalArtistDTO, Artist>()
+            CreateMap<Artist, NameDTO<string>>();
+            CreateMap<NameDTO<string>, Artist>()
              .ForMember(d => d.ClientId, opt => opt.MapFrom(src => src.Id))
             .ForMember(d => d.Id, opt => opt.Ignore());
 

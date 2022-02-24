@@ -1,5 +1,6 @@
 ﻿using Music.Views;
 using Music.Views.ClientViews;
+using Music.Views.GlobalViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Music.Domain.Contracts.Services
         Task<ExternalUserDTO> ReturnClientUser(CancellationToken cancellationToken,string spotifyToken);
 
         Task<string> ReturnClientUserId(CancellationToken cancellationToken,string spotifyToken);
-        Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken);
+        Task<List<ExternalTrackOutput>> GetCurrentUserTracksWithPlaylistAndArtist(CancellationToken cancellationToken,string authToken);
+        Task<NameDTO<string>> UpsertPlaylist(string authToken, int userId, NameDTO<string> clientPlaylist, CancellationToken cancellationToken);
     }
 }

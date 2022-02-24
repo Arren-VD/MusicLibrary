@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Music.Views.ClientViews;
+using Music.Views.GlobalViews;
+using Music.Views.Inputs;
 
 namespace Music.Domain.MappingProfiles
 {
@@ -14,8 +16,8 @@ namespace Music.Domain.MappingProfiles
     {
         public PlaylistProfile()
         {
-            CreateMap<Playlist, ExternalPlaylistDTO>();
-            CreateMap<ExternalPlaylistDTO, Playlist>()
+            CreateMap<Playlist, NameDTO<string>>();
+            CreateMap<NameDTO<string>, Playlist>()
              .ForMember(d => d.Id, opt => opt.Ignore());
 
             CreateMap<PlaylistTrack, PlaylistDTO>()
@@ -36,7 +38,11 @@ namespace Music.Domain.MappingProfiles
             CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();
 
             CreateMap<ClientPlaylistDTO, ClientPlayListTrack>();
-            CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();       
+            CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();
+
+            CreateMap<PlaylistInput, Playlist>()
+                            .ForMember(d => d.UserId, opt => opt.Ignore())
+                ;
         }
     }
 }

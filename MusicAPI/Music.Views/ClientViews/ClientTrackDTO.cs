@@ -1,4 +1,4 @@
-﻿namespace Music.Views
+﻿namespace Music.Views.ClientViews
 {
     public class ClientTrackDTO
     {
