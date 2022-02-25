@@ -1,6 +1,6 @@
 ﻿namespace Music.Spotify.Models.PlaylistModels
 {
-    public class SpotifyPlaylistInfo
+    public class SpotifyPlaylistSummary
     {
         public string id { get; set; }
         public string name { get; set; }

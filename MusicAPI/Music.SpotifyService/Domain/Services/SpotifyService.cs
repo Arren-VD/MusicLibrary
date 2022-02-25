@@ -20,15 +20,17 @@ namespace Music.Spotify.Domain.Services
     {
         private readonly IMapper _mapper;
         private readonly IClient _client;
-        private readonly PlaylistHelper _playlistHelper;
+        private readonly ISpotifyPlaylistService _spotifyPlaylistSvc;
+        private readonly ISpotifyTrackService _spotifyTrackSvc;
         private readonly SpotifyOptions _options;
-        public SpotifyService(IMapper mapper, IClient client, PlaylistHelper playlistHelper, IOptions<SpotifyOptions> options)
+        public SpotifyService(IMapper mapper, IClient client, IOptions<SpotifyOptions> options, ISpotifyPlaylistService spotifyPlaylistSvc, ISpotifyTrackService spotifyTrackSvc)
         {
             _options = options.Value;
-            _playlistHelper = playlistHelper;
             _mapper = mapper;
             _client = client;
-        }
+            _spotifyPlaylistSvc = spotifyPlaylistSvc;
+            _spotifyTrackSvc = spotifyTrackSvc;
+    }
         public async Task<ExternalUserDTO> ReturnClientUser(string spotifyToken, CancellationToken cancellationToken)
         {
             return  _mapper.Map<ExternalUserDTO>(await _client.GetCurrentClientUser(spotifyToken, cancellationToken));
@@ -39,9 +41,10 @@ namespace Music.Spotify.Domain.Services
         }
         public async Task<List<ExternalTrackDTO>> GetCurrentUserTracksWithPlaylistAndArtist(string authToken, CancellationToken cancellationToken)
         {
-            var user = (await _client.GetCurrentClientUser(authToken, cancellationToken));
-            var userPlaylists = _playlistHelper.GetAllUserPlaylists(authToken, user.Display_Name,user.Id, cancellationToken);
-            var trackList = _playlistHelper.GetAllUserTracksFromPlaylists(userPlaylists, cancellationToken);
+            var spotifyUser = (await _client.GetCurrentClientUser(authToken, cancellationToken));
+            var playlistSummary = _spotifyPlaylistSvc.GetPlaylistSummary(authToken,spotifyUser, cancellationToken);
+            var userPlaylists = _spotifyPlaylistSvc.GetUserPlaylistCollectionWithTracks(authToken, playlistSummary, cancellationToken);
+            var trackList = _spotifyTrackSvc.GetAllUserTracksFromPlaylists(userPlaylists, cancellationToken);
 
             return trackList;
         }

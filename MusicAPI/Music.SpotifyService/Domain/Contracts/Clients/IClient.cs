@@ -13,7 +13,7 @@ namespace Music.Spotify.Domain.Contracts
     {
         Task<SpotifyUser> GetCurrentClientUser(string authToken, CancellationToken cancellationToken);
         Task<string> GetCurrentClientUserId(string authToken, CancellationToken cancellationToken);
-        Task<SpotifyPlaylistCollection> GetAllUserPlaylists(string authToken, CancellationToken cancellationToken, string nextPageURL = null);
+        Task<SpotifyPlaylistSummaryCollection> GetAllUserPlaylists(string authToken, CancellationToken cancellationToken, string nextPageURL = null);
         Task<SpotifyPlaylist> GetUserPlaylistById(string authToken, string playlistId, CancellationToken cancellationToken, string nextPageURL = null);
     }
 }

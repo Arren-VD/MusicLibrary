@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Music.Spotify.Models.PlaylistModels
 {
-    public class SpotifyPlaylistCollection
+    public class SpotifyPlaylistSummaryCollection
     {
         public string href { get; set; }
-        public List<SpotifyPlaylistInfo> items { get; set; }
+        public List<SpotifyPlaylistSummary> items { get; set; }
         public int limit { get; set; }
         public string next { get; set; }
         public int offset { get; set; }
