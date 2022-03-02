@@ -18,7 +18,6 @@ namespace Music.Domain.Services
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
         private readonly IGenericRepository _repo;
         private readonly UserCreationValidator _userValidation;

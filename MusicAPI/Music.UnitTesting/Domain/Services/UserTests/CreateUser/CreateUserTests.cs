@@ -45,10 +45,11 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser).GetById(outputUser.Result, userInDb).Insert(userToAdd.Result, outputUser);
             var mockMapper = new MockMapper().Map<UserCreationDTO, User>(input, userToAdd.Result).Map<User,UserDTO>(userInDb.Result, resultUser.Result);
             CancellationToken cancellationToken = new CancellationToken();
-            var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, null, null);
+             //var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, null, null);
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockMapper, mockRepo });
 
-            // Act
-            var result = await userService.CreateUser(input, cancellationToken);
+             // Act
+             var result = await userService.CreateUser(input, cancellationToken);
 
             // Assert
             result.Value.Id.Should().Be(1);
@@ -64,7 +65,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             //var mockRepo = new MockGenericRepository().FindByConditionAsync<User>(It.Is<Expression<Func<User,bool>>>(y => y.Compile() (existingUser.Result)), existingUser);
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
-            var userService = UserServiceTestHelper.CreateUserService(null,mockRepo);
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] {mockRepo });
 
             // Act
             var result = await userService.CreateUser(input, cancellationToken);
@@ -86,7 +87,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockRepo });
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);
@@ -105,7 +106,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockRepo });
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);
@@ -123,7 +124,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockRepo });
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);
@@ -142,7 +143,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockRepo });
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);

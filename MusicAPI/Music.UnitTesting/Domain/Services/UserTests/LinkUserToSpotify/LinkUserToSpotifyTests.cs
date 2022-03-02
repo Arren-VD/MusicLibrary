@@ -36,8 +36,9 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
             svcs.Add(new MockExternalService().GetName("Spotify").ReturnClientUserId(cancellationToken,tokens.FirstOrDefault().Value,spotifyId));
             var mockRepo = new MockGenericRepository().InsertAny(outputUserClient);
             var mockMapper = new MockMapper().Map<UserClient, UserClientDTO>(outputUserClient.Result, outputDTO);
-            var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, svcs.ToList() );
-       
+            //var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, svcs.ToList() );
+            var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockMapper,mockRepo , svcs.ToList() });
+
             // Act
             var result = await userService.LinkUserToExternalAPIs(userId, tokens, cancellationToken);
 
