@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Music.Domain.Contracts.Services;
+using Music.Domain.Services.Helpers;
 using Music.Views;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace MusicAPI.Controllers
         }
         [HttpPost]
         [Route("user/{userId}/getalltracks")]
-        public async Task<ActionResult<List<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(int userId, List<UserTokenDTO> spotifyTokens, [FromQuery] List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagingWrapper<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(int userId, List<UserTokenDTO> spotifyTokens, [FromQuery] List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
         {
             return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(userId,spotifyTokens, playlistIds, page, pageSize, cancellationToken)));
         }

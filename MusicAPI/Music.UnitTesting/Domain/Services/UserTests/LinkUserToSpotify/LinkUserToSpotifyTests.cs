@@ -16,6 +16,7 @@ using Music.UnitTesting.Moq.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using Music.UnitTesting.Moq.Automapper;
 
 namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
 {
@@ -23,27 +24,19 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
     {
         private static IMapper _mapper;
         public LinkUserToSpotifyTests()
-        {
-            if (_mapper == null)
-            {
-                var config = new MapperConfiguration(cfg => {
-                    cfg.AddMaps(typeof(PlaylistProfile).GetTypeInfo().Assembly);
-                });
-                var configuration = new MapperConfiguration(cfg => cfg.AddMaps(typeof(PlaylistProfile).GetTypeInfo().Assembly));
-                IMapper mapper = config.CreateMapper();
-                _mapper = mapper;
-            }
+        { 
+
         }
         [Theory]
         [MemberData(nameof(LinkUserToSpotifyTestData.LinkUserToExternalAPISpotifyTest), MemberType = typeof(LinkUserToSpotifyTestData))]
-        public async void LinkUserToSpotifyWorkingData(CancellationToken cancellationToken, int userId , List<UserTokenDTO> tokens,Task<string> spotifyId, List<UserClient> userClients, Task<UserClient> outputUserClient)
+        public async void LinkUserToSpotifyWorkingData(CancellationToken cancellationToken, int userId , List<UserTokenDTO> tokens,Task<string> spotifyId, UserClient userClient, Task<UserClient> outputUserClient, UserClientDTO outputDTO, List<UserClientDTO> outputDTOs)
         {
             // Arrange
             var svcs = new List<MockExternalService>();
             svcs.Add(new MockExternalService().GetName("Spotify").ReturnClientUserId(cancellationToken,tokens.FirstOrDefault().Value,spotifyId));
-            var mockUserTokenRepository = new MockUserTokenRepository().AddTokenById(userClients.FirstOrDefault(), outputUserClient);
-
-            var userService = UserServiceTestHelper.CreateUserService(_mapper,null, svcs.ToList(), mockUserTokenRepository,null);
+            var mockRepo = new MockGenericRepository().InsertAny(outputUserClient);
+            var mockMapper = new MockMapper().Map<UserClient, UserClientDTO>(outputUserClient.Result, outputDTO);
+            var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, svcs.ToList() );
        
             // Act
             var result = await userService.LinkUserToExternalAPIs(userId, tokens, cancellationToken);
@@ -52,7 +45,7 @@ namespace Music.UnitTesting.Domain.Services.UserTests.LinkUserToSpotify
             result.First().Should().NotBeNull();
             result.First().ClientId.Should().Be(spotifyId.Result);
             result.First().ClientName.Should().Be(tokens.First().Name);
-            result.First().UserId.Should().Be(userClients.First().UserId);
+            result.First().UserId.Should().Be(outputDTOs.First().UserId);
         }
     }
 }

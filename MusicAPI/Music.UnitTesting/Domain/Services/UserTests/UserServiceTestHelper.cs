@@ -15,15 +15,14 @@ namespace Music.UnitTesting.Domain.Services.UserTests
 {
     public static class UserServiceTestHelper
     {
-        public static UserService CreateUserService(IMapper mapper, Mock<IUserRepository> moqIUserRepository, IEnumerable<Mock<IExternalService>> moqExternalServices, Mock<IUserTokensRepository> moqUserTokenRepository, UserCreationValidator userCreationValidator)
+        public static UserService CreateUserService(Mock<IMapper> mapper = null, Mock<IGenericRepository> moqRepo = null, IEnumerable<Mock<IExternalService>> moqExternalServices = null, UserCreationValidator userCreationValidator = null)
         {
+            mapper ??= new Mock<IMapper>();
             moqExternalServices ??= new List<Mock<IExternalService>>();
             var returnlist = (from item in moqExternalServices
                               select item.Object).ToList();
-            moqIUserRepository ??= new Mock<IUserRepository>();
-            moqUserTokenRepository ??= new Mock<IUserTokensRepository>();
             userCreationValidator ??= new UserCreationValidator();
-            return new UserService(mapper, moqIUserRepository.Object, returnlist, moqUserTokenRepository.Object, userCreationValidator);
+            return new UserService(mapper.Object, moqRepo.Object, returnlist, userCreationValidator);
         }
     }
 }

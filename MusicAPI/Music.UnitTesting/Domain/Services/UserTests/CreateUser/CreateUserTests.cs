@@ -18,6 +18,8 @@ using Music.UnitTesting.Domain.Services.UserTests.CreateUser;
 using Music.Domain.ErrorHandling;
 using System.Threading.Tasks;
 using System.Threading;
+using Music.UnitTesting.Moq.Automapper;
+using System.Linq.Expressions;
 
 namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
 {
@@ -38,32 +40,34 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
         }
         [Theory]
         [MemberData(nameof(CreateUserTestData.CreateUserTest), MemberType = typeof(CreateUserTestData))]
-        public async void CreateUserWithWorkingData(UserCreationDTO userCreation,Task<User>existingUser,User inputUser, Task<User> outputUser, Task<UserDTO> userOutput)
+        public async void CreateUserWithWorkingData(UserCreationDTO input,Task<User>existingUser,Task<User> userToAdd, Task<User> outputUser,Task<User> userInDb, Task<UserDTO> resultUser)
         {
-            // Arrange
-            var mockUserRespository= new MockUserRepository().GetUserByName(userCreation.Name, existingUser).GetUser(outputUser).AddUser(inputUser, outputUser);
+            var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser).GetById(outputUser.Result, userInDb).Insert(userToAdd.Result, outputUser);
+            var mockMapper = new MockMapper().Map<UserCreationDTO, User>(input, userToAdd.Result).Map<User,UserDTO>(userInDb.Result, resultUser.Result);
             CancellationToken cancellationToken = new CancellationToken();
-            var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
+            var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, null, null);
 
             // Act
-            var result = await userService.CreateUser(userCreation, cancellationToken);
+            var result = await userService.CreateUser(input, cancellationToken);
 
             // Assert
             result.Value.Id.Should().Be(1);
-            result.Value.Name.Should().Be(userCreation.Name);
+            result.Value.Name.Should().Be(input.Name);
         }
+        
         [Theory]
         [MemberData(nameof(CreateUserTestData.CreateUserWithExistingUserReturnsError), MemberType = typeof(CreateUserTestData))]
-        public async void CreateUserWithExistingUserReturnsError(UserCreationDTO userCreation, Task<User> existingUser, User inputUser, Task<User> outputUser, Task<UserDTO> userOutput)
+        public async void CreateUserWithExistingUserReturnsError(UserCreationDTO input, Task<User> existingUser)
         {
             // Arrange
-            var mockUserRespository = new MockUserRepository().GetUserByName(userCreation.Name, existingUser).GetUser(outputUser).AddUser(inputUser, outputUser);
+            //var a = It.Is<Expression<Func<User, bool>>>(y => y.Compile()(null);
+            //var mockRepo = new MockGenericRepository().FindByConditionAsync<User>(It.Is<Expression<Func<User,bool>>>(y => y.Compile() (existingUser.Result)), existingUser);
+            var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
-
-            var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
+            var userService = UserServiceTestHelper.CreateUserService(null,mockRepo);
 
             // Act
-            var result = await userService.CreateUser(userCreation, cancellationToken);
+            var result = await userService.CreateUser(input, cancellationToken);
 
             // Assert
             result.Value.Should().BeNull();
@@ -73,15 +77,16 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             result.Errors.First().Keyword.Should().Be("User");
             result.Errors.First().Code.Should().Be(Error.ErrorValues.AlreadyExists);
         }
+        
         [Theory]
         [MemberData(nameof(CreateUserTestData.CreateUserWithNameShorterThanTwoCharactersReturnsError), MemberType = typeof(CreateUserTestData))]
         public async void CreateUserWithNameShorterThanTwoCharactersReturnsError(UserCreationDTO userCreation, Task<User> existingUser, Error resultError)
         {
             // Arrange
-            var mockUserRespository = new MockUserRepository().GetUserByName(userCreation.Name, existingUser);
+            var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
+            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);
@@ -91,15 +96,16 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
             result.Errors.Count.Should().Be(1);
             result.Errors.First().Should().BeEquivalentTo(resultError);
         }
+        
         [Theory]
         [MemberData(nameof(CreateUserTestData.CreateUserWithNameLongerThan30CharactersReturnsError), MemberType = typeof(CreateUserTestData))]
         public async void CreateUserWithNameLongerThan30CharactersReturnsError(UserCreationDTO userCreation, Task<User> existingUser, Error resultError)
         {
             // Arrange
-            var mockUserRespository = new MockUserRepository().GetUserByName(userCreation.Name, existingUser);
+            var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
+            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);
@@ -114,10 +120,10 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
         public async void CreateUserWithEmptyNameReturnsError(UserCreationDTO userCreation, Task<User> existingUser, Error resultError, Error resultError2)
         {
             // Arrange
-            var mockUserRespository = new MockUserRepository().GetUserByName(userCreation.Name, existingUser);
+            var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
+            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);
@@ -133,10 +139,10 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
         public async void CreateUserWithNullNameReturnsError(UserCreationDTO userCreation, Task<User> existingUser, Error resultError )
         {
             // Arrange
-            var mockUserRespository = new MockUserRepository().GetUserByName(userCreation.Name, existingUser);
+            var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser);
             CancellationToken cancellationToken = new CancellationToken();
 
-            var userService = UserServiceTestHelper.CreateUserService(_mapper, mockUserRespository, null, null, null);
+            var userService = UserServiceTestHelper.CreateUserService(null, mockRepo);
 
             // Act
             var result = await userService.CreateUser(userCreation, cancellationToken);

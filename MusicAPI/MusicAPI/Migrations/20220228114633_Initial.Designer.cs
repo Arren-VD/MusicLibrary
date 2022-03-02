@@ -9,7 +9,7 @@ using Music.DataAccess.Database;
 namespace MusicAPI.Migrations
 {
     [DbContext(typeof(MusicContext))]
-    [Migration("20220203154526_Initial")]
+    [Migration("20220228114633_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -20,16 +20,15 @@ namespace Music.Domain.Services
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IEnumerable<IExternalService> _externalServices;
-        private readonly IUserTokensRepository _userTokensRepository;
+        private readonly IGenericRepository _repo;
         private readonly UserCreationValidator _userValidation;
 
-        public UserService(IMapper mapper, IUserRepository userRepository, IEnumerable<IExternalService> externalServices, IUserTokensRepository userTokensRepository, UserCreationValidator userValidation)
+        public UserService(IMapper mapper, IGenericRepository repo, IEnumerable<IExternalService> externalServices, UserCreationValidator userValidation)
         {
+            _repo = repo;
             _userValidation = userValidation;
             _mapper = mapper;
-            _userRepository = userRepository;
             _externalServices = externalServices;
-            _userTokensRepository = userTokensRepository;
         }
         public async Task<ValidationResult<UserDTO>> CreateUser(UserCreationDTO user, CancellationToken cancellationToken)
         {
@@ -37,20 +36,22 @@ namespace Music.Domain.Services
             result.Errors.AddRange(_userValidation.Validate(user));
             if (result.Errors.Any())
                 return result;
-
-            if (await _userRepository.GetUserByName(user.Name) != null)
-                result.AddError(Error.ErrorValues.AlreadyExists,"User","Name",user.Name);
-
+            var a = await _repo.FindByConditionAsync<User>(x => x.Name == user.Name
+            );
+            if (await _repo.FindByConditionAsync<User>(x => x.Name == user.Name) != null)
+            {
+                result.AddError(Error.ErrorValues.AlreadyExists, "User", "Name", user.Name);
+                return result;
+            }            
             var userToAdd = _mapper.Map<User>(user);
+            var addedUser = await _repo.Insert(userToAdd);
 
-            var addedUser = await _userRepository.AddUser(userToAdd);
-            _userRepository.SaveChanges();
-            result.Value = _mapper.Map<UserDTO>(await _userRepository.GetUser(addedUser));
+            result.Value = _mapper.Map<UserDTO>(await _repo.GetById<User>(addedUser));
             return result;
         }
         public async Task<UserDTO> Login(LoginDTO user, CancellationToken cancellationToken)
         {
-            return _mapper.Map<UserDTO>(await _userRepository.GetUserByName(user.Name));
+            return _mapper.Map<UserDTO>(await _repo.FindByConditionAsync<User>(x => x.Name == user.Name));
         }
 
         public async Task<List<UserClientDTO>> LinkUserToExternalAPIs(int userId,List<UserTokenDTO> userTokens, CancellationToken cancellationToken)
@@ -62,17 +63,17 @@ namespace Music.Domain.Services
 
                 var svc =  _externalServices.FirstOrDefault(ms => ms.GetName() == userToken.Name);
                 var clientId = await svc.ReturnClientUserId(userToken.Value,cancellationToken);
-                var a = await _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId));
-                userclients.Add(_mapper.Map<UserClientDTO>(await _userTokensRepository.AddTokenById(new UserClient(clientId, userToken.Name, userId))));
 
-                _userTokensRepository.SaveChanges();
+                var b = new UserClient(clientId, userToken.Name, userId);
+                var a = await _repo.Insert(new UserClient(clientId, userToken.Name, userId));
+                userclients.Add(_mapper.Map<UserClientDTO>(await _repo.Insert(new UserClient(clientId, userToken.Name, userId))));
             }
 
             return userclients;
         }
         public async Task<UserDTO> GetUserById(int userId, CancellationToken cancellationToken)
         {
-            return _mapper.Map<UserDTO>(await _userRepository.GetUserById(userId));
+            return _mapper.Map<UserDTO>(await _repo.FindByConditionAsync<User>(x => x.Id == userId));
         }
     }
 }

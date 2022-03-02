@@ -3,6 +3,7 @@ import { HttpClient ,HttpParams  } from '@angular/common/http';
 import { ITrackCollection } from '../Interfaces/ITrackCollection';
 import { IAccesToken } from '../Interfaces/IAccesToken';
 import { IPlaylist } from '../Interfaces/IPlaylist';
+import { IPaggingWrapper } from '../Interfaces/IPaggingWrapper';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +26,7 @@ export class MusicServiceService {
        list = "&playlistIds=" + playlistIds.join("&playlistIds=")
     }
 
-    return this.http.post<ITrackCollection>(`${this.MusicApiURL}/api/Music/user/${id}/getalltracks?page=${page}&pageSize=${pageSize}${list}`, this.AccessTokens)
+    return this.http.post<IPaggingWrapper>(`${this.MusicApiURL}/api/Music/user/${id}/getalltracks?page=${page}&pageSize=${pageSize}${list}`, this.AccessTokens)
   }
   GetPlaylists(id : number)
   {

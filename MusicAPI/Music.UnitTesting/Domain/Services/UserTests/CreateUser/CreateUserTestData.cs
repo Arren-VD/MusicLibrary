@@ -19,9 +19,10 @@ namespace Music.UnitTesting.Domain.Services.UserTests.CreateUser
 
                 new UserCreationDTO{ Name = "Rick"},
                 Task.FromResult<User>(null),
-                new User {Name = "Rick"},
+                Task.FromResult(new User {Name = "Rick", Id=0}),
                 Task.FromResult(new User {Name = "Rick",Id = 1}),
-                Task.FromResult(new UserDTO {Name = "Rick",Id = 1}),
+                Task.FromResult(new User {Name = "Rick",Id = 1}),
+                Task.FromResult(new UserDTO {Name = "Rick", Id = 1})
             };
         }
         public static IEnumerable<object[]> CreateUserWithExistingUserReturnsError()
@@ -31,9 +32,6 @@ namespace Music.UnitTesting.Domain.Services.UserTests.CreateUser
 
                 new UserCreationDTO{ Name = "Rick" },
                 Task.FromResult( new User {Name = "Rick"}),
-                new User {Name = "Rick"},
-                Task.FromResult(new User {Name = "Rick",Id = 1}),
-                Task.FromResult(new UserDTO {Name = "Rick",Id = 1}),
             };
         }
         public static IEnumerable<object[]> CreateUserWithNameShorterThanTwoCharactersReturnsError()

@@ -1,4 +1,5 @@
-﻿using Music.Views;
+﻿using Music.Domain.Services.Helpers;
+using Music.Views;
 using Music.Views.ClientViews;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Music.Domain.Contracts.Services
     public interface IMusicService
     {
         Task<List<TrackDTO>> ImportClientMusicToDB(int userId, List<UserTokenDTO> userTokens, CancellationToken cancellationToken);
-        Task<TrackCollectionDTO> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken);
+        Task<PagingWrapper<TrackDTO>> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken);
         
     }
 }

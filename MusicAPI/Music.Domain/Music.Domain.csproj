@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Music.Views\Music.Views.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Extensions\" />
+  </ItemGroup>
+
 </Project>

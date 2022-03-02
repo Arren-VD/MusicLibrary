@@ -91,7 +91,8 @@ export class TrackListComponent implements OnInit {
   GetTracks()
   {
     this.tracklistSvc.GetTrackList(this.id,this.page,this.pageSize,this.playlistIds).subscribe(x =>{
-      this.tracklist = x.tracks
+      this.tracklist = x.collection
+      console.log(x.totalPages)
       this.totalPages = x.totalPages;
       this.trackNumbers  =  this.ArrayFromXtoY(Math.max(this.page -3,1), Math.min(Number(this.page) + 3,this.totalPages))
     });

@@ -2,6 +2,7 @@
 using Music.Domain.Contracts.Repositories;
 using Music.Domain.Contracts.Services;
 using Music.Domain.ErrorHandling.Validations;
+using Music.Domain.Services.Helpers;
 using Music.Models;
 using Music.Views;
 using Music.Views.ClientViews;
@@ -56,16 +57,17 @@ namespace Music.Domain.Services
             }
             return _mapper.Map<List<TrackDTO>>(await _musicRepository.GetCategorizedMusicList(userId));
         }
-        public async Task<TrackCollectionDTO> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagingWrapper<TrackDTO>> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
         {
-            var trackCollection = new TrackCollectionDTO();
             var categorizedMusicList = await _musicRepository.GetCategorizedMusicList(userId);
+
             if (playlistIds.Any())
                 categorizedMusicList = categorizedMusicList.Where(x => x.PlaylistTracks.Any(y => playlistIds.Any(z => z == y.PlaylistId))).ToList();
-            trackCollection.TotalPages = (int)Math.Ceiling((double) categorizedMusicList.Count / pageSize);
-            categorizedMusicList = categorizedMusicList.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
-            trackCollection.Tracks = _mapper.Map<List<TrackDTO>>(categorizedMusicList);
-            return trackCollection;
+            var mappedCategorizedMusicList = _mapper.Map<List<TrackDTO>>(categorizedMusicList);
+
+            var paggedMusicList = new PagingWrapper<TrackDTO>(mappedCategorizedMusicList,pageSize,page);
+
+            return paggedMusicList;
         }
     }
 }
