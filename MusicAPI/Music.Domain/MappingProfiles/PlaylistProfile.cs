@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Music.Views.ClientViews;
+using Music.Views.Results;
 
 namespace Music.Domain.MappingProfiles
 {
@@ -18,15 +19,15 @@ namespace Music.Domain.MappingProfiles
             CreateMap<ExternalPlaylistDTO, Playlist>()
              .ForMember(d => d.Id, opt => opt.Ignore());
 
-            CreateMap<PlaylistTrack, PlaylistDTO>()
+            CreateMap<PlaylistTrack, TrackPlaylistDTO>()
                  .ForMember(d => d.ClientPlayList, opt => opt.MapFrom(src => src.ClientPlaylists))
             .ForMember(d => d.Name, opt => opt.MapFrom(src => src.Playlist.Name))
              .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Playlist.Id));
                 ;
-            CreateMap<PlaylistDTO, PlaylistTrack>();
+            CreateMap<TrackPlaylistDTO, PlaylistTrack>();
 
-            CreateMap<PlaylistDTO, Playlist>();
-            CreateMap<Playlist, PlaylistDTO>()
+            CreateMap<TrackPlaylistDTO, Playlist>();
+            CreateMap<Playlist, TrackPlaylistDTO>()
                             .ForMember(d => d.ClientPlayList, opt => opt.Ignore())
                             .ForMember(d => d.Name, opt => opt.MapFrom(src => src.Name))
                             .ForMember(d => d.Id, opt => opt.MapFrom(src => src.Id))
@@ -36,7 +37,10 @@ namespace Music.Domain.MappingProfiles
             CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();
 
             CreateMap<ClientPlaylistDTO, ClientPlayListTrack>();
-            CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();       
+            CreateMap<ClientPlayListTrack, ClientPlaylistDTO>();
+
+            CreateMap<Playlist, PlaylistResult>();
+            CreateMap<PlaylistResult, Playlist>();
         }
     }
 }

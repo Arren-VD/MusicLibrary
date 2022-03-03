@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Music.DataAccess;
 using Music.DataAccess.Database;
 using Music.Domain;
@@ -18,37 +19,36 @@ namespace Music.IntegrationTesting
         {
             builder.ConfigureServices(services =>
             {
-                var dbContext = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<MusicContext>));
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType ==
+                        typeof(DbContextOptions<MusicContext>));
 
-                if (dbContext != null)
-                    services.Remove(dbContext);
+                services.Remove(descriptor);
 
-                var serviceProvider = new ServiceCollection().AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
-
-                services.AddDbContext<MusicContext>(options =>
+                services.AddDbContextFactory<MusicContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryEmployeeTest");
-                    options.UseInternalServiceProvider(serviceProvider);
-                    
-                }, ServiceLifetime.Transient);
-
-                //services.RegisterDataAccess().RegisterServices().RegisterValidators().RegisterHelpers();
+                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                });
 
                 var sp = services.BuildServiceProvider();
 
                 using (var scope = sp.CreateScope())
                 {
-                    using (var appContext = scope.ServiceProvider.GetRequiredService<MusicContext>())
+                    var scopedServices = scope.ServiceProvider;
+                    var db = scopedServices.GetRequiredService<MusicContext>();
+                    var logger = scopedServices
+                        .GetRequiredService<ILogger<WebApplicationFactory<Startup>>>();
+
+                    db.Database.EnsureCreated();
+
+                    try
                     {
-                        try
-                        {
-                            appContext.Database.EnsureCreated();
-                        }
-                        catch (Exception ex)
-                        {
-                            //Log errors
-                            throw;
-                        }
+                        //Utilities.InitializeDbForTests(db);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "An error occurred seeding the " +
+                            "database with test messages. Error: {Message}", ex.Message);
                     }
                 }
             });

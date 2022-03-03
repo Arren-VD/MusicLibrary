@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Music.Views
+namespace Music.Views.Results
 {
-    public class PlaylistDTO
+    public class PlaylistResult
     {
         public int Id { get; set; }
-        public List<ClientPlaylistDTO> ClientPlayList{get;set;}
         public string Name { get; set; }
     }
 }

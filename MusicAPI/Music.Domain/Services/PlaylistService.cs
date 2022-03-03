@@ -4,6 +4,7 @@ using Music.Domain.Contracts.Services;
 using Music.Models;
 using Music.Views;
 using Music.Views.ClientViews;
+using Music.Views.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +44,9 @@ namespace Music.Domain.Services
             });
             return  addedPlaylists;
         }
-        public async Task<List<PlaylistDTO>> GetAllUserPlaylists(int userId, CancellationToken cancellationToken)
+        public async Task<List<PlaylistResult>> GetAllUserPlaylists(int userId, CancellationToken cancellationToken)
         {
-            return _mapper.Map<List<PlaylistDTO>>(await _repo.FindAllByConditionAsync<Playlist>(x => x.UserId == userId)).Distinct().ToList();
+            return _mapper.Map<List<PlaylistResult>>(await _repo.FindAllByConditionAsync<Playlist>(x => x.UserId == userId)).Distinct().ToList();
         }
     }
 }

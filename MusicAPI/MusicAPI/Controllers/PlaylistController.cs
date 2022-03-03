@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Music.Domain.Contracts.Services;
 using Music.Views;
+using Music.Views.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace MusicAPI.Controllers
         }
         [HttpGet]
         [Route("user/{userId}/getallplaylists")]
-        public async Task<ActionResult<List<PlaylistDTO>>> GetCurrentUserPlaylists( int userId, CancellationToken cancellationToken)
+        public async Task<ActionResult<List<PlaylistResult>>> GetCurrentUserPlaylists( int userId, CancellationToken cancellationToken)
         {
             return Ok(await (_playlistService.GetAllUserPlaylists( userId, cancellationToken)));
         }
