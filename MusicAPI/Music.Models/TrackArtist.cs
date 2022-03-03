@@ -11,6 +11,10 @@ namespace Music.Models
             TrackId = trackId;
             ArtistId = artistId;
         }
+        public TrackArtist()
+        {
+
+        }
         public int Id { get; set; }
         public int TrackId { get; set; }
         public int ArtistId { get; set; }

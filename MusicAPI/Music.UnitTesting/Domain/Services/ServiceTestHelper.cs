@@ -40,9 +40,9 @@ namespace Music.UnitTesting.Domain.Services
                         {
                             var defaultExternals = new List<Mock<IExternalService>>() { new Mock<IExternalService>() };
                             var filteredList = objects.Where(x => x.GetType().Name == nameof(List<IExternalService>) + "`1");
-                            var mockedExternalService = ((IEnumerable<object>)filteredList.FirstOrDefault()).Cast<object>().ToList().FirstOrDefault();
+                            var mockedExternalService = ((IEnumerable<object>)filteredList?.FirstOrDefault())?.Cast<object>()?.ToList()?.FirstOrDefault();
                             var parameterExternals = new List<Mock<IExternalService>>() { (Mock<IExternalService>)mockedExternalService };
-                            if ((parameterExternals?.Any() ?? false))
+                            if (mockedExternalService != null)
                                 constructorParameters.Add((from it in parameterExternals select it.Object).ToList());
                             else
                                 constructorParameters.Add((from it in defaultExternals select it.Object).ToList());

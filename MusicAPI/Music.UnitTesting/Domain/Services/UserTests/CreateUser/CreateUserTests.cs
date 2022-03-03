@@ -43,9 +43,8 @@ namespace Music.UnitTesting.Domain.Services.UserTests.Tests.CreateUser
         public async void CreateUserWithWorkingData(UserCreationDTO input,Task<User>existingUser,Task<User> userToAdd, Task<User> outputUser,Task<User> userInDb, Task<UserDTO> resultUser)
         {
             var mockRepo = new MockGenericRepository().FindByConditionAsync(existingUser).GetById(outputUser.Result, userInDb).Insert(userToAdd.Result, outputUser);
-            var mockMapper = new MockMapper().Map<UserCreationDTO, User>(input, userToAdd.Result).Map<User,UserDTO>(userInDb.Result, resultUser.Result);
+            var mockMapper = new MockMapper().Map(input, userToAdd.Result).Map(userInDb.Result, resultUser.Result);
             CancellationToken cancellationToken = new CancellationToken();
-             //var userService = UserServiceTestHelper.CreateUserService(mockMapper, mockRepo, null, null);
             var userService = ServiceTestHelper.CreateGenericService<UserService>(new object[] { mockMapper, mockRepo });
 
              // Act

@@ -51,7 +51,7 @@ namespace Music.Domain.Services
                     {
                         var track = await _trackService.AddTrack( externalTrack, userId, cancellationToken);
                         var playlistCollection = await _playlistService.AddPlaylistCollection(externalTrack.Playlists, userId, track.Id, externalTrack.ClientServiceName, cancellationToken);
-                        var artistCollection = await _artistService.AddArtistCollection( externalTrack.Artists, track.Id, cancellationToken);
+                        var trackArtistCollection = await _artistService.AddTrackArtistCollection( externalTrack.Artists, track.Id, cancellationToken);
                     }
                 });
             }

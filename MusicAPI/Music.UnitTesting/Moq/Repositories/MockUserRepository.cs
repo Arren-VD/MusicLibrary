@@ -11,6 +11,10 @@ namespace Music.UnitTesting.Moq.Repositories
 { 
     public class MockUserRepository : Mock<IUserRepository>
     {
+        public MockUserRepository() : base(MockBehavior.Strict)
+        {
+            
+        }
         public MockUserRepository GetUserById(int id, Task<User> Output)
         {
             Setup(repo => repo.GetUserById(id)).Returns(Output);
