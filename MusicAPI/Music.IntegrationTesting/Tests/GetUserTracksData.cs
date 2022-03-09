@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Music.IntegrationTesting.MusicIntegrationTests
 {
-    internal class GetCurrentUserTracksWithPlaylistAndArtistIntegrationTestsData
+    internal class GetUserTracksData
     {
     }
 }

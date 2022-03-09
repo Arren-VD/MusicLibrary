@@ -38,11 +38,11 @@ namespace MusicAPI.Controllers
         {      
             return Ok(await(_musicService.ImportClientMusicToDB(userId, spotifyTokens, cancellationToken)));
         }
-        [HttpPost]
+        [HttpGet]
         [Route("user/{userId}/getalltracks")]
-        public async Task<ActionResult<PagingWrapper<TrackDTO>>> GetCurrentUserTracksWithPlaylistAndArtist(int userId, List<UserTokenDTO> spotifyTokens, [FromQuery] List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<ActionResult<PagingWrapper<TrackDTO>>> GetUserTracks(int userId, [FromQuery] List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
         {
-            return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(userId,spotifyTokens, playlistIds, page, pageSize, cancellationToken)));
+            return Ok(await(_musicService.GetAllTracksWithPlaylistAndArtist(userId, playlistIds, page, pageSize, cancellationToken)));
         }
     }
 }

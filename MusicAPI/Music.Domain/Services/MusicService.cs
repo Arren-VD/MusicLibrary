@@ -57,7 +57,7 @@ namespace Music.Domain.Services
             }
             return _mapper.Map<List<TrackDTO>>(await _musicRepository.GetCategorizedMusicList(userId));
         }
-        public async Task<PagingWrapper<TrackDTO>> GetAllTracksWithPlaylistAndArtist( int userId, List<UserTokenDTO> userTokens, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
+        public async Task<PagingWrapper<TrackDTO>> GetAllTracksWithPlaylistAndArtist( int userId, List<int> playlistIds, int page, int pageSize, CancellationToken cancellationToken)
         {
             var categorizedMusicList = await _musicRepository.GetCategorizedMusicList(userId);
 

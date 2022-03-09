@@ -13,6 +13,10 @@ namespace Music.Domain.Services.Helpers
             TotalPages = PagingAndFiltering.CalculatePages(obj.Count, pageSize);
             Collection = PagingAndFiltering.ReturnPage(obj, pageSize, page);
         }
+        public PagingWrapper()
+        {
+
+        }
         public List<T> Collection { get; set; }
         public int TotalPages { get; set; }
     }

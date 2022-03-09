@@ -30,4 +30,8 @@
     <ProjectReference Include="..\MusicAPI\MusicAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tests\Music\" />
+  </ItemGroup>
+
 </Project>
